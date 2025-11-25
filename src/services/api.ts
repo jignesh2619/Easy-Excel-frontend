@@ -3,7 +3,9 @@
  * Handles all communication with the backend API
  */
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// Normalize API base URL (remove trailing slash to prevent double slashes)
+const rawUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+export const API_BASE_URL = rawUrl.toString().replace(/\/+$/, '');
 
 export interface ProcessFileResponse {
   status: string;
