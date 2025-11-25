@@ -95,13 +95,45 @@ export function getChartDownloadUrl(filename: string): string {
 }
 
 /**
- * Helper to download a file from URL
+ * Get auth token from Supabase session
+ */
+async function getAuthToken(): Promise<string | null> {
+  try {
+    // Import Supabase client dynamically
+    const { supabase } = await import('../lib/supabase');
+    const { data: { session } } = await supabase.auth.getSession();
+    return session?.access_token || null;
+  } catch (e) {
+    console.error('Failed to get auth token:', e);
+    return null;
+  }
+}
+
+/**
+ * Helper to download a file from URL (requires authentication)
  */
 export async function downloadFile(url: string, filename: string): Promise<void> {
   try {
-    const response = await fetch(url);
+    const token = await getAuthToken();
+    
+    // Require authentication - throw error if no token
+    if (!token) {
+      throw new Error('Authentication required. Please sign in to download files.');
+    }
+    
+    const headers: HeadersInit = {
+      'Authorization': `Bearer ${token}`
+    };
+    
+    const response = await fetch(url, {
+      headers,
+    });
+    
     if (!response.ok) {
-      throw new Error('Failed to download file');
+      if (response.status === 401 || response.status === 403) {
+        throw new Error('Authentication required. Please sign in to download files.');
+      }
+      throw new Error(`Failed to download file: ${response.statusText}`);
     }
     
     const blob = await response.blob();
@@ -141,14 +173,22 @@ export interface SubscriptionResponse {
 export async function createPayPalSubscription(
   planName: string,
   userEmail: string,
-  userId: string
+  userId: string,
+  accessToken?: string
 ): Promise<SubscriptionResponse> {
   try {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    // Add authentication token if provided
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}/api/payments/create-subscription`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         plan_name: planName,
         user_email: userEmail,

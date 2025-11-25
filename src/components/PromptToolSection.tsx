@@ -1,17 +1,44 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Upload, Sparkles, Loader2, CheckCircle2, AlertCircle, X, Download, Eye, BarChart3, LayoutDashboard, FileSpreadsheet } from "lucide-react";
 import { processFile, getFileDownloadUrl, getChartDownloadUrl, downloadFile, API_BASE_URL } from "../services/api";
 import { getFileValidationError } from "../utils/fileUtils";
 import { SafariBrowser } from "./SafariBrowser";
+import { useAuth } from "../contexts/AuthContext";
+import { AuthModal } from "./AuthModal";
 
 export function PromptToolSection() {
   const [prompt, setPrompt] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  
+  // Load result from localStorage on mount to preserve after auth
+  const [result, setResult] = useState<any>(() => {
+    try {
+      const saved = localStorage.getItem('excel-processing-result');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  
   const [error, setError] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user, session } = useAuth();
+
+  // Save result to localStorage whenever it changes
+  useEffect(() => {
+    if (result) {
+      try {
+        localStorage.setItem('excel-processing-result', JSON.stringify(result));
+      } catch (err) {
+        console.error('Failed to save result to localStorage:', err);
+      }
+    } else {
+      localStorage.removeItem('excel-processing-result');
+    }
+  }, [result]);
 
   const promptTemplates = [
     "Clean this column",
@@ -103,9 +130,47 @@ export function PromptToolSection() {
   };
 
   const handleDownloadChart = async () => {
+    if (!user || !session) {
+      setShowAuthModal(true);
+      return;
+    }
+
     if (result?.chart_url) {
-      const filename = result.chart_url.split('/').pop() || 'chart.png';
-      await downloadFile(`${API_BASE_URL}${result.chart_url}`, filename);
+      try {
+        const filename = result.chart_url.split('/').pop() || 'chart.png';
+        await downloadFile(`${API_BASE_URL}${result.chart_url}`, filename);
+      } catch (error: any) {
+        if (error.message?.includes('401') || error.message?.includes('Authentication')) {
+          setShowAuthModal(true);
+        } else {
+          setError('Failed to download chart. Please try again.');
+        }
+      }
+    }
+  };
+
+  const handleDownloadExcel = async () => {
+    console.log('Download clicked - Auth check:', { user: !!user, session: !!session });
+    if (!user || !session) {
+      console.log('No auth - showing modal');
+      // Use setTimeout to prevent blocking
+      setTimeout(() => {
+        setShowAuthModal(true);
+      }, 100);
+      return;
+    }
+
+    if (result?.processed_file_url) {
+      try {
+        const filename = result.processed_file_url.split('/').pop() || 'processed.xlsx';
+        await downloadFile(`${API_BASE_URL}${result.processed_file_url}`, filename);
+      } catch (error: any) {
+        if (error.message?.includes('401') || error.message?.includes('Authentication')) {
+          setShowAuthModal(true);
+        } else {
+          setError('Failed to download file. Please try again.');
+        }
+      }
     }
   };
 
@@ -309,12 +374,9 @@ export function PromptToolSection() {
                       {/* Button 3: Download Excel */}
                       {result.processed_file_url && (
                         <Button
-                          onClick={() => {
-                            const filename = result.processed_file_url!.split('/').pop() || 'processed_file.xlsx';
-                            downloadFile(`${API_BASE_URL}${result.processed_file_url!}`, filename);
-                          }}
+                          onClick={handleDownloadExcel}
                           variant="outline"
-                          className="border-2 border-[#00A878] text-[#00A878] hover:bg-[#00A878] hover:text-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
+                          className="border-2 border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 hover:text-[#007a5d] rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
                         >
                           <div className="flex items-center gap-2">
                             <Download className="w-5 h-5" />
@@ -329,7 +391,7 @@ export function PromptToolSection() {
                         <Button
                           onClick={handleDownloadChart}
                           variant="outline"
-                          className="border-2 border-[#00A878] text-[#00A878] hover:bg-[#00A878] hover:text-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
+                          className="border-2 border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 hover:text-[#007a5d] rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
                         >
                           <div className="flex items-center gap-2">
                             <Download className="w-5 h-5" />
@@ -345,6 +407,19 @@ export function PromptToolSection() {
               </div>
             </div>
           </SafariBrowser>
+
+          {/* Auth Modal */}
+          <AuthModal
+            open={showAuthModal}
+            onOpenChange={(open) => {
+              console.log('Modal onOpenChange called:', open);
+              setShowAuthModal(open);
+            }}
+            onSuccess={() => {
+              console.log('Auth success');
+              setShowAuthModal(false);
+            }}
+          />
 
           {/* Pre-built Prompt Suggestions - Below the prompt area */}
           <div className="text-center">

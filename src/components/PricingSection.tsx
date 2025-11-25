@@ -2,15 +2,28 @@ import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { createPayPalSubscription } from "../services/api";
+import { useAuth } from "../contexts/AuthContext";
+import { AuthModal } from "./AuthModal";
 
 export function PricingSection() {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [pendingPlan, setPendingPlan] = useState<string | null>(null);
+  const { user, session, backendUser } = useAuth();
 
   const handleSubscribe = async (planName: string) => {
     if (planName === "Free") {
-      // Free plan doesn't need payment
+      // Free plan doesn't need payment - just scroll to tool
       window.location.href = "#prompt-tool";
+      return;
+    }
+
+    // Check if user is authenticated
+    if (!user || !session || !backendUser) {
+      // Show auth modal
+      setPendingPlan(planName);
+      setShowAuthModal(true);
       return;
     }
 
@@ -18,18 +31,16 @@ export function PricingSection() {
     setError(null);
 
     try {
-      // Get user email (you can implement a proper user system)
-      const userEmail = prompt("Please enter your email address:");
-      if (!userEmail) {
-        setLoading(null);
-        return;
+      // Use authenticated user's email and ID
+      const userEmail = user.email || backendUser.email;
+      const userId = backendUser.user_id;
+
+      if (!userEmail || !userId) {
+        throw new Error("User information not available. Please sign in again.");
       }
 
-      // Generate a simple user ID (in production, use proper authentication)
-      const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-      // Create PayPal subscription
-      const result = await createPayPalSubscription(planName, userEmail, userId);
+      // Create PayPal subscription with authentication
+      const result = await createPayPalSubscription(planName, userEmail, userId, session.access_token);
 
       if (result.approval_url) {
         // Redirect to PayPal for payment approval
@@ -40,6 +51,17 @@ export function PricingSection() {
     } catch (err: any) {
       setError(err.message || "Failed to create subscription. Please try again.");
       setLoading(null);
+    }
+  };
+
+  // Handle auth success - retry subscription creation
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false);
+    if (pendingPlan) {
+      // Small delay to ensure backend user is synced
+      setTimeout(() => {
+        handleSubscribe(pendingPlan);
+      }, 500);
     }
   };
   const plans = [
@@ -176,6 +198,13 @@ export function PricingSection() {
           ))}
         </div>
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal
+        open={showAuthModal}
+        onOpenChange={setShowAuthModal}
+        onSuccess={handleAuthSuccess}
+      />
     </section>
   );
 }

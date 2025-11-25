@@ -1,16 +1,41 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Upload, X, Loader2, CheckCircle2, AlertCircle, Download, BarChart3, Eye, LayoutDashboard, FileSpreadsheet } from "lucide-react";
 import { processFile, downloadFile, type ProcessFileResponse, API_BASE_URL } from "../services/api";
 import { getFileValidationError, formatFileSize } from "../utils/fileUtils";
+import { useAuth } from "../contexts/AuthContext";
+import { AuthModal } from "./AuthModal";
 
 export function FileUploadSection() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [prompt, setPrompt] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [result, setResult] = useState<ProcessFileResponse | null>(null);
+  // Load result from localStorage on mount to preserve after auth
+  const [result, setResult] = useState<ProcessFileResponse | null>(() => {
+    try {
+      const saved = localStorage.getItem('excel-processing-result-upload');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [error, setError] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user, session } = useAuth();
+
+  // Save result to localStorage whenever it changes
+  useEffect(() => {
+    if (result) {
+      try {
+        localStorage.setItem('excel-processing-result-upload', JSON.stringify(result));
+      } catch (err) {
+        console.error('Failed to save result to localStorage:', err);
+      }
+    } else {
+      localStorage.removeItem('excel-processing-result-upload');
+    }
+  }, [result]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -84,9 +109,42 @@ export function FileUploadSection() {
   };
 
   const handleDownloadChart = async () => {
+    if (!user || !session) {
+      setShowAuthModal(true);
+      return;
+    }
+
     if (result?.chart_url) {
-      const filename = result.chart_url.split('/').pop() || 'chart.png';
-      await downloadFile(`${API_BASE_URL}${result.chart_url}`, filename);
+      try {
+        const filename = result.chart_url.split('/').pop() || 'chart.png';
+        await downloadFile(`${API_BASE_URL}${result.chart_url}`, filename);
+      } catch (error: any) {
+        if (error.message?.includes('401') || error.message?.includes('Authentication')) {
+          setShowAuthModal(true);
+        } else {
+          setError('Failed to download chart. Please try again.');
+        }
+      }
+    }
+  };
+
+  const handleDownloadExcel = async () => {
+    if (!user || !session) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (result?.processed_file_url) {
+      try {
+        const filename = result.processed_file_url.split('/').pop() || 'processed.xlsx';
+        await downloadFile(`${API_BASE_URL}${result.processed_file_url}`, filename);
+      } catch (error: any) {
+        if (error.message?.includes('401') || error.message?.includes('Authentication')) {
+          setShowAuthModal(true);
+        } else {
+          setError('Failed to download file. Please try again.');
+        }
+      }
     }
   };
 
@@ -291,12 +349,9 @@ export function FileUploadSection() {
               {/* Button 3: Download Excel */}
               {result.processed_file_url && (
                 <Button
-                  onClick={() => {
-                    const filename = result.processed_file_url!.split('/').pop() || 'processed_file.xlsx';
-                    downloadFile(`${API_BASE_URL}${result.processed_file_url!}`, filename);
-                  }}
+                  onClick={handleDownloadExcel}
                   variant="outline"
-                  className="border-2 border-[#00A878] text-[#00A878] hover:bg-[#00A878] hover:text-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
+                  className="border-2 border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 hover:text-[#007a5d] rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
                 >
                   <div className="flex items-center gap-2">
                     <Download className="w-5 h-5" />
@@ -311,7 +366,7 @@ export function FileUploadSection() {
                 <Button
                   onClick={handleDownloadChart}
                   variant="outline"
-                  className="border-2 border-[#00A878] text-[#00A878] hover:bg-[#00A878] hover:text-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
+                  className="border-2 border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 hover:text-[#007a5d] rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
                 >
                   <div className="flex items-center gap-2">
                     <Download className="w-5 h-5" />
@@ -325,6 +380,15 @@ export function FileUploadSection() {
         </div>
       )}
 
+      {/* Auth Modal */}
+      <AuthModal
+        open={showAuthModal}
+        onOpenChange={setShowAuthModal}
+        onSuccess={() => {
+          // Refresh backend user after successful auth
+          // The auth context will handle this automatically
+        }}
+      />
     </div>
   );
 }
