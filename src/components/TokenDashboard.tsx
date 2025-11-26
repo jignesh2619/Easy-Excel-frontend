@@ -50,78 +50,78 @@ export function TokenDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className={`bg-gradient-to-r ${getPlanColor(plan)} px-8 py-8 text-white relative overflow-hidden`}>
+          <div className={`bg-gradient-to-r ${getPlanColor(plan)} px-6 py-6 text-white relative overflow-hidden`}>
             <div className="relative z-10 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="p-4 bg-white/20 rounded-xl backdrop-blur-sm">
                   {getPlanIcon(plan)}
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold flex items-center gap-2">
-                    <Sparkles className="h-6 w-6" />
+                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <Sparkles className="h-5 w-5" />
                     Token Usage Dashboard
                   </h2>
-                  <p className="text-white/90 mt-2 text-lg">Monitor your AI processing credits in real-time</p>
+                  <p className="text-white/90 mt-1.5 text-sm">Monitor your AI processing credits in real-time</p>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm opacity-90 mb-1">Current Plan</div>
-                <div className="text-4xl font-bold drop-shadow-lg">{plan}</div>
+                <div className="text-xs opacity-90 mb-1 tracking-wide">Current Plan</div>
+                <div className="text-3xl font-bold drop-shadow-lg">{plan}</div>
               </div>
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-6">
             {/* Tokens Remaining */}
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-green-100 rounded-xl">
-                  <Zap className="h-6 w-6 text-green-600" />
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-2.5 bg-green-100 rounded-lg">
+                  <Zap className="h-5 w-5 text-green-600" />
                 </div>
-                <span className="text-xs font-bold text-green-700 uppercase tracking-wide">
+                <span className="text-[10px] font-bold text-green-700 uppercase tracking-wider">
                   Available
                 </span>
               </div>
-              <div className="text-5xl font-bold text-green-600 mb-2">
+              <div className="text-4xl font-bold text-green-600 mb-2 tracking-tight">
                 {formatNumber(remaining)}
               </div>
-              <div className="text-sm text-gray-600 font-medium">tokens remaining</div>
+              <div className="text-xs text-gray-600 font-medium">tokens remaining</div>
             </div>
 
             {/* Tokens Used */}
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-blue-100 rounded-xl">
-                  <BarChart3 className="h-6 w-6 text-blue-600" />
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-2.5 bg-blue-100 rounded-lg">
+                  <BarChart3 className="h-5 w-5 text-blue-600" />
                 </div>
-                <span className="text-xs font-bold text-blue-700 uppercase tracking-wide">
+                <span className="text-[10px] font-bold text-blue-700 uppercase tracking-wider">
                   Used
                 </span>
               </div>
-              <div className="text-5xl font-bold text-blue-600 mb-2">
+              <div className="text-4xl font-bold text-blue-600 mb-2 tracking-tight">
                 {formatNumber(used)}
               </div>
-              <div className="text-sm text-gray-600 font-medium">of {formatNumber(limit)} tokens</div>
+              <div className="text-xs text-gray-600 font-medium">of {formatNumber(limit)} tokens</div>
             </div>
 
             {/* Usage Percentage */}
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl ${
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <div className={`p-2.5 rounded-lg ${
                   percent < 50 ? 'bg-green-100' : percent < 80 ? 'bg-yellow-100' : 'bg-red-100'
                 }`}>
-                  <TrendingUp className={`h-6 w-6 ${
+                  <TrendingUp className={`h-5 w-5 ${
                     percent < 50 ? 'text-green-600' : percent < 80 ? 'text-yellow-600' : 'text-red-600'
                   }`} />
                 </div>
-                <span className={`text-xs font-bold uppercase tracking-wide ${
+                <span className={`text-[10px] font-bold uppercase tracking-wider ${
                   percent < 50 ? 'text-green-700' : percent < 80 ? 'text-yellow-700' : 'text-red-700'
                 }`}>
                   Usage
                 </span>
               </div>
-              <div className={`text-5xl font-bold mb-2 ${
+              <div className={`text-4xl font-bold mb-2 tracking-tight ${
                 percent < 50 
                   ? 'text-green-600' 
                   : percent < 80 
@@ -130,7 +130,7 @@ export function TokenDashboard() {
               }`}>
                 {percent}%
               </div>
-              <div className="text-sm text-gray-600 font-medium">of plan limit</div>
+              <div className="text-xs text-gray-600 font-medium">of plan limit</div>
             </div>
           </div>
 

@@ -6,6 +6,7 @@ import { getFileValidationError } from "../utils/fileUtils";
 import { SafariBrowser } from "./SafariBrowser";
 import { useAuth } from "../contexts/AuthContext";
 import { AuthModal } from "./AuthModal";
+import { useProcessingMessages } from "../hooks/useProcessingMessages";
 
 export function PromptToolSection() {
   const [prompt, setPrompt] = useState("");
@@ -26,6 +27,7 @@ export function PromptToolSection() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, session, refreshBackendUser } = useAuth();
+  const processingMessage = useProcessingMessages(isProcessing);
 
   // Save result to localStorage whenever it changes
   useEffect(() => {
@@ -324,7 +326,7 @@ export function PromptToolSection() {
                     {isProcessing ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Processing...
+                        {processingMessage}
                       </>
                     ) : (
                       "Process File"

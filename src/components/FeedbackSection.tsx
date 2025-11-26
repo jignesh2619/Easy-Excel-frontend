@@ -63,9 +63,6 @@ export function FeedbackSection() {
                 Share Your Feedback
               </h2>
             </div>
-            <p className="text-gray-600 text-sm">
-              Your feedback is valuable to us! Help us improve EasyExcel by sharing your thoughts, suggestions, or reporting any issues.
-            </p>
           </div>
 
           {/* Success Message */}
@@ -127,13 +124,6 @@ export function FeedbackSection() {
               </Button>
             </div>
           </form>
-
-          {/* Additional Info */}
-          <div className="mt-4 pt-4">
-            <p className="text-xs text-gray-500 text-center">
-              💡 Your feedback will be sent via email. We typically respond within 24-48 hours.
-            </p>
-          </div>
         </div>
       </div>
     </section>

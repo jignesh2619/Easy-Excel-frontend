@@ -5,6 +5,7 @@ import { processFile, downloadFile, type ProcessFileResponse, API_BASE_URL } fro
 import { getFileValidationError, formatFileSize } from "../utils/fileUtils";
 import { useAuth } from "../contexts/AuthContext";
 import { AuthModal } from "./AuthModal";
+import { useProcessingMessages } from "../hooks/useProcessingMessages";
 
 export function FileUploadSection() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -23,6 +24,7 @@ export function FileUploadSection() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, session, refreshBackendUser } = useAuth();
+  const processingMessage = useProcessingMessages(isProcessing);
 
   // Save result to localStorage whenever it changes
   useEffect(() => {
@@ -276,7 +278,7 @@ export function FileUploadSection() {
             {isProcessing ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Processing File...
+                {processingMessage}
               </>
             ) : (
               <>
