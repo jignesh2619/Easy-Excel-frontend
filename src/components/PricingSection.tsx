@@ -4,18 +4,27 @@ import { Check, Loader2 } from "lucide-react";
 import { createPayPalSubscription } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import { AuthModal } from "./AuthModal";
+import { WelcomePopup } from "./WelcomePopup";
 
 export function PricingSection() {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
   const [pendingPlan, setPendingPlan] = useState<string | null>(null);
   const { user, session, backendUser } = useAuth();
 
   const handleSubscribe = async (planName: string) => {
     if (planName === "Free") {
-      // Free plan doesn't need payment - just scroll to tool
-      window.location.href = "#prompt-tool";
+      // Check if user is logged in
+      if (user && backendUser) {
+        // Show welcome popup for logged-in users
+        setShowWelcomePopup(true);
+      } else {
+        // If not logged in, show auth modal first
+        setPendingPlan("Free");
+        setShowAuthModal(true);
+      }
       return;
     }
 
@@ -54,14 +63,32 @@ export function PricingSection() {
     }
   };
 
-  // Handle auth success - retry subscription creation
+  // Handle auth success - retry subscription creation or show welcome popup
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
-    if (pendingPlan) {
+    if (pendingPlan === "Free") {
+      // Show welcome popup after sign-up
+      setTimeout(() => {
+        setShowWelcomePopup(true);
+      }, 500);
+    } else if (pendingPlan) {
       // Small delay to ensure backend user is synced
       setTimeout(() => {
         handleSubscribe(pendingPlan);
       }, 500);
+    }
+  };
+
+  // Handle going to dashboard
+  const handleGoToDashboard = () => {
+    setShowWelcomePopup(false);
+    // Scroll to dashboard section
+    const dashboardElement = document.getElementById('token-dashboard');
+    if (dashboardElement) {
+      dashboardElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      // Fallback: scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
   const plans = [
@@ -204,6 +231,13 @@ export function PricingSection() {
         open={showAuthModal}
         onOpenChange={setShowAuthModal}
         onSuccess={handleAuthSuccess}
+      />
+
+      {/* Welcome Popup */}
+      <WelcomePopup
+        open={showWelcomePopup}
+        onClose={() => setShowWelcomePopup(false)}
+        onGoToDashboard={handleGoToDashboard}
       />
     </section>
   );

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { X, Download, Maximize2, Minimize2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { X, Download, Maximize2, Minimize2, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { API_BASE_URL } from "../services/api";
+import { useAuth } from "../contexts/AuthContext";
 
 interface ChartData {
   chartUrl: string;
@@ -16,13 +17,84 @@ interface ChartViewerProps {
 
 export function ChartViewer({ charts, onClose }: ChartViewerProps) {
   const [expandedChart, setExpandedChart] = useState<number | null>(null);
+  const [chartImages, setChartImages] = useState<Map<number, string>>(new Map());
+  const { user, session } = useAuth();
+
+  // Load chart images with authentication
+  useEffect(() => {
+    const loadChartImages = async () => {
+      const imageMap = new Map<number, string>();
+      
+      for (let i = 0; i < charts.length; i++) {
+        const chart = charts[i];
+        const chartUrl = chart.chartUrl.startsWith('http') 
+          ? chart.chartUrl 
+          : `${API_BASE_URL}${chart.chartUrl}`;
+        
+        try {
+          // Try to load image with authentication if user is logged in
+          if (user && session?.access_token) {
+            const response = await fetch(chartUrl, {
+              headers: {
+                'Authorization': `Bearer ${session.access_token}`
+              }
+            });
+            
+            if (response.ok) {
+              const blob = await response.blob();
+              const imageUrl = URL.createObjectURL(blob);
+              imageMap.set(i, imageUrl);
+            } else {
+              // Fallback to direct URL
+              imageMap.set(i, chartUrl);
+            }
+          } else {
+            // No auth, try direct URL
+            imageMap.set(i, chartUrl);
+          }
+        } catch (error) {
+          console.error(`Failed to load chart ${i}:`, error);
+          // Fallback to direct URL
+          imageMap.set(i, chartUrl);
+        }
+      }
+      
+      setChartImages(imageMap);
+    };
+
+    if (charts.length > 0) {
+      loadChartImages();
+    }
+
+    // Cleanup blob URLs on unmount or when charts change
+    return () => {
+      setChartImages((prevMap) => {
+        prevMap.forEach((url) => {
+          if (url.startsWith('blob:')) {
+            URL.revokeObjectURL(url);
+          }
+        });
+        return new Map();
+      });
+    };
+  }, [charts, user, session]);
 
   const handleDownloadChart = async (chartUrl: string, chartType: string) => {
     const filename = chartUrl.split('/').pop() || `chart_${chartType}.png`;
     const fullUrl = chartUrl.startsWith('http') ? chartUrl : `${API_BASE_URL}${chartUrl}`;
     
     try {
-      const response = await fetch(fullUrl);
+      const headers: HeadersInit = {};
+      if (user && session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+
+      const response = await fetch(fullUrl, { headers });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to download: ${response.statusText}`);
+      }
+      
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -38,8 +110,15 @@ export function ChartViewer({ charts, onClose }: ChartViewerProps) {
     }
   };
 
-  const getFullChartUrl = (chartUrl: string) => {
-    return chartUrl.startsWith('http') ? chartUrl : `${API_BASE_URL}${chartUrl}`;
+  const getChartImageUrl = (index: number, chartUrl: string): string => {
+    // Use loaded image blob URL if available
+    const loadedUrl = chartImages.get(index);
+    if (loadedUrl) {
+      return loadedUrl;
+    }
+    // Fallback to direct URL (will try to load, may need auth)
+    const fullUrl = chartUrl.startsWith('http') ? chartUrl : `${API_BASE_URL}${chartUrl}`;
+    return fullUrl;
   };
 
   if (charts.length === 0) {
@@ -127,20 +206,33 @@ export function ChartViewer({ charts, onClose }: ChartViewerProps) {
                   {/* Chart Image - Expanded */}
                   <div className="p-6 bg-white">
                     <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 transition-all duration-300 hover:bg-gray-100 hover:border-[#00A878]/30">
-                      <img
-                        src={getFullChartUrl(charts[expandedChart].chartUrl)}
-                        alt={`${charts[expandedChart].chartType} chart ${expandedChart + 1}`}
-                        className="w-full h-auto rounded-lg transition-transform duration-300 hover:scale-[1.01]"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const errorDiv = target.nextElementSibling as HTMLElement;
-                          if (errorDiv) errorDiv.style.display = 'block';
-                        }}
-                      />
+                      {chartImages.has(expandedChart) ? (
+                        <img
+                          src={getChartImageUrl(expandedChart, charts[expandedChart].chartUrl)}
+                          alt={`${charts[expandedChart].chartType} chart ${expandedChart + 1}`}
+                          className="w-full h-auto rounded-lg transition-transform duration-300 hover:scale-[1.01]"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const errorDiv = target.nextElementSibling as HTMLElement;
+                            if (errorDiv) errorDiv.style.display = 'block';
+                          }}
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center py-12">
+                          <Loader2 className="w-8 h-8 animate-spin text-[#00A878]" />
+                        </div>
+                      )}
                       <div className="hidden text-center py-8 text-gray-500">
-                        <p>Failed to load chart image</p>
-                        <p className="text-sm mt-2">The chart may still be available for download</p>
+                        <p className="font-medium">Failed to load chart image</p>
+                        <p className="text-sm mt-2 text-gray-400">The chart may still be available for download</p>
+                        <Button
+                          onClick={() => handleDownloadChart(charts[expandedChart].chartUrl, charts[expandedChart].chartType)}
+                          className="mt-4 bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white"
+                        >
+                          <Download className="w-4 h-4 mr-2" />
+                          Download Chart
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -196,20 +288,34 @@ export function ChartViewer({ charts, onClose }: ChartViewerProps) {
                 {/* Chart Image */}
                 <div className="p-4 bg-white">
                   <div className="bg-gray-50 rounded-lg p-2 border border-gray-200 transition-all duration-300 hover:bg-gray-100 hover:border-[#00A878]/30">
-                    <img
-                      src={getFullChartUrl(chart.chartUrl)}
-                      alt={`${chart.chartType} chart ${index + 1}`}
-                      className="w-full h-auto rounded-lg transition-transform duration-300 hover:scale-[1.01]"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        const errorDiv = target.nextElementSibling as HTMLElement;
-                        if (errorDiv) errorDiv.style.display = 'block';
-                      }}
-                    />
-                    <div className="hidden text-center py-8 text-gray-500">
-                      <p>Failed to load chart image</p>
-                      <p className="text-sm mt-2">The chart may still be available for download</p>
+                    {chartImages.has(index) ? (
+                      <img
+                        src={getChartImageUrl(index, chart.chartUrl)}
+                        alt={`${chart.chartType} chart ${index + 1}`}
+                        className="w-full h-auto rounded-lg transition-transform duration-300 hover:scale-[1.01]"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const errorDiv = target.nextElementSibling as HTMLElement;
+                          if (errorDiv) errorDiv.style.display = 'block';
+                        }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center py-8">
+                        <Loader2 className="w-6 h-6 animate-spin text-[#00A878]" />
+                      </div>
+                    )}
+                    <div className="hidden text-center py-6 text-gray-500">
+                      <p className="font-medium">Failed to load chart image</p>
+                      <p className="text-sm mt-2 text-gray-400">The chart may still be available for download</p>
+                      <Button
+                        onClick={() => handleDownloadChart(chart.chartUrl, chart.chartType)}
+                        className="mt-3 bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white text-sm"
+                        size="sm"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download
+                      </Button>
                     </div>
                   </div>
                 </div>

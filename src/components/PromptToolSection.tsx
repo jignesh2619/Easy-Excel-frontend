@@ -41,23 +41,34 @@ export function PromptToolSection() {
   }, [result]);
 
   const promptTemplates = [
-    "Clean this column",
-    "Remove duplicates",
-    "Fix formatting issues",
-    "Generate dashboard with KPIs",
-    "Split full names into first/last name",
-    "Summarize the sheet"
+    { text: "Clean this column", icon: "🧹" },
+    { text: "Remove duplicates", icon: "🔍" },
+    { text: "Fix formatting issues", icon: "✨" },
+    { text: "Generate dashboard with KPIs", icon: "📊" },
+    { text: "Split full names into first/last name", icon: "✂️" },
+    { text: "Summarize the sheet", icon: "📝" }
   ];
 
-  const handleTemplateClick = (template: string) => {
+  const handleTemplateClick = (template: { text: string; icon: string }) => {
     const currentPrompt = prompt.trim();
     if (!currentPrompt) {
       // If prompt is empty, set it to the template
-      setPrompt(template);
+      setPrompt(template.text);
     } else {
-      // Append template to existing prompt
-      setPrompt(currentPrompt + " and " + template.toLowerCase());
+      // Append template to existing prompt with better formatting
+      const separator = currentPrompt.endsWith('.') || currentPrompt.endsWith('!') ? ' ' : '. ';
+      setPrompt(currentPrompt + separator + template.text);
     }
+    
+    // Focus back to textarea
+    setTimeout(() => {
+      const textarea = document.querySelector('textarea');
+      if (textarea) {
+        textarea.focus();
+        // Move cursor to end
+        textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+      }
+    }, 100);
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -421,27 +432,39 @@ export function PromptToolSection() {
             }}
           />
 
-          {/* Pre-built Prompt Suggestions - Below the prompt area */}
-          <div className="text-center">
-            <h3 className="text-gray-900 mb-4 text-lg font-semibold">Pre-built Prompt Suggestions</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+          {/* Enhanced Pre-built Prompt Suggestions - Below the prompt area */}
+          <div className="mt-8 text-center">
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <Sparkles className="w-5 h-5 text-[#00A878]" />
+              <h3 className="text-gray-900 text-xl font-bold bg-gradient-to-r from-gray-900 to-[#00A878] bg-clip-text text-transparent">
+                Pre-built Prompt Suggestions
+              </h3>
+              <Sparkles className="w-5 h-5 text-[#00A878]" />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {promptTemplates.map((template, index) => (
                 <button
                   key={index}
                   onClick={() => handleTemplateClick(template)}
-                  className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 hover:border-[#00A878] hover:from-[#00A878]/5 hover:to-[#00A878]/10 rounded-xl p-4 text-left transition-all shadow-sm hover:shadow-lg group hover:scale-110 duration-300 cursor-pointer hover:-translate-y-1"
+                  className="bg-gradient-to-br from-white via-gray-50 to-white border-2 border-gray-200 hover:border-[#00A878] hover:from-[#00A878]/10 hover:via-[#00A878]/5 hover:to-white rounded-xl p-5 text-left transition-all shadow-md hover:shadow-xl group hover:scale-105 duration-300 cursor-pointer hover:-translate-y-1 relative overflow-hidden"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#00A878] to-[#00c98c] mt-2 group-hover:scale-150 group-hover:rotate-180 transition-all duration-300 flex-shrink-0"></div>
-                    <span className="text-gray-700 group-hover:text-[#00A878] transition-colors text-sm font-medium">
-                      {template}
+                  {/* Animated background effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#00A878]/0 via-[#00A878]/5 to-[#00A878]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  <div className="relative z-10 flex items-start gap-3">
+                    <div className="text-2xl group-hover:scale-125 group-hover:rotate-12 transition-all duration-300">
+                      {template.icon}
+                    </div>
+                    <span className="text-gray-700 group-hover:text-[#00A878] transition-colors text-sm font-semibold flex-1">
+                      {template.text}
                     </span>
+                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#00A878] to-[#00c98c] mt-1.5 group-hover:scale-150 group-hover:rotate-180 transition-all duration-300 flex-shrink-0 opacity-60 group-hover:opacity-100"></div>
                   </div>
                 </button>
               ))}
             </div>
-            <p className="text-gray-500 text-sm">
-              Click a template to add it to your prompt, or type your own custom prompt above.
+            <p className="text-gray-500 text-sm font-medium">
+              💡 Click a template to add it to your prompt, or type your own custom prompt above.
             </p>
           </div>
         </div>

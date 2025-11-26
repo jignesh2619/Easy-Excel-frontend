@@ -5,6 +5,7 @@ import { PromptToolSection } from "./components/PromptToolSection";
 import { FeaturesSection } from "./components/FeaturesSection";
 import { DashboardPreviewSection } from "./components/DashboardPreviewSection";
 import { PricingSection } from "./components/PricingSection";
+import { FeedbackSection } from "./components/FeedbackSection";
 import { Footer } from "./components/Footer";
 import { InteractiveSheetEditor } from "./components/InteractiveSheetEditor";
 import { ChartViewer } from "./components/ChartViewer";
@@ -82,11 +83,12 @@ export default function App() {
       <Header />
       <main>
         <HeroSection />
-        <TokenDashboard />
         <PromptToolSection />
         <FeaturesSection />
         <DashboardPreviewSection />
         <PricingSection />
+        <TokenDashboard />
+        <FeedbackSection />
       </main>
       <Footer />
     </div>
