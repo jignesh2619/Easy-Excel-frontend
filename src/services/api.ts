@@ -61,9 +61,17 @@ export async function processFile(
     formData.append('file', file);
     formData.append('prompt', prompt);
 
+    // Get auth token for authenticated requests
+    const token = await getAuthToken();
+    const headers: HeadersInit = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     // Make API request
     const response = await fetch(`${API_BASE_URL}/process-file`, {
       method: 'POST',
+      headers,
       body: formData,
     });
 
