@@ -72,9 +72,9 @@ export function TokenDashboard() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 max-w-5xl mx-auto">
             {/* Tokens Remaining */}
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-4">
                 <div className="p-2.5 bg-green-100 rounded-lg">
                   <Zap className="h-5 w-5 text-green-600" />
@@ -90,7 +90,7 @@ export function TokenDashboard() {
             </div>
 
             {/* Tokens Used */}
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-4">
                 <div className="p-2.5 bg-blue-100 rounded-lg">
                   <BarChart3 className="h-5 w-5 text-blue-600" />
@@ -106,7 +106,7 @@ export function TokenDashboard() {
             </div>
 
             {/* Usage Percentage */}
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-4">
                 <div className={`p-2.5 rounded-lg ${
                   percent < 50 ? 'bg-green-100' : percent < 80 ? 'bg-yellow-100' : 'bg-red-100'
@@ -164,10 +164,13 @@ export function TokenDashboard() {
 
           {/* Plan Info */}
           <div className="px-8 pb-8">
-            <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 shadow-lg">
+            <div className="bg-gradient-to-br from-gray-50 via-white to-gray-100 rounded-xl p-6 shadow-lg">
               <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2 text-lg">
                 <Award className="h-6 w-6 text-[#00A878]" />
                 <span>Plan Details</span>
+                <span className="ml-2 px-3 py-1 rounded-full text-sm font-semibold bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white">
+                  {plan}
+                </span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
