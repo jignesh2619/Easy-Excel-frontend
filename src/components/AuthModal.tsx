@@ -134,8 +134,8 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
           
-          <DialogHeader className="relative z-10">
-            <div className="flex items-center gap-3 mb-2">
+          <DialogHeader className="relative z-10 text-center">
+            <div className="flex items-center justify-center gap-3 mb-2">
               <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
@@ -143,14 +143,14 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
                 {isLogin ? 'Welcome Back!' : 'Get Started'}
               </DialogTitle>
             </div>
-            <DialogDescription className="text-green-50/90 mt-2 text-base leading-relaxed">
+            <DialogDescription className="text-green-50/90 mt-2 text-base leading-relaxed text-center">
               {isLogin
                 ? 'Sign in to download your processed files and access all features.'
                 : 'Create a free account and get 200,000 tokens to start processing your Excel files instantly.'}
             </DialogDescription>
             
             {!isLogin && (
-              <div className="mt-4 flex items-center gap-4 text-sm text-white/90">
+              <div className="mt-4 flex items-center justify-center gap-4 text-sm text-white/90">
                 <div className="flex items-center gap-1.5">
                   <Zap className="h-4 w-4" />
                   <span>200K Free Tokens</span>

@@ -96,13 +96,30 @@ export function getChartDownloadUrl(filename: string): string {
 
 /**
  * Get auth token from Supabase session
+ * Refreshes session if needed to ensure valid token
  */
 async function getAuthToken(): Promise<string | null> {
   try {
     // Import Supabase client dynamically
     const { supabase } = await import('../lib/supabase');
-    const { data: { session } } = await supabase.auth.getSession();
-    return session?.access_token || null;
+    
+    // Get current session
+    let { data: { session }, error } = await supabase.auth.getSession();
+    
+    // If no session or error, try to refresh
+    if (!session || error) {
+      const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.refreshSession();
+      if (refreshedSession && !refreshError) {
+        session = refreshedSession;
+      }
+    }
+    
+    // Check if session is valid
+    if (!session?.access_token) {
+      return null;
+    }
+    
+    return session.access_token;
   } catch (e) {
     console.error('Failed to get auth token:', e);
     return null;
@@ -114,20 +131,37 @@ async function getAuthToken(): Promise<string | null> {
  */
 export async function downloadFile(url: string, filename: string): Promise<void> {
   try {
-    const token = await getAuthToken();
+    let token = await getAuthToken();
     
     // Require authentication - throw error if no token
     if (!token) {
       throw new Error('Authentication required. Please sign in to download files.');
     }
     
-    const headers: HeadersInit = {
+    let headers: HeadersInit = {
       'Authorization': `Bearer ${token}`
     };
     
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       headers,
     });
+    
+    // If 401, try refreshing the session and retry once
+    if (response.status === 401) {
+      console.log('Token expired, refreshing session...');
+      const { supabase } = await import('../lib/supabase');
+      const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.refreshSession();
+      
+      if (refreshedSession?.access_token && !refreshError) {
+        token = refreshedSession.access_token;
+        headers = {
+          'Authorization': `Bearer ${token}`
+        };
+        response = await fetch(url, {
+          headers,
+        });
+      }
+    }
     
     if (!response.ok) {
       if (response.status === 401 || response.status === 403) {

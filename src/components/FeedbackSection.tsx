@@ -46,20 +46,20 @@ export function FeedbackSection() {
   };
 
   return (
-    <section className="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-[#00A878]/5 relative overflow-hidden">
+    <section className="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-[#00A878]/5 relative overflow-hidden mt-12 mb-12">
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#00A878]/10 to-transparent rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-[#00c98c]/10 to-transparent rounded-full blur-3xl"></div>
       
       <div className="max-w-4xl mx-auto relative z-10">
-        <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
           {/* Header */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center gap-2 mb-3">
               <div className="p-2 bg-gradient-to-br from-[#00A878] to-[#00c98c] rounded-lg">
                 <MessageSquare className="w-5 h-5 text-white" />
               </div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-[#00A878] bg-clip-text text-transparent">
+              <h2 className="text-2xl font-bold text-gray-900">
                 Share Your Feedback
               </h2>
             </div>
@@ -70,7 +70,7 @@ export function FeedbackSection() {
 
           {/* Success Message */}
           {isSubmitted && (
-            <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300">
+            <div className="mb-6 p-4 bg-green-50 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300">
               <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
               <div>
                 <p className="font-semibold text-green-900">Thank you for your feedback!</p>
@@ -90,7 +90,7 @@ export function FeedbackSection() {
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder="Tell us what you think... What features would you like to see? Any issues you encountered? We'd love to hear from you!"
-                className="w-full bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-lg p-3 resize-none focus:outline-none focus:border-[#00A878] focus:ring-2 focus:ring-[#00A878]/20 transition-all duration-300 hover:border-[#00A878]/50 hover:shadow-md text-sm min-h-[100px]"
+                className="w-full bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 resize-none focus:outline-none focus:ring-2 focus:ring-[#00A878]/20 transition-all duration-300 hover:shadow-md text-sm min-h-[100px]"
                 rows={4}
                 required
                 disabled={isSubmitting}
@@ -129,7 +129,7 @@ export function FeedbackSection() {
           </form>
 
           {/* Additional Info */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="mt-4 pt-4">
             <p className="text-xs text-gray-500 text-center">
               💡 Your feedback will be sent via email. We typically respond within 24-48 hours.
             </p>
