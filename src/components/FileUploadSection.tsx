@@ -22,7 +22,7 @@ export function FileUploadSection() {
   const [error, setError] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { user, session } = useAuth();
+  const { user, session, refreshBackendUser } = useAuth();
 
   // Save result to localStorage whenever it changes
   useEffect(() => {
@@ -99,6 +99,12 @@ export function FileUploadSection() {
     try {
       const response = await processFile(selectedFile, prompt);
       setResult(response);
+      // Refresh token usage after processing
+      if (user && refreshBackendUser) {
+        setTimeout(() => {
+          refreshBackendUser();
+        }, 1000); // Wait 1 second for backend to update
+      }
       // Preview is shown automatically - no auto-download
     } catch (err: any) {
       setError(err.message || "Failed to process file. Please try again.");
