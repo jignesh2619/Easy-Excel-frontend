@@ -41,23 +41,23 @@ export function PromptToolSection() {
   }, [result]);
 
   const promptTemplates = [
-    { text: "Clean this column", icon: "🧹" },
-    { text: "Remove duplicates", icon: "🔍" },
-    { text: "Fix formatting issues", icon: "✨" },
-    { text: "Generate dashboard with KPIs", icon: "📊" },
-    { text: "Split full names into first/last name", icon: "✂️" },
-    { text: "Summarize the sheet", icon: "📝" }
+    "Clean this column",
+    "Remove duplicates",
+    "Fix formatting issues",
+    "Generate dashboard with KPIs",
+    "Split full names into first/last name",
+    "Summarize the sheet"
   ];
 
-  const handleTemplateClick = (template: { text: string; icon: string }) => {
+  const handleTemplateClick = (template: string) => {
     const currentPrompt = prompt.trim();
     if (!currentPrompt) {
       // If prompt is empty, set it to the template
-      setPrompt(template.text);
+      setPrompt(template);
     } else {
       // Append template to existing prompt with better formatting
       const separator = currentPrompt.endsWith('.') || currentPrompt.endsWith('!') ? ' ' : '. ';
-      setPrompt(currentPrompt + separator + template.text);
+      setPrompt(currentPrompt + separator + template);
     }
     
     // Focus back to textarea
@@ -446,20 +446,11 @@ export function PromptToolSection() {
                 <button
                   key={index}
                   onClick={() => handleTemplateClick(template)}
-                  className="bg-gradient-to-br from-white via-gray-50 to-white border-2 border-gray-200 hover:border-[#00A878] hover:from-[#00A878]/10 hover:via-[#00A878]/5 hover:to-white rounded-xl p-5 text-left transition-all shadow-md hover:shadow-xl group hover:scale-105 duration-300 cursor-pointer hover:-translate-y-1 relative overflow-hidden"
+                  className="bg-white border-2 border-gray-200 hover:border-[#00A878] rounded-lg p-4 text-left transition-all shadow-sm hover:shadow-md hover:bg-[#00A878]/5 duration-200 cursor-pointer"
                 >
-                  {/* Animated background effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#00A878]/0 via-[#00A878]/5 to-[#00A878]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
-                  <div className="relative z-10 flex items-start gap-3">
-                    <div className="text-2xl group-hover:scale-125 group-hover:rotate-12 transition-all duration-300">
-                      {template.icon}
-                    </div>
-                    <span className="text-gray-700 group-hover:text-[#00A878] transition-colors text-sm font-semibold flex-1">
-                      {template.text}
-                    </span>
-                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#00A878] to-[#00c98c] mt-1.5 group-hover:scale-150 group-hover:rotate-180 transition-all duration-300 flex-shrink-0 opacity-60 group-hover:opacity-100"></div>
-                  </div>
+                  <span className="text-gray-700 hover:text-[#00A878] transition-colors text-sm font-medium">
+                    {template}
+                  </span>
                 </button>
               ))}
             </div>

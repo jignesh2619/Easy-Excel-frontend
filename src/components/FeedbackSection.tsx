@@ -46,24 +46,24 @@ export function FeedbackSection() {
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-[#00A878]/5 relative overflow-hidden">
+    <section className="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-[#00A878]/5 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#00A878]/10 to-transparent rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-[#00c98c]/10 to-transparent rounded-full blur-3xl"></div>
       
       <div className="max-w-4xl mx-auto relative z-10">
-        <div className="bg-white rounded-3xl shadow-2xl border-2 border-gray-100 p-8 md:p-12">
+        <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-6 md:p-8">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center gap-3 mb-4">
-              <div className="p-3 bg-gradient-to-br from-[#00A878] to-[#00c98c] rounded-2xl">
-                <MessageSquare className="w-8 h-8 text-white" />
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center justify-center gap-2 mb-3">
+              <div className="p-2 bg-gradient-to-br from-[#00A878] to-[#00c98c] rounded-lg">
+                <MessageSquare className="w-5 h-5 text-white" />
               </div>
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-[#00A878] bg-clip-text text-transparent">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-[#00A878] bg-clip-text text-transparent">
                 Share Your Feedback
               </h2>
             </div>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 text-sm">
               Your feedback is valuable to us! Help us improve EasyExcel by sharing your thoughts, suggestions, or reporting any issues.
             </p>
           </div>
@@ -90,8 +90,8 @@ export function FeedbackSection() {
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder="Tell us what you think... What features would you like to see? Any issues you encountered? We'd love to hear from you!"
-                className="w-full bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl p-4 resize-none focus:outline-none focus:border-[#00A878] focus:ring-2 focus:ring-[#00A878]/20 transition-all duration-300 hover:border-[#00A878]/50 hover:shadow-md text-base min-h-[150px]"
-                rows={6}
+                className="w-full bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-lg p-3 resize-none focus:outline-none focus:border-[#00A878] focus:ring-2 focus:ring-[#00A878]/20 transition-all duration-300 hover:border-[#00A878]/50 hover:shadow-md text-sm min-h-[100px]"
+                rows={4}
                 required
                 disabled={isSubmitting}
               />
@@ -111,7 +111,7 @@ export function FeedbackSection() {
               <Button
                 type="submit"
                 disabled={!feedback.trim() || isSubmitting}
-                className="bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:via-[#00A878] hover:to-[#00b887] text-white font-bold px-8 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:via-[#00A878] hover:to-[#00b887] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
@@ -129,7 +129,7 @@ export function FeedbackSection() {
           </form>
 
           {/* Additional Info */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="mt-4 pt-4 border-t border-gray-200">
             <p className="text-xs text-gray-500 text-center">
               💡 Your feedback will be sent via email. We typically respond within 24-48 hours.
             </p>
