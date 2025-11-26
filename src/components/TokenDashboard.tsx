@@ -3,17 +3,13 @@ import { useAuth } from '../contexts/AuthContext';
 import { Zap, TrendingUp, Award, BarChart3, Sparkles } from 'lucide-react';
 
 export function TokenDashboard() {
+  // ALL HOOKS MUST BE CALLED BEFORE ANY EARLY RETURNS
   const { user, backendUser } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
   const [animatedRemaining, setAnimatedRemaining] = useState(0);
   const [animatedUsed, setAnimatedUsed] = useState(0);
   const [animatedPercent, setAnimatedPercent] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
-
-  // Only show for logged-in users
-  if (!user || !backendUser) {
-    return null;
-  }
 
   // Intersection Observer for scroll animation
   useEffect(() => {
@@ -39,23 +35,25 @@ export function TokenDashboard() {
     };
   }, []);
 
-  const plan = backendUser.plan ?? 'Free';
-  const limit = backendUser.tokens_limit ?? 200000;
-  const used = backendUser.tokens_used ?? 0;
-  const remaining = Math.max(limit - used, 0);
-  const percent = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
-
   // Animate numbers when visible
   useEffect(() => {
-    if (isVisible) {
-      const duration = 2000; // 2 seconds
-      const steps = 60;
-      const stepDuration = duration / steps;
-      
-      let currentStep = 0;
-      const remainingStep = remaining / steps;
-      const usedStep = used / steps;
-      const percentStep = percent / steps;
+    // Only animate if user is logged in and visible
+    if (!user || !backendUser || !isVisible) return;
+    
+    const plan = backendUser.plan ?? 'Free';
+    const limit = backendUser.tokens_limit ?? 200000;
+    const used = backendUser.tokens_used ?? 0;
+    const remaining = Math.max(limit - used, 0);
+    const percent = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+    
+    const duration = 2000; // 2 seconds
+    const steps = 60;
+    const stepDuration = duration / steps;
+    
+    let currentStep = 0;
+    const remainingStep = remaining / steps;
+    const usedStep = used / steps;
+    const percentStep = percent / steps;
 
       const interval = setInterval(() => {
         currentStep++;
@@ -72,8 +70,18 @@ export function TokenDashboard() {
       }, stepDuration);
 
       return () => clearInterval(interval);
-    }
-  }, [isVisible, remaining, used, percent]);
+  }, [isVisible, user, backendUser]);
+
+  // Only show for logged-in users - MUST BE AFTER ALL HOOKS
+  if (!user || !backendUser) {
+    return null;
+  }
+
+  const plan = backendUser.plan ?? 'Free';
+  const limit = backendUser.tokens_limit ?? 200000;
+  const used = backendUser.tokens_used ?? 0;
+  const remaining = Math.max(limit - used, 0);
+  const percent = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
 
   const formatNumber = (value: number) =>
     value.toLocaleString(undefined, { maximumFractionDigits: 0 });
