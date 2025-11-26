@@ -63,17 +63,24 @@ export async function processFile(
 
     // Get auth token for authenticated requests
     const token = await getAuthToken();
-    const headers: HeadersInit = {};
+    
+    // Make API request
+    // Note: When using FormData, don't set Content-Type - browser sets it automatically with boundary
+    // Only set Authorization header if we have a token
+    const fetchOptions: RequestInit = {
+      method: 'POST',
+      body: formData,
+      credentials: 'include', // Include credentials for CORS
+    };
+    
+    // Only add headers if we have a token (don't set Content-Type for FormData)
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      fetchOptions.headers = {
+        'Authorization': `Bearer ${token}`,
+      };
     }
 
-    // Make API request
-    const response = await fetch(`${API_BASE_URL}/process-file`, {
-      method: 'POST',
-      headers,
-      body: formData,
-    });
+    const response = await fetch(`${API_BASE_URL}/process-file`, fetchOptions);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
