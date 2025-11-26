@@ -72,7 +72,7 @@ export function TokenDashboard() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 max-w-5xl mx-auto">
             {/* Tokens Remaining */}
             <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-4">
