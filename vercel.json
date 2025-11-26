@@ -3,12 +3,13 @@
   "framework": "vite",
   "redirects": [
     {
-      "source": "https://www.easyexcel.in/:path*",
-      "destination": "https://easyexcel.in/:path*",
-      "permanent": true
-    },
-    {
-      "source": "http://www.easyexcel.in/:path*",
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.easyexcel.in"
+        }
+      ],
       "destination": "https://easyexcel.in/:path*",
       "permanent": true
     }
