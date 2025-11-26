@@ -1,5 +1,6 @@
 import { Header } from "./components/Header";
 import { HeroSection } from "./components/HeroSection";
+import { TokenDashboard } from "./components/TokenDashboard";
 import { PromptToolSection } from "./components/PromptToolSection";
 import { FeaturesSection } from "./components/FeaturesSection";
 import { DashboardPreviewSection } from "./components/DashboardPreviewSection";
@@ -81,6 +82,7 @@ export default function App() {
       <Header />
       <main>
         <HeroSection />
+        <TokenDashboard />
         <PromptToolSection />
         <FeaturesSection />
         <DashboardPreviewSection />

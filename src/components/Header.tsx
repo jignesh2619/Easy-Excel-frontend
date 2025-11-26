@@ -94,26 +94,52 @@ export function Header() {
             {/* CTA + Auth */}
             <div className="flex items-center gap-3">
               {tokens && (
-                <div className="hidden sm:flex flex-col gap-1 px-4 py-2 rounded-xl border border-[#00A878]/30 shadow-sm bg-white/90">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs uppercase tracking-wide text-gray-500">
-                      {tokens.plan}
-                    </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#00A878]/10 text-[#007a5d] font-semibold">
+                <div className="hidden lg:flex flex-col gap-2 px-5 py-3 rounded-2xl border-2 border-[#00A878]/20 shadow-lg bg-gradient-to-br from-white to-[#00A878]/5 backdrop-blur-sm min-w-[200px]">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 bg-[#00A878]/10 rounded-lg">
+                        <svg className="w-4 h-4 text-[#00A878]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#00A878]">
+                        {tokens.plan} Plan
+                      </span>
+                    </div>
+                    <span className={`text-xs px-2.5 py-1 rounded-full font-bold ${
+                      tokens.percent < 50 
+                        ? 'bg-green-100 text-green-700' 
+                        : tokens.percent < 80 
+                        ? 'bg-yellow-100 text-yellow-700' 
+                        : 'bg-red-100 text-red-700'
+                    }`}>
                       {tokens.percent}% used
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
-                    <span className="font-semibold text-gray-900">
-                      {formatNumber(tokens.remaining)} left
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      of {formatNumber(tokens.limit)} tokens
-                    </span>
+                  
+                  <div className="space-y-1.5">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-2xl font-bold text-gray-900">
+                        {formatNumber(tokens.remaining)}
+                      </span>
+                      <span className="text-sm text-gray-500 font-medium">
+                        tokens left
+                      </span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {formatNumber(tokens.used)} / {formatNumber(tokens.limit)} used
+                    </div>
                   </div>
-                  <div className="h-1.5 rounded-full bg-gray-200 overflow-hidden">
+                  
+                  <div className="relative h-2.5 rounded-full bg-gray-200 overflow-hidden shadow-inner">
                     <div
-                      className="h-full bg-gradient-to-r from-[#00A878] to-[#00c98c]"
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        tokens.percent < 50 
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
+                          : tokens.percent < 80 
+                          ? 'bg-gradient-to-r from-yellow-500 to-orange-500' 
+                          : 'bg-gradient-to-r from-red-500 to-pink-500'
+                      }`}
                       style={{ width: `${tokens.percent}%` }}
                     />
                   </div>
