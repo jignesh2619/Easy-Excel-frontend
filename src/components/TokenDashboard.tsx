@@ -75,23 +75,23 @@ export function TokenDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-6">
             {/* Tokens Remaining */}
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
                 <div className="p-2.5 bg-green-100 rounded-lg">
                   <Zap className="h-5 w-5 text-green-600" />
                 </div>
                 <span className="text-[10px] font-bold text-green-700 uppercase tracking-wider">
-                  Available
+                  Remaining
                 </span>
               </div>
-              <div className="text-4xl font-bold text-green-600 mb-2 tracking-tight">
+              <div className="text-4xl font-bold text-green-600 mb-2 tracking-tight leading-tight">
                 {formatNumber(remaining)}
               </div>
-              <div className="text-xs text-gray-600 font-medium">tokens remaining</div>
+              <div className="text-xs text-gray-600 font-medium leading-tight">tokens available</div>
             </div>
 
             {/* Tokens Used */}
             <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
                 <div className="p-2.5 bg-blue-100 rounded-lg">
                   <BarChart3 className="h-5 w-5 text-blue-600" />
                 </div>
@@ -99,15 +99,15 @@ export function TokenDashboard() {
                   Used
                 </span>
               </div>
-              <div className="text-4xl font-bold text-blue-600 mb-2 tracking-tight">
+              <div className="text-4xl font-bold text-blue-600 mb-2 tracking-tight leading-tight">
                 {formatNumber(used)}
               </div>
-              <div className="text-xs text-gray-600 font-medium">of {formatNumber(limit)} tokens</div>
+              <div className="text-xs text-gray-600 font-medium leading-tight">of {formatNumber(limit)} tokens</div>
             </div>
 
             {/* Usage Percentage */}
             <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
                 <div className={`p-2.5 rounded-lg ${
                   percent < 50 ? 'bg-green-100' : percent < 80 ? 'bg-yellow-100' : 'bg-red-100'
                 }`}>
@@ -121,7 +121,7 @@ export function TokenDashboard() {
                   Usage
                 </span>
               </div>
-              <div className={`text-4xl font-bold mb-2 tracking-tight ${
+              <div className={`text-4xl font-bold mb-2 tracking-tight leading-tight ${
                 percent < 50 
                   ? 'text-green-600' 
                   : percent < 80 
@@ -130,7 +130,7 @@ export function TokenDashboard() {
               }`}>
                 {percent}%
               </div>
-              <div className="text-xs text-gray-600 font-medium">of plan limit</div>
+              <div className="text-xs text-gray-600 font-medium leading-tight">of plan limit</div>
             </div>
           </div>
 
