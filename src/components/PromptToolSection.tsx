@@ -224,10 +224,7 @@ export function PromptToolSection() {
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-[#00c98c]/10 to-transparent rounded-full blur-2xl"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-6 group">
-                  <Sparkles className="w-6 h-6 text-[#00A878] group-hover:rotate-180 transition-transform duration-500" />
-                  <h3 className="text-gray-900 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent group-hover:text-[#00A878] transition-colors duration-300">Enter Your Prompt</h3>
-                </div>
+                <h3 className="text-gray-900 mb-6 font-semibold">Enter Your Prompt</h3>
 
                 {/* File Upload Area */}
                 <div className="mb-6">
@@ -432,15 +429,11 @@ export function PromptToolSection() {
             }}
           />
 
-          {/* Enhanced Pre-built Prompt Suggestions - Below the prompt area */}
+          {/* Pre-built Prompt Suggestions - Below the prompt area */}
           <div className="mt-8 text-center">
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <Sparkles className="w-5 h-5 text-[#00A878]" />
-              <h3 className="text-gray-900 text-xl font-bold bg-gradient-to-r from-gray-900 to-[#00A878] bg-clip-text text-transparent">
-                Pre-built Prompt Suggestions
-              </h3>
-              <Sparkles className="w-5 h-5 text-[#00A878]" />
-            </div>
+            <h3 className="text-gray-900 text-xl font-bold mb-6">
+              Pre-built Prompt Suggestions
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {promptTemplates.map((template, index) => (
                 <button
@@ -455,7 +448,7 @@ export function PromptToolSection() {
               ))}
             </div>
             <p className="text-gray-500 text-sm font-medium">
-              💡 Click a template to add it to your prompt, or type your own custom prompt above.
+              Click a template to add it to your prompt, or type your own custom prompt above.
             </p>
           </div>
         </div>
