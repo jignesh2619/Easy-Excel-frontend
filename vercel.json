@@ -1,19 +1,7 @@
 {
   "outputDirectory": "build",
   "framework": "vite",
-  "redirects": [
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.easyexcel.in"
-        }
-      ],
-      "destination": "https://easyexcel.in/:path*",
-      "permanent": true
-    }
-  ],
+  "redirects": [],
   "rewrites": [
     {
       "source": "/(.*)",
