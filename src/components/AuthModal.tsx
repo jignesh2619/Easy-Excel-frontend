@@ -26,11 +26,13 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
+  // ALL HOOKS MUST BE CALLED BEFORE ANY EARLY RETURNS
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
 
   // Debug logging
   React.useEffect(() => {
@@ -49,8 +51,6 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
       }, 100);
     }
   }, [open]);
-
-  const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
