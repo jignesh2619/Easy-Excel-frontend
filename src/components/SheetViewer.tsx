@@ -122,9 +122,9 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
 
       {/* Sheet Content */}
       {isExpanded && (
-        <div className="overflow-x-auto overflow-y-auto max-h-[600px]">
-          <div className="min-w-max">
-            <table className="min-w-full border-collapse">
+        <div className="max-h-[600px]" style={{ overflowX: "auto", overflowY: "auto", width: "100%" }}>
+          <div style={{ width: "max-content", minWidth: "100%" }}>
+            <table className="border-collapse" style={{ width: "max-content", minWidth: "100%" }}>
               <thead className="bg-gray-50 sticky top-0 z-10">
                 <tr>
                   {columns.map((col, idx) => (
