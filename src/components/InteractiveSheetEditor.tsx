@@ -206,7 +206,7 @@ export function InteractiveSheetEditor({
 
   return (
     <div className="w-full h-screen bg-gray-100 flex flex-col p-4">
-      <div className="w-full h-full bg-white flex flex-col shadow-xl rounded-lg overflow-hidden">
+      <div className="w-full h-full bg-white flex flex-col shadow-xl rounded-lg">
         {/* Header */}
         <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between rounded-t-lg">
           <div className="flex items-center gap-3">
@@ -303,14 +303,14 @@ export function InteractiveSheetEditor({
         </div>
 
         {/* Data Table */}
-        <div className="flex-1 bg-white overflow-x-auto overflow-y-auto" style={{ minHeight: "400px" }}>
+        <div className="flex-1 bg-white relative" style={{ minHeight: "400px", overflow: "auto" }}>
           {editedData.length === 0 ? (
             <div className="flex items-center justify-center h-full text-gray-500">
               <p>No data available</p>
             </div>
           ) : (
-            <div className="inline-block min-w-full">
-              <table className="border-collapse min-w-full" style={{ width: "max-content" }}>
+            <div style={{ display: "inline-block", minWidth: "100%" }}>
+              <table className="border-collapse" style={{ width: "max-content", minWidth: "100%" }}>
                 <thead className="bg-gray-100 sticky top-0 z-10">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
