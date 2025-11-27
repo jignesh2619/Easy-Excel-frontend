@@ -1,3 +1,4 @@
+import React from "react";
 import { createRoot } from "react-dom/client";
 import { InteractiveSheetEditor } from "./components/InteractiveSheetEditor";
 import "./index.css";
@@ -30,9 +31,6 @@ if (!editorDataStr) {
     document.body.innerHTML = `<div style="padding: 20px; font-family: system-ui;">Error loading data: ${error}</div>`;
   }
 }
-
-
-
 
 
 
