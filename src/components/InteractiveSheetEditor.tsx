@@ -303,14 +303,14 @@ export function InteractiveSheetEditor({
         </div>
 
         {/* Data Table */}
-        <div className="flex-1 bg-white" style={{ minHeight: "400px", overflow: "auto" }}>
+        <div className="flex-1 bg-white overflow-x-auto overflow-y-auto" style={{ minHeight: "400px" }}>
           {editedData.length === 0 ? (
             <div className="flex items-center justify-center h-full text-gray-500">
               <p>No data available</p>
             </div>
           ) : (
-            <div className="w-full h-full" style={{ overflowX: "auto", overflowY: "auto" }}>
-              <table className="border-collapse" style={{ minWidth: "100%", width: "max-content" }}>
+            <div className="inline-block min-w-full">
+              <table className="border-collapse min-w-full" style={{ width: "max-content" }}>
                 <thead className="bg-gray-100 sticky top-0 z-10">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
