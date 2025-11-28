@@ -17,6 +17,15 @@ export interface ProcessFileResponse {
   processed_data?: Record<string, any>[]; // Array of row objects
   columns?: string[]; // Column names
   row_count?: number; // Total number of rows
+  formatting_metadata?: {
+    conditional_formatting?: any[];
+    cell_formats?: Record<string, {
+      bg_color?: string;
+      text_color?: string;
+      bold?: boolean;
+      italic?: boolean;
+    }>;
+  };
 }
 
 export interface HealthResponse {

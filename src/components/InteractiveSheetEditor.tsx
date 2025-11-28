@@ -33,13 +33,23 @@ interface InteractiveSheetEditorProps {
   columns: string[];
   onClose: () => void;
   onSave?: (editedData: Record<string, any>[]) => void;
+  formatting_metadata?: {
+    conditional_formatting?: any[];
+    cell_formats?: Record<string, {
+      bg_color?: string;
+      text_color?: string;
+      bold?: boolean;
+      italic?: boolean;
+    }>;
+  };
 }
 
 export function InteractiveSheetEditor({ 
   data, 
   columns, 
   onClose,
-  onSave 
+  onSave,
+  formatting_metadata
 }: InteractiveSheetEditorProps) {
   const [editedData, setEditedData] = useState(data);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -53,6 +63,41 @@ export function InteractiveSheetEditor({
   useEffect(() => {
     setEditedData(data);
   }, [data]);
+
+  // Get cell formatting style from formatting_metadata or {column}_format fields
+  const getCellStyle = useCallback((rowIndex: number, columnName: string, rowData?: Record<string, any>): React.CSSProperties => {
+    // First, try formatting_metadata
+    if (formatting_metadata?.cell_formats) {
+      const cellKey = `${rowIndex}_${columnName}`;
+      const cellFormat = formatting_metadata.cell_formats[cellKey];
+      
+      if (cellFormat) {
+        const style: React.CSSProperties = {};
+        if (cellFormat.bg_color) style.backgroundColor = cellFormat.bg_color;
+        if (cellFormat.text_color) style.color = cellFormat.text_color;
+        if (cellFormat.bold) style.fontWeight = 'bold';
+        if (cellFormat.italic) style.fontStyle = 'italic';
+        return style;
+      }
+    }
+    
+    // Fallback: check {column}_format field in row data
+    if (rowData) {
+      const formatKey = `${columnName}_format`;
+      const cellFormat = rowData[formatKey];
+      
+      if (cellFormat) {
+        const style: React.CSSProperties = {};
+        if (cellFormat.bg_color) style.backgroundColor = cellFormat.bg_color;
+        if (cellFormat.text_color) style.color = cellFormat.text_color;
+        if (cellFormat.bold) style.fontWeight = 'bold';
+        if (cellFormat.italic) style.fontStyle = 'italic';
+        return style;
+      }
+    }
+    
+    return {};
+  }, [formatting_metadata]);
 
   // Handle cell edit
   const handleCellEdit = useCallback((rowId: string, columnId: string, value: any) => {
@@ -83,6 +128,8 @@ export function InteractiveSheetEditor({
       cell: ({ row, column, getValue }) => {
         const initialValue = getValue();
         const isEditing = editingCell?.rowId === row.id && editingCell?.columnId === column.id;
+        const rowIndex = parseInt(row.id);
+        const cellStyle = getCellStyle(rowIndex, column.id, row.original);
         
         return isEditing ? (
           <input
@@ -106,6 +153,7 @@ export function InteractiveSheetEditor({
           <div
             className="px-2 py-1 cursor-pointer hover:bg-gray-100 rounded min-h-[32px] flex items-center"
             onClick={() => handleCellEdit(row.id, column.id, initialValue)}
+            style={cellStyle}
           >
             {initialValue !== null && initialValue !== undefined ? String(initialValue) : ""}
           </div>
@@ -120,7 +168,7 @@ export function InteractiveSheetEditor({
         return value !== null && value !== undefined && String(value).toLowerCase().includes(search);
       },
     }));
-  }, [columns, editingCell, editValue, handleCellEdit, handleCellSave]);
+  }, [columns, editingCell, editValue, handleCellEdit, handleCellSave, getCellStyle]);
 
   // Initialize column visibility
   useEffect(() => {

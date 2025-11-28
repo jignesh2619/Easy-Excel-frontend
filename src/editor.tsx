@@ -9,19 +9,21 @@ if (!editorDataStr) {
   document.body.innerHTML = '<div style="padding: 20px; font-family: system-ui;">No data available. Please go back and click "Preview & Edit" again.</div>';
 } else {
   try {
-    const { data, columns } = JSON.parse(editorDataStr);
+    const { data, columns, formatting_metadata } = JSON.parse(editorDataStr);
     
     const root = createRoot(document.getElementById("root")!);
     root.render(
       <InteractiveSheetEditor
         data={data}
         columns={columns}
+        formatting_metadata={formatting_metadata}
         onClose={() => window.close()}
         onSave={(editedData) => {
           // Update sessionStorage with edited data
           sessionStorage.setItem('editorData', JSON.stringify({
             data: editedData,
-            columns: columns
+            columns: columns,
+            formatting_metadata: formatting_metadata
           }));
           alert("Changes saved!");
         }}

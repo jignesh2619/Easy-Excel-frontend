@@ -359,7 +359,8 @@ export function PromptToolSection() {
                           onClick={() => {
                             sessionStorage.setItem('editorData', JSON.stringify({
                               data: result.processed_data,
-                              columns: result.columns
+                              columns: result.columns,
+                              formatting_metadata: result.formatting_metadata
                             }));
                             window.open('/?editor=true', '_blank');
                           }}
