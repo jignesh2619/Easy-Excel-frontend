@@ -240,18 +240,23 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                         isDuplicate ? 'bg-yellow-50 border-l-4 border-yellow-400' : ''
                       }`}
                     >
-                      {columns.slice(0, 5).map((col, colIdx) => (
-                        <td 
-                          key={colIdx} 
-                          className={`px-3 py-2 ${
-                            isDuplicate 
-                              ? 'text-yellow-900 font-medium bg-yellow-50' 
-                              : 'text-gray-600'
-                          }`}
-                        >
-                          {formatCellValue(row[col])}
-                        </td>
-                      ))}
+                      {columns.slice(0, 5).map((col, colIdx) => {
+                        const cellStyle = getCellStyle(row, col);
+                        const hasFormatting = Object.keys(cellStyle).length > 0;
+                        return (
+                          <td 
+                            key={colIdx}
+                            style={cellStyle}
+                            className={`px-3 py-2 ${
+                              isDuplicate && !hasFormatting
+                                ? 'text-yellow-900 font-medium bg-yellow-50' 
+                                : hasFormatting ? '' : 'text-gray-600'
+                            }`}
+                          >
+                            {formatCellValue(row[col])}
+                          </td>
+                        );
+                      })}
                       {columns.length > 5 && (
                         <td className={`px-3 py-2 text-xs ${
                           isDuplicate ? 'text-yellow-700' : 'text-gray-400'
