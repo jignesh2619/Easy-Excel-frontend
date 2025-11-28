@@ -64,6 +64,30 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
     return String(value);
   };
 
+  // Get cell formatting style from {column}_format field
+  const getCellStyle = (row: Record<string, any>, column: string): React.CSSProperties => {
+    const formatKey = `${column}_format`;
+    const cellFormat = row[formatKey];
+    
+    if (!cellFormat) return {};
+    
+    const style: React.CSSProperties = {};
+    if (cellFormat.bg_color) {
+      style.backgroundColor = cellFormat.bg_color;
+    }
+    if (cellFormat.text_color) {
+      style.color = cellFormat.text_color;
+    }
+    if (cellFormat.bold) {
+      style.fontWeight = 'bold';
+    }
+    if (cellFormat.italic) {
+      style.fontStyle = 'italic';
+    }
+    
+    return style;
+  };
+
   return (
     <div className="bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-[#00A878] hover:scale-[1.01]">
       {/* Header */}
@@ -155,18 +179,25 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                           isDuplicate ? 'bg-yellow-50 border-l-4 border-yellow-400' : ''
                         }`}
                       >
-                        {columns.map((col, colIdx) => (
-                          <td
-                            key={colIdx}
-                            className={`px-4 py-2 text-sm border-b border-gray-100 whitespace-nowrap transition-colors duration-200 hover:bg-[#00A878]/10 ${
-                              isDuplicate 
-                                ? 'text-yellow-900 font-medium bg-yellow-50' 
-                                : 'text-gray-700'
-                            }`}
-                          >
-                            {formatCellValue(row[col])}
-                          </td>
-                        ))}
+                        {columns.map((col, colIdx) => {
+                          const cellStyle = getCellStyle(row, col);
+                          const hasFormatting = Object.keys(cellStyle).length > 0;
+                          return (
+                            <td
+                              key={colIdx}
+                              style={cellStyle}
+                              className={`px-4 py-2 text-sm border-b border-gray-100 whitespace-nowrap transition-colors duration-200 ${
+                                !hasFormatting ? 'hover:bg-[#00A878]/10' : ''
+                              } ${
+                                isDuplicate && !hasFormatting
+                                  ? 'text-yellow-900 font-medium bg-yellow-50' 
+                                  : hasFormatting ? '' : 'text-gray-700'
+                              }`}
+                            >
+                              {formatCellValue(row[col])}
+                            </td>
+                          );
+                        })}
                       </tr>
                     );
                   })
