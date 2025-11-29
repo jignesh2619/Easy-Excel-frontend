@@ -109,11 +109,12 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button - Bottom Right Corner */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center z-50 group"
+          className="fixed w-14 h-14 bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center z-50 group"
+          style={{ right: '24px', bottom: '24px' }}
           aria-label="Open AI Chatbot"
         >
           <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform" />
@@ -121,9 +122,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         </button>
       )}
 
-      {/* Chatbot Sidebar */}
+      {/* Chatbot Sidebar - Opens upwards from bottom right */}
       {isOpen && (
-        <div className="fixed bottom-0 right-0 w-96 h-[600px] bg-white border-l border-t border-gray-200 shadow-2xl z-50 flex flex-col">
+        <div className="fixed w-96 h-[600px] bg-white border border-gray-200 shadow-2xl z-50 flex flex-col rounded-t-lg overflow-hidden"
+          style={{ right: '24px', bottom: '88px' }}>
           {/* Header */}
           <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
