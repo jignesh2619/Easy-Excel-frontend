@@ -129,7 +129,7 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
             paddingRight: '0px' // No padding - chatbot will overlay
           }}
         >
-          <div className="p-4" style={{ paddingLeft: '40px', paddingRight: '420px' }}>
+          <div className="p-4" style={{ paddingLeft: '40px' }}>
             <SheetViewer
               data={previewData.data}
               columns={previewData.columns}
