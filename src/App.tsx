@@ -10,15 +10,30 @@ import { Footer } from "./components/Footer";
 import { InteractiveSheetEditor } from "./components/InteractiveSheetEditor";
 import { ChartViewer } from "./components/ChartViewer";
 import { FullScreenSheetPreview } from "./components/FullScreenSheetPreview";
+import { DashboardPreview } from "./components/DashboardPreview";
 import { useEffect, useState } from "react";
 
 export default function App() {
   const [editorData, setEditorData] = useState<{ data: any[]; columns: string[] } | null>(null);
   const [chartViewerData, setChartViewerData] = useState<{ charts: Array<{ chartUrl: string; chartType: string; title?: string }> } | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
 
   useEffect(() => {
     const checkRoute = () => {
+      // Check if we're on the dashboard preview page
+      if (window.location.pathname === '/preview-dashboard') {
+        const dashboardDataStr = sessionStorage.getItem('dashboardData');
+        if (dashboardDataStr) {
+          setShowDashboard(true);
+          return;
+        } else {
+          setShowDashboard(false);
+        }
+      } else {
+        setShowDashboard(false);
+      }
+
       // Check if we're on the preview page
       if (window.location.pathname === '/preview' || window.location.search.includes('preview=true')) {
         const previewDataStr = sessionStorage.getItem('previewData');
@@ -69,6 +84,20 @@ export default function App() {
       window.removeEventListener('popstate', checkRoute);
     };
   }, []);
+
+  // If dashboard preview is requested, show dashboard
+  if (showDashboard) {
+    return (
+      <DashboardPreview
+        onClose={() => {
+          window.history.pushState({}, '', '/preview');
+          setShowDashboard(false);
+          // Trigger popstate to update route
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        }}
+      />
+    );
+  }
 
   // If preview is requested, show full-screen preview
   if (showPreview) {

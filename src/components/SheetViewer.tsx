@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Download, Eye, EyeOff, AlertTriangle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Eye, EyeOff, AlertTriangle, BarChart3 } from "lucide-react";
 import { Button } from "./ui/button";
 
 interface SheetViewerProps {
@@ -8,6 +8,8 @@ interface SheetViewerProps {
   rowCount: number;
   onDownload?: () => void;
   highlightDuplicates?: boolean;
+  hasDashboard?: boolean;
+  onDashboardClick?: () => void;
 }
 
 export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true }: SheetViewerProps) {
@@ -119,15 +121,27 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               {showDuplicates ? "Hide" : "Show"} Duplicates
             </Button>
           )}
-          <Button
-            onClick={() => setIsExpanded(!isExpanded)}
-            variant="ghost"
-            size="sm"
-            className="text-white hover:bg-white/20"
-          >
-            {isExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            {isExpanded ? "Collapse" : "Expand"}
-          </Button>
+          {hasDashboard && onDashboardClick ? (
+            <Button
+              onClick={onDashboardClick}
+              variant="ghost"
+              size="sm"
+              className="text-white hover:bg-white/20"
+            >
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Dashboard
+            </Button>
+          ) : (
+            <Button
+              onClick={() => setIsExpanded(!isExpanded)}
+              variant="ghost"
+              size="sm"
+              className="text-white hover:bg-white/20"
+            >
+              {isExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {isExpanded ? "Collapse" : "Expand"}
+            </Button>
+          )}
           {onDownload && (
             <Button
               onClick={onDownload}

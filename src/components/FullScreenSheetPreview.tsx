@@ -17,6 +17,10 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     columns: string[];
     formatting_metadata?: any;
     processed_file_url?: string;
+    chart_url?: string;
+    chart_urls?: string[];
+    chart_type?: string;
+    chart_types?: string[];
   } | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { user, session } = useAuth();
@@ -62,12 +66,34 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
         columns: newResult.columns,
         formatting_metadata: newResult.formatting_metadata,
         processed_file_url: newResult.processed_file_url,
+        chart_url: newResult.chart_url || previewData?.chart_url,
+        chart_urls: newResult.chart_urls || previewData?.chart_urls,
+        chart_type: newResult.chart_type || previewData?.chart_type,
+        chart_types: newResult.chart_types || previewData?.chart_types,
       };
       setPreviewData(updatedData);
       // Update sessionStorage
       sessionStorage.setItem('previewData', JSON.stringify(updatedData));
     }
   };
+
+  const handleDashboardClick = () => {
+    // Store dashboard data in sessionStorage
+    if (previewData?.chart_url || previewData?.chart_urls) {
+      const dashboardData = {
+        chart_url: previewData.chart_url,
+        chart_urls: previewData.chart_urls,
+        chart_type: previewData.chart_type,
+        chart_types: previewData.chart_types,
+      };
+      sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
+      // Navigate to dashboard preview
+      window.history.pushState({}, '', '/preview-dashboard');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
+  };
+
+  const hasDashboard = !!(previewData?.chart_url || previewData?.chart_urls);
 
   if (!previewData) {
     return (
@@ -135,6 +161,8 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
               columns={previewData.columns}
               rowCount={previewData.data.length}
               onDownload={handleDownload}
+              hasDashboard={hasDashboard}
+              onDashboardClick={handleDashboardClick}
             />
           </div>
         </div>

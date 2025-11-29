@@ -132,6 +132,10 @@ export function PromptToolSection() {
           columns: response.columns,
           formatting_metadata: response.formatting_metadata,
           processed_file_url: response.processed_file_url,
+          chart_url: response.chart_url,
+          chart_urls: response.chart_urls,
+          chart_type: response.chart_type,
+          chart_types: response.chart_types,
         };
         sessionStorage.setItem('previewData', JSON.stringify(previewData));
         
