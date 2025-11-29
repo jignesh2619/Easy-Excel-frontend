@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, Download, BarChart3, AlertCircle } from "lucide-react";
+import { ArrowLeft, Download, BarChart3, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { getChartDownloadUrl, downloadFile, API_BASE_URL } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import { AuthModal } from "./AuthModal";
+import { AIChatbot } from "./AIChatbot";
 
 interface DashboardPreviewProps {
   onClose: () => void;
@@ -15,13 +16,18 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
     chart_urls?: string[];
     chart_type?: string;
     chart_types?: string[];
+    data?: Record<string, any>[];
+    columns?: string[];
   } | null>(null);
+  const [currentChartIndex, setCurrentChartIndex] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { user, session } = useAuth();
 
   useEffect(() => {
     // Load chart data from sessionStorage
     const chartDataStr = sessionStorage.getItem('dashboardData');
+    const previewDataStr = sessionStorage.getItem('previewData');
+    
     if (chartDataStr) {
       try {
         const data = JSON.parse(chartDataStr);
@@ -30,7 +36,51 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
         console.error('Error parsing dashboard data:', error);
       }
     }
+    
+    // Also load preview data for chatbot
+    if (previewDataStr) {
+      try {
+        const previewData = JSON.parse(previewDataStr);
+        setChartData(prev => ({
+          ...prev,
+          data: previewData.data,
+          columns: previewData.columns,
+        }));
+      } catch (error) {
+        console.error('Error parsing preview data:', error);
+      }
+    }
   }, []);
+
+  const handleDataUpdate = (newResult: any) => {
+    // Update chart data when chatbot processes new changes
+    if (newResult.chart_url || newResult.chart_urls) {
+      const updatedData = {
+        ...chartData,
+        chart_url: newResult.chart_url || chartData?.chart_url,
+        chart_urls: newResult.chart_urls || chartData?.chart_urls,
+        chart_type: newResult.chart_type || chartData?.chart_type,
+        chart_types: newResult.chart_types || chartData?.chart_types,
+        data: newResult.processed_data || chartData?.data,
+        columns: newResult.columns || chartData?.columns,
+      };
+      setChartData(updatedData);
+      // Update sessionStorage
+      sessionStorage.setItem('dashboardData', JSON.stringify(updatedData));
+    }
+  };
+
+  const nextChart = () => {
+    if (chartData && chartUrls.length > 0) {
+      setCurrentChartIndex((prev) => (prev + 1) % chartUrls.length);
+    }
+  };
+
+  const prevChart = () => {
+    if (chartData && chartUrls.length > 0) {
+      setCurrentChartIndex((prev) => (prev - 1 + chartUrls.length) % chartUrls.length);
+    }
+  };
 
   const handleDownloadChart = async (chartUrl: string, index?: number) => {
     if (!user || !session) {
@@ -66,23 +116,47 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
   }
 
   // Determine chart URLs (single or multiple)
-  const chartUrls = chartData.chart_urls || (chartData.chart_url ? [chartData.chart_url] : []);
-  const chartTypes = chartData.chart_types || (chartData.chart_type ? [chartData.chart_type] : []);
+  const chartUrls = chartData?.chart_urls || (chartData?.chart_url ? [chartData.chart_url] : []);
+  const chartTypes = chartData?.chart_types || (chartData?.chart_type ? [chartData.chart_type] : []);
 
-  if (chartUrls.length === 0) {
+  if (!chartData || chartUrls.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600 mb-4">No dashboard preview available</p>
-          <Button onClick={onClose} variant="outline">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Go Back
-          </Button>
+      <div className="fixed inset-0 bg-gray-50 flex flex-col" style={{ height: '100vh', width: '100vw' }}>
+        {/* Top Bar - Fixed Height */}
+        <div className="bg-white border-b border-gray-200 shadow-sm flex-shrink-0 z-40">
+          <div className="w-full px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={onClose}
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-[#00A878]" />
+                <div>
+                  <h1 className="text-lg font-semibold text-gray-900">Dashboard Preview</h1>
+                  <p className="text-sm text-gray-500">No dashboard preview available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600 mb-4">No dashboard preview available</p>
+          </div>
         </div>
       </div>
     );
   }
+
+  const currentChartUrl = chartUrls[currentChartIndex];
+  const currentChartType = chartTypes[currentChartIndex] || `Chart ${currentChartIndex + 1}`;
 
   return (
     <div className="fixed inset-0 bg-gray-50 flex flex-col" style={{ height: '100vh', width: '100vw' }}>
@@ -104,51 +178,100 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
               <div>
                 <h1 className="text-lg font-semibold text-gray-900">Dashboard Preview</h1>
                 <p className="text-sm text-gray-500">
-                  {chartUrls.length} {chartUrls.length === 1 ? 'chart' : 'charts'}
+                  Chart {currentChartIndex + 1} of {chartUrls.length}
                 </p>
               </div>
             </div>
           </div>
+          <Button
+            onClick={() => handleDownloadChart(currentChartUrl, currentChartIndex)}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Download Chart
+          </Button>
         </div>
       </div>
 
-      {/* Main Content Area - Scrollable */}
-      <div className="flex-1 overflow-auto p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {chartUrls.map((chartUrl, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200"
-              >
-                <div className="p-4 bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5" />
-                    <h3 className="font-semibold">
-                      {chartTypes[index] || `Chart ${index + 1}`}
-                    </h3>
+      {/* Main Content Area - Takes Remaining Space */}
+      <div className="flex-1 overflow-hidden" style={{ minHeight: 0, position: 'relative' }}>
+        {/* Chart Viewer - Full Width, Scrollable */}
+        <div 
+          className="h-full w-full overflow-auto" 
+          style={{ 
+            overflowX: 'auto',
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            paddingRight: '0px' // No padding - chatbot will overlay
+          }}
+        >
+          <div className="p-4" style={{ paddingLeft: '40px', paddingRight: '40px' }}>
+            <div className="bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg flex flex-col" style={{ height: '100%', width: '100%' }}>
+              {/* Chart Header */}
+              <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <BarChart3 className="w-5 h-5" />
+                  <div>
+                    <h3 className="font-bold text-lg">{currentChartType}</h3>
+                    <p className="text-sm text-white/90">
+                      {chartUrls.length} {chartUrls.length === 1 ? 'chart' : 'charts'} total
+                    </p>
                   </div>
-                  <Button
-                    onClick={() => handleDownloadChart(chartUrl, index)}
-                    variant="ghost"
-                    size="sm"
-                    className="text-white hover:bg-white/20"
-                  >
-                    <Download className="w-4 h-4" />
-                  </Button>
                 </div>
-                <div className="p-4">
+                <div className="flex items-center gap-2">
+                  {chartUrls.length > 1 && (
+                    <>
+                      <Button
+                        onClick={prevChart}
+                        variant="ghost"
+                        size="sm"
+                        className="text-white hover:bg-white/20"
+                        disabled={chartUrls.length <= 1}
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </Button>
+                      <span className="text-white/90 px-2">
+                        {currentChartIndex + 1} / {chartUrls.length}
+                      </span>
+                      <Button
+                        onClick={nextChart}
+                        variant="ghost"
+                        size="sm"
+                        className="text-white hover:bg-white/20"
+                        disabled={chartUrls.length <= 1}
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+              
+              {/* Chart Content - Fixed Size */}
+              <div className="flex-1 overflow-auto p-8 flex items-center justify-center" style={{ minHeight: 0 }}>
+                <div style={{ width: '100%', maxWidth: '1200px', height: '600px' }}>
                   <img
-                    src={`${API_BASE_URL}${chartUrl}`}
-                    alt={`Chart ${index + 1}`}
-                    className="w-full h-auto rounded"
-                    style={{ maxHeight: '600px', objectFit: 'contain' }}
+                    src={`${API_BASE_URL}${currentChartUrl}`}
+                    alt={currentChartType}
+                    className="w-full h-full object-contain rounded"
+                    style={{ maxHeight: '600px', maxWidth: '100%' }}
                   />
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
+
+        {/* AI Chatbot - Fixed Position Overlay */}
+        {chartData.data && chartData.columns && (
+          <AIChatbot
+            initialData={chartData.data}
+            initialColumns={chartData.columns}
+            onDataUpdate={handleDataUpdate}
+          />
+        )}
       </div>
 
       {/* Auth Modal */}

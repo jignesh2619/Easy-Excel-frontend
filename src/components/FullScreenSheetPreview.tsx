@@ -85,6 +85,8 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
         chart_urls: previewData.chart_urls,
         chart_type: previewData.chart_type,
         chart_types: previewData.chart_types,
+        data: previewData.data,
+        columns: previewData.columns,
       };
       sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       // Navigate to dashboard preview
