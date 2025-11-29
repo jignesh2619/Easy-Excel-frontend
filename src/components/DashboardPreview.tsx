@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { AuthModal } from "./AuthModal";
 import { AIChatbot } from "./AIChatbot";
 import { InteractiveChart } from "./InteractiveChart";
+import { TokenDisplay } from "./TokenDisplay";
 
 interface DashboardPreviewProps {
   onClose: () => void;
@@ -21,6 +22,9 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
     chart_data_list?: any[];  // Array of chart data objects
     data?: Record<string, any>[];
     columns?: string[];
+    tokens_used?: number;
+    tokens_limit?: number;
+    tokens_remaining?: number;
   } | null>(null);
   const [currentChartIndex, setCurrentChartIndex] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -68,6 +72,9 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
         chart_data_list: newResult.chart_data_list || (Array.isArray(newResult.chart_data) ? newResult.chart_data : chartData?.chart_data_list),
         data: newResult.processed_data || chartData?.data,
         columns: newResult.columns || chartData?.columns,
+        tokens_used: newResult.tokens_used,
+        tokens_limit: newResult.tokens_limit,
+        tokens_remaining: newResult.tokens_remaining,
       };
       setChartData(updatedData);
       // Update sessionStorage
@@ -193,17 +200,26 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
               </div>
             </div>
           </div>
-          {currentChartUrl && (
-            <Button
-              onClick={() => handleDownloadChart(currentChartUrl, currentChartIndex)}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              Download Chart
-            </Button>
-          )}
+          <div className="flex items-center gap-3">
+            {/* Token Display */}
+            <TokenDisplay
+              tokensUsed={chartData.tokens_used}
+              tokensLimit={chartData.tokens_limit}
+              tokensRemaining={chartData.tokens_remaining}
+              compact={true}
+            />
+            {currentChartUrl && (
+              <Button
+                onClick={() => handleDownloadChart(currentChartUrl, currentChartIndex)}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Download Chart
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 

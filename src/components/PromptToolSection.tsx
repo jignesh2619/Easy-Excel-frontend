@@ -138,6 +138,9 @@ export function PromptToolSection() {
           chart_data_list: Array.isArray(response.chart_data) ? response.chart_data : (response.chart_data ? [response.chart_data] : undefined),
           chart_type: response.chart_type,
           chart_types: response.chart_types,
+          tokens_used: response.tokens_used,
+          tokens_limit: response.tokens_limit,
+          tokens_remaining: response.tokens_remaining,
         };
         sessionStorage.setItem('previewData', JSON.stringify(previewData));
         

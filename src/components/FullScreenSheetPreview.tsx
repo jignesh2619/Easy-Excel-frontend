@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { SheetViewer } from "./SheetViewer";
 import { AIChatbot } from "./AIChatbot";
+import { TokenDisplay } from "./TokenDisplay";
 import { ArrowLeft, Download } from "lucide-react";
 import { Button } from "./ui/button";
 import { getFileDownloadUrl, downloadFile } from "../services/api";
@@ -21,6 +22,9 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     chart_urls?: string[];
     chart_type?: string;
     chart_types?: string[];
+    tokens_used?: number;
+    tokens_limit?: number;
+    tokens_remaining?: number;
   } | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { user, session } = useAuth();
@@ -72,6 +76,9 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
         chart_data_list: newResult.chart_data_list || (Array.isArray(newResult.chart_data) ? newResult.chart_data : previewData?.chart_data_list),
         chart_type: newResult.chart_type || previewData?.chart_type,
         chart_types: newResult.chart_types || previewData?.chart_types,
+        tokens_used: newResult.tokens_used,
+        tokens_limit: newResult.tokens_limit,
+        tokens_remaining: newResult.tokens_remaining,
       };
       setPreviewData(updatedData);
       // Update sessionStorage
@@ -137,15 +144,24 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
               </p>
             </div>
           </div>
-          <Button
-            onClick={handleDownload}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Download Excel
-          </Button>
+          <div className="flex items-center gap-3">
+            {/* Token Display */}
+            <TokenDisplay
+              tokensUsed={previewData.tokens_used}
+              tokensLimit={previewData.tokens_limit}
+              tokensRemaining={previewData.tokens_remaining}
+              compact={true}
+            />
+            <Button
+              onClick={handleDownload}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Download Excel
+            </Button>
+          </div>
         </div>
       </div>
 

@@ -30,6 +30,10 @@ export interface ProcessFileResponse {
       italic?: boolean;
     }>;
   };
+  // Token usage information
+  tokens_used?: number; // Tokens used for this operation (OpenAI API calls only)
+  tokens_limit?: number; // User's token limit
+  tokens_remaining?: number; // Remaining tokens after this operation
 }
 
 export interface HealthResponse {
@@ -338,6 +342,49 @@ export async function getSubscriptionDetails(subscriptionId: string): Promise<an
     return await response.json();
   } catch (error) {
     console.error('Get subscription details failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Token Statistics Interface
+ */
+export interface TokenStats {
+  status: string;
+  tokens_used: number;
+  tokens_limit: number;
+  tokens_remaining: number;
+  plan: string;
+}
+
+/**
+ * Get current user token statistics
+ */
+export async function getTokenStats(): Promise<TokenStats> {
+  try {
+    const token = await getAuthToken();
+    
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/users/token-stats`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Get token stats failed:', error);
     throw error;
   }
 }

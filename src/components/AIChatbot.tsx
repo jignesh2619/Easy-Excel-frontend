@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Loader2, Sparkles, History } from "lucide-react";
 import { Button } from "./ui/button";
 import { processData } from "../services/api";
+import { TokenDisplay } from "./TokenDisplay";
 // Removed auth requirement for chatbot
 
 interface AIChatbotProps {
@@ -32,6 +33,11 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   const [loadingMessage, setLoadingMessage] = useState("");
   const [currentData, setCurrentData] = useState(initialData);
   const [currentColumns, setCurrentColumns] = useState(initialColumns);
+  const [lastTokenInfo, setLastTokenInfo] = useState<{
+    tokens_used?: number;
+    tokens_limit?: number;
+    tokens_remaining?: number;
+  } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -94,6 +100,15 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
 
     try {
       const response = await processData(currentData, currentColumns, promptText);
+      
+      // Store token info from response
+      if (response.tokens_used || response.tokens_limit) {
+        setLastTokenInfo({
+          tokens_used: response.tokens_used,
+          tokens_limit: response.tokens_limit,
+          tokens_remaining: response.tokens_remaining,
+        });
+      }
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -188,6 +203,19 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               </button>
             </div>
           </div>
+
+          {/* Token Display - Compact */}
+          {lastTokenInfo && (lastTokenInfo.tokens_used || lastTokenInfo.tokens_limit) && (
+            <div className="px-4 pt-2 border-b border-gray-200 bg-white">
+              <TokenDisplay
+                tokensUsed={lastTokenInfo.tokens_used}
+                tokensLimit={lastTokenInfo.tokens_limit}
+                tokensRemaining={lastTokenInfo.tokens_remaining}
+                showLabel={false}
+                compact={true}
+              />
+            </div>
+          )}
 
           {/* Messages - Fully Scrollable */}
           <div 
