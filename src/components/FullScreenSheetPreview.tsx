@@ -84,10 +84,10 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
   }
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden" style={{ height: '100vh' }}>
-      {/* Top Bar */}
+    <div className="fixed inset-0 bg-gray-50 flex flex-col" style={{ height: '100vh', width: '100vw' }}>
+      {/* Top Bar - Fixed Height */}
       <div className="bg-white border-b border-gray-200 shadow-sm flex-shrink-0 z-40">
-        <div className="max-w-full mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="w-full px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
               onClick={onClose}
@@ -117,24 +117,29 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
         </div>
       </div>
 
-      {/* Sheet Viewer - Full Screen */}
-      <div className="flex-1 overflow-hidden" style={{ paddingRight: '420px', zIndex: 1 }}>
-        <SheetViewer
-          data={previewData.data}
-          columns={previewData.columns}
-          rowCount={previewData.data.length}
-          onDownload={handleDownload}
-        />
-      </div>
+      {/* Main Content Area - Takes Remaining Space */}
+      <div className="flex-1 flex overflow-hidden" style={{ minHeight: 0 }}>
+        {/* Sheet Viewer - Scrollable */}
+        <div className="flex-1 overflow-auto" style={{ paddingRight: '420px' }}>
+          <div className="h-full p-4">
+            <SheetViewer
+              data={previewData.data}
+              columns={previewData.columns}
+              rowCount={previewData.data.length}
+              onDownload={handleDownload}
+            />
+          </div>
+        </div>
 
-      {/* AI Chatbot */}
-      {previewData.data && (
-        <AIChatbot
-          initialData={previewData.data}
-          initialColumns={previewData.columns}
-          onDataUpdate={handleDataUpdate}
-        />
-      )}
+        {/* AI Chatbot - Fixed Position */}
+        {previewData.data && (
+          <AIChatbot
+            initialData={previewData.data}
+            initialColumns={previewData.columns}
+            onDataUpdate={handleDataUpdate}
+          />
+        )}
+      </div>
 
       {/* Auth Modal */}
       <AuthModal
@@ -145,4 +150,3 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     </div>
   );
 }
-
