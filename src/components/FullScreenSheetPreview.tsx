@@ -118,8 +118,8 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       </div>
 
       {/* Sheet Viewer - Full Screen */}
-      <div className="flex-1 overflow-hidden" style={{ paddingRight: '420px', zIndex: 1 }}>
-        <div className="h-full w-full">
+      <div className="flex-1 overflow-auto" style={{ paddingRight: '420px', zIndex: 1 }}>
+        <div className="h-full w-full p-4">
           <SheetViewer
             data={previewData.data}
             columns={previewData.columns}
