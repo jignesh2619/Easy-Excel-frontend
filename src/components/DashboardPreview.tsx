@@ -5,6 +5,7 @@ import { getChartDownloadUrl, downloadFile, API_BASE_URL } from "../services/api
 import { useAuth } from "../contexts/AuthContext";
 import { AuthModal } from "./AuthModal";
 import { AIChatbot } from "./AIChatbot";
+import { InteractiveChart } from "./InteractiveChart";
 
 interface DashboardPreviewProps {
   onClose: () => void;
@@ -16,6 +17,8 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
     chart_urls?: string[];
     chart_type?: string;
     chart_types?: string[];
+    chart_data?: any;  // Single chart data object
+    chart_data_list?: any[];  // Array of chart data objects
     data?: Record<string, any>[];
     columns?: string[];
   } | null>(null);
@@ -54,13 +57,15 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
 
   const handleDataUpdate = (newResult: any) => {
     // Update chart data when chatbot processes new changes
-    if (newResult.chart_url || newResult.chart_urls) {
+    if (newResult.chart_url || newResult.chart_urls || newResult.chart_data) {
       const updatedData = {
         ...chartData,
         chart_url: newResult.chart_url || chartData?.chart_url,
         chart_urls: newResult.chart_urls || chartData?.chart_urls,
         chart_type: newResult.chart_type || chartData?.chart_type,
         chart_types: newResult.chart_types || chartData?.chart_types,
+        chart_data: newResult.chart_data || chartData?.chart_data,
+        chart_data_list: newResult.chart_data_list || (Array.isArray(newResult.chart_data) ? newResult.chart_data : chartData?.chart_data_list),
         data: newResult.processed_data || chartData?.data,
         columns: newResult.columns || chartData?.columns,
       };
@@ -71,14 +76,14 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
   };
 
   const nextChart = () => {
-    if (chartData && chartUrls.length > 0) {
-      setCurrentChartIndex((prev) => (prev + 1) % chartUrls.length);
+    if (chartData && chartCount > 0) {
+      setCurrentChartIndex((prev) => (prev + 1) % chartCount);
     }
   };
 
   const prevChart = () => {
-    if (chartData && chartUrls.length > 0) {
-      setCurrentChartIndex((prev) => (prev - 1 + chartUrls.length) % chartUrls.length);
+    if (chartData && chartCount > 0) {
+      setCurrentChartIndex((prev) => (prev - 1 + chartCount) % chartCount);
     }
   };
 
@@ -115,11 +120,15 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
     );
   }
 
-  // Determine chart URLs (single or multiple)
+  // Determine chart data (prefer interactive chart data over image URLs)
+  const chartDataList = chartData?.chart_data_list || (chartData?.chart_data ? [chartData.chart_data] : []);
   const chartUrls = chartData?.chart_urls || (chartData?.chart_url ? [chartData.chart_url] : []);
   const chartTypes = chartData?.chart_types || (chartData?.chart_type ? [chartData.chart_type] : []);
 
-  if (!chartData || chartUrls.length === 0) {
+  // Use chart_data_list length if available, otherwise fall back to chartUrls
+  const chartCount = chartDataList.length > 0 ? chartDataList.length : chartUrls.length;
+
+  if (!chartData || (chartDataList.length === 0 && chartUrls.length === 0)) {
     return (
       <div className="fixed inset-0 bg-gray-50 flex flex-col" style={{ height: '100vh', width: '100vw' }}>
         {/* Top Bar - Fixed Height */}
@@ -156,7 +165,8 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
   }
 
   const currentChartUrl = chartUrls[currentChartIndex];
-  const currentChartType = chartTypes[currentChartIndex] || `Chart ${currentChartIndex + 1}`;
+  const currentChartData = chartDataList[currentChartIndex];
+  const currentChartType = chartTypes[currentChartIndex] || currentChartData?.chart_type || `Chart ${currentChartIndex + 1}`;
 
   return (
     <div className="fixed inset-0 bg-gray-50 flex flex-col" style={{ height: '100vh', width: '100vw' }}>
@@ -178,20 +188,22 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
               <div>
                 <h1 className="text-lg font-semibold text-gray-900">Dashboard Preview</h1>
                 <p className="text-sm text-gray-500">
-                  Chart {currentChartIndex + 1} of {chartUrls.length}
+                  Chart {currentChartIndex + 1} of {chartCount}
                 </p>
               </div>
             </div>
           </div>
-          <Button
-            onClick={() => handleDownloadChart(currentChartUrl, currentChartIndex)}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Download Chart
-          </Button>
+          {currentChartUrl && (
+            <Button
+              onClick={() => handleDownloadChart(currentChartUrl, currentChartIndex)}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Download Chart
+            </Button>
+          )}
         </div>
       </div>
 
@@ -216,31 +228,31 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
                   <div>
                     <h3 className="font-bold text-lg">{currentChartType}</h3>
                     <p className="text-sm text-white/90">
-                      {chartUrls.length} {chartUrls.length === 1 ? 'chart' : 'charts'} total
+                      {chartCount} {chartCount === 1 ? 'chart' : 'charts'} total
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {chartUrls.length > 1 && (
+                  {chartCount > 1 && (
                     <>
                       <Button
                         onClick={prevChart}
                         variant="ghost"
                         size="sm"
                         className="text-white hover:bg-white/20"
-                        disabled={chartUrls.length <= 1}
+                        disabled={chartCount <= 1}
                       >
                         <ChevronLeft className="w-4 h-4" />
                       </Button>
                       <span className="text-white/90 px-2">
-                        {currentChartIndex + 1} / {chartUrls.length}
+                        {currentChartIndex + 1} / {chartCount}
                       </span>
                       <Button
                         onClick={nextChart}
                         variant="ghost"
                         size="sm"
                         className="text-white hover:bg-white/20"
-                        disabled={chartUrls.length <= 1}
+                        disabled={chartCount <= 1}
                       >
                         <ChevronRight className="w-4 h-4" />
                       </Button>
@@ -252,12 +264,20 @@ export function DashboardPreview({ onClose }: DashboardPreviewProps) {
               {/* Chart Content - Fixed Size */}
               <div className="flex-1 overflow-auto p-8 flex items-center justify-center" style={{ minHeight: 0 }}>
                 <div style={{ width: '100%', maxWidth: '1200px', height: '600px' }}>
-                  <img
-                    src={`${API_BASE_URL}${currentChartUrl}`}
-                    alt={currentChartType}
-                    className="w-full h-full object-contain rounded"
-                    style={{ maxHeight: '600px', maxWidth: '100%' }}
-                  />
+                  {currentChartData ? (
+                    <InteractiveChart chartData={currentChartData} />
+                  ) : currentChartUrl ? (
+                    <img
+                      src={`${API_BASE_URL}${currentChartUrl}`}
+                      alt={currentChartType}
+                      className="w-full h-full object-contain rounded"
+                      style={{ maxHeight: '600px', maxWidth: '100%' }}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-gray-500">No chart data available</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

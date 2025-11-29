@@ -11,6 +11,10 @@ export interface ProcessFileResponse {
   status: string;
   processed_file_url?: string;
   chart_url?: string;
+  chart_urls?: string[]; // Array of chart URLs for multiple charts
+  chart_data?: any | any[]; // Chart data for interactive rendering (single object or array)
+  chart_type?: string; // Chart type for single chart
+  chart_types?: string[]; // Chart types for multiple charts
   summary: string[];
   action_plan?: any;
   message?: string;

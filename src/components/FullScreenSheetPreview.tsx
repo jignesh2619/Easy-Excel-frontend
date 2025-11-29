@@ -68,6 +68,8 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
         processed_file_url: newResult.processed_file_url,
         chart_url: newResult.chart_url || previewData?.chart_url,
         chart_urls: newResult.chart_urls || previewData?.chart_urls,
+        chart_data: newResult.chart_data || previewData?.chart_data,
+        chart_data_list: newResult.chart_data_list || (Array.isArray(newResult.chart_data) ? newResult.chart_data : previewData?.chart_data_list),
         chart_type: newResult.chart_type || previewData?.chart_type,
         chart_types: newResult.chart_types || previewData?.chart_types,
       };
@@ -79,10 +81,12 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
 
   const handleDashboardClick = () => {
     // Store dashboard data in sessionStorage
-    if (previewData?.chart_url || previewData?.chart_urls) {
+    if (previewData?.chart_url || previewData?.chart_urls || previewData?.chart_data) {
       const dashboardData = {
         chart_url: previewData.chart_url,
         chart_urls: previewData.chart_urls,
+        chart_data: previewData.chart_data,
+        chart_data_list: Array.isArray(previewData.chart_data) ? previewData.chart_data : (previewData.chart_data ? [previewData.chart_data] : undefined),
         chart_type: previewData.chart_type,
         chart_types: previewData.chart_types,
         data: previewData.data,
@@ -95,7 +99,7 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     }
   };
 
-  const hasDashboard = !!(previewData?.chart_url || previewData?.chart_urls);
+  const hasDashboard = !!(previewData?.chart_url || previewData?.chart_urls || previewData?.chart_data);
 
   if (!previewData) {
     return (

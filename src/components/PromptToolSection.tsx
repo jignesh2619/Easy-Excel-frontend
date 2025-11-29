@@ -134,6 +134,8 @@ export function PromptToolSection() {
           processed_file_url: response.processed_file_url,
           chart_url: response.chart_url,
           chart_urls: response.chart_urls,
+          chart_data: response.chart_data,
+          chart_data_list: Array.isArray(response.chart_data) ? response.chart_data : (response.chart_data ? [response.chart_data] : undefined),
           chart_type: response.chart_type,
           chart_types: response.chart_types,
         };
