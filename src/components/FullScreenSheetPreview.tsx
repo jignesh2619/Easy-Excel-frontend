@@ -118,12 +118,12 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       </div>
 
       {/* Main Content Area - Takes Remaining Space */}
-      <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
-        {/* Sheet Viewer - Scrollable */}
+      <div className="flex-1 overflow-hidden relative" style={{ minHeight: 0 }}>
+        {/* Sheet Viewer - Full Width, Scrollable */}
         <div 
-          className="h-full overflow-auto" 
+          className="absolute inset-0 overflow-auto" 
           style={{ 
-            paddingRight: '420px',
+            right: '420px', // Leave space for chatbot
             overflowX: 'auto',
             overflowY: 'auto',
             WebkitOverflowScrolling: 'touch'
