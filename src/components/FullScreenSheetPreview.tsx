@@ -118,18 +118,18 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       </div>
 
       {/* Main Content Area - Takes Remaining Space */}
-      <div className="flex-1 overflow-hidden relative" style={{ minHeight: 0 }}>
+      <div className="flex-1 overflow-hidden" style={{ minHeight: 0, position: 'relative' }}>
         {/* Sheet Viewer - Full Width, Scrollable */}
         <div 
-          className="absolute inset-0 overflow-auto" 
+          className="h-full w-full overflow-auto" 
           style={{ 
-            right: '420px', // Leave space for chatbot
             overflowX: 'auto',
             overflowY: 'auto',
-            WebkitOverflowScrolling: 'touch'
+            WebkitOverflowScrolling: 'touch',
+            paddingRight: '0px' // No padding - chatbot will overlay
           }}
         >
-          <div className="p-4">
+          <div className="p-4" style={{ paddingRight: '420px' }}>
             <SheetViewer
               data={previewData.data}
               columns={previewData.columns}
@@ -139,7 +139,7 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
           </div>
         </div>
 
-        {/* AI Chatbot - Fixed Position */}
+        {/* AI Chatbot - Fixed Position Overlay */}
         {previewData.data && (
           <AIChatbot
             initialData={previewData.data}
