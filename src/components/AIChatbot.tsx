@@ -29,17 +29,47 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   ]);
   const [input, setInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [currentData, setCurrentData] = useState(initialData);
   const [currentColumns, setCurrentColumns] = useState(initialColumns);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  const PROCESSING_MESSAGES = [
+    "Analyzing your request...",
+    "Processing your data with AI...",
+    "Applying transformations...",
+    "Generating results...",
+    "Almost done...",
+  ];
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isProcessing]);
+
+  // Rotate loading messages while processing
+  useEffect(() => {
+    if (!isProcessing) {
+      setLoadingMessage("");
+      return;
+    }
+
+    let messageIndex = 0;
+    setLoadingMessage(PROCESSING_MESSAGES[0]);
+
+    const interval = setInterval(() => {
+      messageIndex = (messageIndex + 1) % PROCESSING_MESSAGES.length;
+      setLoadingMessage(PROCESSING_MESSAGES[messageIndex]);
+    }, 2000); // Change message every 2 seconds
+
+    return () => clearInterval(interval);
+  }, [isProcessing]);
 
   // Update data when initialData changes
   useEffect(() => {
@@ -155,8 +185,12 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             </div>
           </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+          {/* Messages - Fully Scrollable */}
+          <div 
+            ref={messagesContainerRef}
+            className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+            style={{ minHeight: 0 }} // Ensure proper scrolling
+          >
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -169,22 +203,23 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                       : "bg-white text-gray-800 border border-gray-200"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
                 </div>
               </div>
             ))}
             {isProcessing && (
               <div className="flex justify-start">
-                <div className="bg-white border border-gray-200 rounded-lg p-3">
+                <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin text-[#00A878]" />
+                  <span className="text-sm text-gray-600">{loadingMessage || "Processing..."}</span>
                 </div>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Suggested Actions */}
-          {messages.length === 1 && (
+          {/* Suggested Actions - Only show when no messages except initial greeting */}
+          {messages.length === 1 && !isProcessing && (
             <div className="px-4 py-2 border-t border-gray-200 bg-white">
               <div className="space-y-2">
                 {suggestedActions.map((action, idx) => (
