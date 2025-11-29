@@ -154,7 +154,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                   {columns.map((col, idx) => (
                     <th
                       key={idx}
-                      className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200 whitespace-nowrap transition-colors duration-200 hover:bg-[#00A878]/10"
+                      className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200 border-r border-gray-200 last:border-r-0 whitespace-nowrap transition-colors duration-200 hover:bg-[#00A878]/10"
                     >
                       {col}
                     </th>
@@ -186,7 +186,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                             <td
                               key={colIdx}
                               style={cellStyle}
-                              className={`px-4 py-2 text-sm border-b border-gray-100 whitespace-nowrap transition-colors duration-200 ${
+                              className={`px-4 py-2 text-sm border-b border-gray-100 border-r border-gray-200 last:border-r-0 whitespace-nowrap transition-colors duration-200 ${
                                 !hasFormatting ? 'hover:bg-[#00A878]/10' : ''
                               } ${
                                 isDuplicate && !hasFormatting
@@ -218,13 +218,13 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                   {columns.slice(0, 5).map((col, idx) => (
                     <th
                       key={idx}
-                      className="px-3 py-2 text-left text-xs font-semibold text-gray-700 border-b border-gray-200"
+                      className="px-3 py-2 text-left text-xs font-semibold text-gray-700 border-b border-gray-200 border-r border-gray-200 last:border-r-0"
                     >
                       {col}
                     </th>
                   ))}
                   {columns.length > 5 && (
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-gray-200">
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-gray-200 border-r border-gray-200">
                       +{columns.length - 5} more
                     </th>
                   )}
@@ -247,7 +247,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                           <td 
                             key={colIdx}
                             style={cellStyle}
-                            className={`px-3 py-2 ${
+                            className={`px-3 py-2 border-r border-gray-200 last:border-r-0 ${
                               isDuplicate && !hasFormatting
                                 ? 'text-yellow-900 font-medium bg-yellow-50' 
                                 : hasFormatting ? '' : 'text-gray-600'
@@ -258,7 +258,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                         );
                       })}
                       {columns.length > 5 && (
-                        <td className={`px-3 py-2 text-xs ${
+                        <td className={`px-3 py-2 text-xs border-r border-gray-200 ${
                           isDuplicate ? 'text-yellow-700' : 'text-gray-400'
                         }`}>
                           ...
