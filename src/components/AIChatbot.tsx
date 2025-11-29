@@ -160,7 +160,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             bottom: '88px',
             position: 'fixed',
             left: 'auto',
-            height: '600px',
+            height: 'calc(100vh - 112px)', // Use full viewport height minus button space
             maxHeight: 'calc(100vh - 112px)', // Ensure it doesn't go above viewport
             zIndex: 9999, // Very high z-index to ensure it's always on top
             isolation: 'isolate' // Create new stacking context
@@ -193,7 +193,12 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
           <div 
             ref={messagesContainerRef}
             className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
-            style={{ minHeight: 0 }} // Ensure proper scrolling
+            style={{ 
+              minHeight: 0, // Ensure proper scrolling
+              maxHeight: '100%',
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch' // Smooth scrolling on mobile
+            }}
           >
             {messages.map((message) => (
               <div
