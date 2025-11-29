@@ -84,7 +84,7 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
         <div className="max-w-full mx-auto px-4 py-3 flex items-center justify-between">
@@ -118,8 +118,8 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       </div>
 
       {/* Sheet Viewer - Full Screen */}
-      <div className="flex-1 overflow-auto" style={{ paddingRight: '420px', zIndex: 1 }}>
-        <div className="h-full w-full p-4">
+      <div className="flex-1 overflow-hidden" style={{ paddingRight: '420px', zIndex: 1, height: '100%' }}>
+        <div className="h-full w-full" style={{ height: '100%', width: '100%' }}>
           <SheetViewer
             data={previewData.data}
             columns={previewData.columns}
