@@ -12,7 +12,7 @@ interface SheetViewerProps {
   onDashboardClick?: () => void;
 }
 
-export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true }: SheetViewerProps) {
+export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true, hasDashboard, onDashboardClick }: SheetViewerProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [showDuplicates, setShowDuplicates] = useState(highlightDuplicates);
