@@ -2,8 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Loader2, Sparkles, History } from "lucide-react";
 import { Button } from "./ui/button";
 import { processData } from "../services/api";
-import { useAuth } from "../contexts/AuthContext";
-import { AuthModal } from "./AuthModal";
+// Removed auth requirement for chatbot
 
 interface AIChatbotProps {
   initialData: Record<string, any>[];
@@ -33,8 +32,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   const [currentData, setCurrentData] = useState(initialData);
   const [currentColumns, setCurrentColumns] = useState(initialColumns);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { user, session } = useAuth();
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -52,11 +49,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
 
   const handleSend = async () => {
     if (!input.trim() || isProcessing) return;
-
-    if (!user || !session) {
-      setShowAuthModal(true);
-      return;
-    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -237,12 +229,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         </div>
       )}
 
-      {/* Auth Modal */}
-      <AuthModal
-        open={showAuthModal}
-        onOpenChange={setShowAuthModal}
-        onSuccess={() => setShowAuthModal(false)}
-      />
     </>
   );
 }

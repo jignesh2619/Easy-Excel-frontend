@@ -69,19 +69,21 @@ export async function processData(
       throw new Error('Prompt is required');
     }
 
-    // Get auth token
+    // Get auth token (optional for chatbot)
     const token = await getAuthToken();
-    if (!token) {
-      throw new Error('Authentication required. Please sign in to process data.');
+    
+    // Make API request (authentication is optional)
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
 
-    // Make API request
     const response = await fetch(`${API_BASE_URL}/process-data`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
+      headers,
       credentials: 'include',
       body: JSON.stringify({
         data,
