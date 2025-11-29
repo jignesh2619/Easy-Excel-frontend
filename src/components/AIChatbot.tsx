@@ -109,12 +109,17 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
 
   return (
     <>
-      {/* Floating Button - Bottom Right Corner */}
+      {/* Floating Button - Bottom Right Corner - Always Visible */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed w-14 h-14 bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center z-50 group"
-          style={{ right: '24px', bottom: '24px' }}
+          className="fixed w-14 h-14 bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center z-[100] group"
+          style={{ 
+            right: '24px', 
+            bottom: '24px',
+            position: 'fixed',
+            left: 'auto'
+          }}
           aria-label="Open AI Chatbot"
         >
           <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform" />
@@ -122,10 +127,18 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         </button>
       )}
 
-      {/* Chatbot Sidebar - Opens upwards from bottom right */}
+      {/* Chatbot Sidebar - Opens upwards from bottom right - Always Visible */}
       {isOpen && (
-        <div className="fixed w-96 h-[600px] bg-white border border-gray-200 shadow-2xl z-50 flex flex-col rounded-t-lg overflow-hidden"
-          style={{ right: '24px', bottom: '88px' }}>
+        <div 
+          className="fixed w-96 bg-white border border-gray-200 shadow-2xl z-[100] flex flex-col rounded-t-lg overflow-hidden"
+          style={{ 
+            right: '24px', 
+            bottom: '88px',
+            position: 'fixed',
+            left: 'auto',
+            height: '600px',
+            maxHeight: 'calc(100vh - 112px)' // Ensure it doesn't go above viewport
+          }}>
           {/* Header */}
           <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
