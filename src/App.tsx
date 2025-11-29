@@ -9,37 +9,80 @@ import { FeedbackSection } from "./components/FeedbackSection";
 import { Footer } from "./components/Footer";
 import { InteractiveSheetEditor } from "./components/InteractiveSheetEditor";
 import { ChartViewer } from "./components/ChartViewer";
+import { FullScreenSheetPreview } from "./components/FullScreenSheetPreview";
 import { useEffect, useState } from "react";
 
 export default function App() {
   const [editorData, setEditorData] = useState<{ data: any[]; columns: string[] } | null>(null);
   const [chartViewerData, setChartViewerData] = useState<{ charts: Array<{ chartUrl: string; chartType: string; title?: string }> } | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
-    // Check if we're on the editor page
-    if (window.location.pathname === '/editor' || window.location.search.includes('editor=true')) {
-      const editorDataStr = sessionStorage.getItem('editorData');
-      if (editorDataStr) {
-        try {
-          setEditorData(JSON.parse(editorDataStr));
-        } catch (error) {
-          console.error('Error parsing editor data:', error);
+    const checkRoute = () => {
+      // Check if we're on the preview page
+      if (window.location.pathname === '/preview' || window.location.search.includes('preview=true')) {
+        const previewDataStr = sessionStorage.getItem('previewData');
+        if (previewDataStr) {
+          setShowPreview(true);
+          return;
         }
+      } else {
+        setShowPreview(false);
       }
-    }
-    
-    // Check if we're on the chart viewer page
-    if (window.location.search.includes('charts=true')) {
-      const chartViewerDataStr = sessionStorage.getItem('chartViewerData');
-      if (chartViewerDataStr) {
-        try {
-          setChartViewerData(JSON.parse(chartViewerDataStr));
-        } catch (error) {
-          console.error('Error parsing chart viewer data:', error);
+      
+      // Check if we're on the editor page
+      if (window.location.pathname === '/editor' || window.location.search.includes('editor=true')) {
+        const editorDataStr = sessionStorage.getItem('editorData');
+        if (editorDataStr) {
+          try {
+            setEditorData(JSON.parse(editorDataStr));
+          } catch (error) {
+            console.error('Error parsing editor data:', error);
+          }
         }
+      } else {
+        setEditorData(null);
       }
-    }
+      
+      // Check if we're on the chart viewer page
+      if (window.location.search.includes('charts=true')) {
+        const chartViewerDataStr = sessionStorage.getItem('chartViewerData');
+        if (chartViewerDataStr) {
+          try {
+            setChartViewerData(JSON.parse(chartViewerDataStr));
+          } catch (error) {
+            console.error('Error parsing chart viewer data:', error);
+          }
+        }
+      } else {
+        setChartViewerData(null);
+      }
+    };
+
+    // Check route on mount
+    checkRoute();
+
+    // Listen for popstate events (back/forward navigation)
+    window.addEventListener('popstate', checkRoute);
+
+    return () => {
+      window.removeEventListener('popstate', checkRoute);
+    };
   }, []);
+
+  // If preview is requested, show full-screen preview
+  if (showPreview) {
+    return (
+      <FullScreenSheetPreview
+        onClose={() => {
+          window.history.pushState({}, '', '/');
+          setShowPreview(false);
+          // Trigger popstate to update route
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        }}
+      />
+    );
+  }
 
   // If chart viewer data is loaded, show only the chart viewer
   if (chartViewerData) {
