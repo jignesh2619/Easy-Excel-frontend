@@ -144,7 +144,16 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
 
       {/* Sheet Content - Scrollable */}
       {isExpanded && (
-        <div className="flex-1 overflow-auto" style={{ minHeight: 0, overflowX: 'auto', overflowY: 'auto' }}>
+        <div 
+          className="flex-1" 
+          style={{ 
+            minHeight: 0, 
+            overflow: 'auto',
+            overflowX: 'auto',
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch'
+          }}
+        >
           <div style={{ display: "inline-block", minWidth: "100%" }}>
             <table className="border-collapse" style={{ width: "max-content", minWidth: "100%" }}>
               <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 10 }}>
