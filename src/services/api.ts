@@ -50,6 +50,60 @@ export async function checkHealth(): Promise<HealthResponse> {
 }
 
 /**
+ * Process JSON data directly (for chatbot/iterative processing)
+ */
+export async function processData(
+  data: Record<string, any>[],
+  columns: string[],
+  prompt: string
+): Promise<ProcessFileResponse> {
+  try {
+    // Validate inputs
+    if (!data || data.length === 0) {
+      throw new Error('No data provided');
+    }
+    if (!columns || columns.length === 0) {
+      throw new Error('No columns provided');
+    }
+    if (!prompt || prompt.trim() === '') {
+      throw new Error('Prompt is required');
+    }
+
+    // Get auth token
+    const token = await getAuthToken();
+    if (!token) {
+      throw new Error('Authentication required. Please sign in to process data.');
+    }
+
+    // Make API request
+    const response = await fetch(`${API_BASE_URL}/process-data`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        data,
+        columns,
+        prompt,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Data processing failed:', error);
+    throw error;
+  }
+}
+
+/**
  * Process Excel/CSV file with a prompt
  */
 export async function processFile(

@@ -7,11 +7,14 @@ import { SafariBrowser } from "./SafariBrowser";
 import { useAuth } from "../contexts/AuthContext";
 import { AuthModal } from "./AuthModal";
 import { useProcessingMessages } from "../hooks/useProcessingMessages";
+import { SheetViewer } from "./SheetViewer";
+import { AIChatbot } from "./AIChatbot";
 
 export function PromptToolSection() {
   const [prompt, setPrompt] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   
   // Load result from localStorage on mount to preserve after auth
   const [result, setResult] = useState<any>(() => {
@@ -124,6 +127,14 @@ export function PromptToolSection() {
     try {
       const response = await processFile(selectedFile, prompt);
       setResult(response);
+      setShowPreview(true); // Show preview automatically
+      // Scroll to preview
+      setTimeout(() => {
+        document.getElementById('sheet-preview')?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
       // Refresh token usage after processing
       if (user && refreshBackendUser) {
         setTimeout(() => {
@@ -424,6 +435,30 @@ export function PromptToolSection() {
               </div>
             </div>
           </SafariBrowser>
+
+          {/* Show SheetViewer inline after processing */}
+          {result && result.processed_data && result.columns && showPreview && (
+            <div id="sheet-preview" className="max-w-7xl mx-auto mt-8 relative z-10">
+              <SheetViewer
+                data={result.processed_data}
+                columns={result.columns}
+                rowCount={result.processed_data.length}
+                onDownload={handleDownloadExcel}
+              />
+            </div>
+          )}
+
+          {/* Floating AI Chatbot Button */}
+          {result && result.processed_data && showPreview && (
+            <AIChatbot
+              initialData={result.processed_data}
+              initialColumns={result.columns}
+              onDataUpdate={(newResult) => {
+                setResult(newResult);
+                // Keep preview visible
+              }}
+            />
+          )}
 
           {/* Auth Modal */}
           <AuthModal
