@@ -196,7 +196,6 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                                   ? 'text-yellow-900 font-medium bg-yellow-50' 
                                   : hasFormatting ? '' : 'text-gray-700'
                               }`}
-                              dangerouslySetInnerHTML={hasFormatting && cellStyle.fontStyle === 'italic' ? undefined : undefined}
                             >
                               {formatCellValue(row[col])}
                             </td>
