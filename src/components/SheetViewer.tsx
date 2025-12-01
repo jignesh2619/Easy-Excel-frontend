@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Download, Eye, EyeOff, AlertTriangle, BarChart3 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Eye, EyeOff, AlertTriangle } from "lucide-react";
 import { Button } from "./ui/button";
 
 interface SheetViewerProps {
@@ -8,12 +8,22 @@ interface SheetViewerProps {
   rowCount: number;
   onDownload?: () => void;
   highlightDuplicates?: boolean;
-  hasDashboard?: boolean;
-  onDashboardClick?: () => void;
 }
 
-export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true, hasDashboard, onDashboardClick }: SheetViewerProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+// Convert column index to Excel column letter (A, B, C, ..., Z, AA, AB, etc.)
+function getExcelColumnLetter(index: number): string {
+  let result = '';
+  index++; // Convert to 1-based
+  while (index > 0) {
+    index--;
+    result = String.fromCharCode(65 + (index % 26)) + result;
+    index = Math.floor(index / 26);
+  }
+  return result;
+}
+
+export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true }: SheetViewerProps) {
+  const [isExpanded, setIsExpanded] = useState(true); // Default to expanded to show preview
   const [currentPage, setCurrentPage] = useState(1);
   const [showDuplicates, setShowDuplicates] = useState(highlightDuplicates);
   const rowsPerPage = 20;
@@ -32,13 +42,16 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
     const duplicates = new Set<number>();
     
     data.forEach((row, index) => {
+      // Create a key from all column values
       const rowKey = columns.map(col => {
         const val = row[col];
         return val === null || val === undefined ? '' : String(val);
       }).join('|');
       
       if (seen.has(rowKey)) {
+        // Mark current row as duplicate
         duplicates.add(index);
+        // Mark previously seen row(s) as duplicates
         seen.get(rowKey)!.forEach(idx => duplicates.add(idx));
       } else {
         seen.set(rowKey, [index]);
@@ -48,6 +61,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
     return duplicates;
   }, [data, columns, showDuplicates]);
 
+  // Count total duplicates
   const duplicateCount = useMemo(() => {
     return duplicateRowIndices.size;
   }, [duplicateRowIndices]);
@@ -56,6 +70,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
   const formatCellValue = (value: any): string => {
     if (value === null || value === undefined) return "";
     if (typeof value === "number") {
+      // Format numbers with commas
       return value.toLocaleString();
     }
     return String(value);
@@ -89,9 +104,9 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
   };
 
   return (
-    <div className="bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg flex flex-col" style={{ height: '100%', width: '100%' }}>
-      {/* Header - Fixed Height */}
-      <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between flex-shrink-0">
+    <div className="h-full w-full bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-[#00A878] flex flex-col" style={{ height: '100%', width: '100%' }}>
+      {/* Header */}
+      <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Eye className="w-5 h-5" />
           <div>
@@ -121,27 +136,15 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               {showDuplicates ? "Hide" : "Show"} Duplicates
             </Button>
           )}
-          {hasDashboard && onDashboardClick ? (
-            <Button
-              onClick={onDashboardClick}
-              variant="ghost"
-              size="sm"
-              className="text-white hover:bg-white/20"
-            >
-              <BarChart3 className="w-4 h-4 mr-2" />
-              Dashboard
-            </Button>
-          ) : (
-            <Button
-              onClick={() => setIsExpanded(!isExpanded)}
-              variant="ghost"
-              size="sm"
-              className="text-white hover:bg-white/20"
-            >
-              {isExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              {isExpanded ? "Collapse" : "Expand"}
-            </Button>
-          )}
+          <Button
+            onClick={() => setIsExpanded(!isExpanded)}
+            variant="ghost"
+            size="sm"
+            className="text-white hover:bg-white/20"
+          >
+            {isExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {isExpanded ? "Collapse" : "Expand"}
+          </Button>
           {onDownload && (
             <Button
               onClick={onDownload}
@@ -156,33 +159,43 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
         </div>
       </div>
 
-      {/* Sheet Content - Scrollable */}
+      {/* Sheet Content */}
       {isExpanded && (
-        <div 
-          className="flex-1" 
-          style={{ 
-            minHeight: 0, 
-            overflow: 'auto',
-            overflowX: 'auto',
-            overflowY: 'auto',
-            WebkitOverflowScrolling: 'touch'
-          }}
-        >
+        <div className="flex-1 overflow-auto relative" style={{ zIndex: 1, minHeight: 0, height: '100%', width: '100%' }}>
           <div style={{ display: "inline-block", minWidth: "100%" }}>
             <table className="border-collapse" style={{ width: "max-content", minWidth: "100%" }}>
-              <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 10 }}>
+              <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 1 }}>
+                {/* Excel Column Letters Row */}
                 <tr>
+                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border-b border-gray-300 border-r-2 border-gray-400 bg-gray-100 sticky left-0 z-10 min-w-[50px]">
+                    {/* Empty cell for row numbers column */}
+                  </th>
+                  {columns.map((col, idx) => (
+                    <th
+                      key={`letter-${idx}`}
+                      className="px-2 py-1 text-center text-xs font-semibold text-gray-600 border-b border-gray-300 border-r-2 border-gray-300 last:border-r-0 whitespace-nowrap bg-gray-50"
+                      style={{ minWidth: '80px' }}
+                    >
+                      {getExcelColumnLetter(idx)}
+                    </th>
+                  ))}
+                </tr>
+                {/* Actual Column Names Row */}
+                <tr>
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border-b-2 border-gray-400 border-r-2 border-gray-400 bg-gray-100 sticky left-0 z-10 min-w-[50px]">
+                    {/* Row number header */}
+                  </th>
                   {columns.map((col, idx) => (
                     <th
                       key={idx}
-                      className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300 border-r-2 border-gray-300 last:border-r-0 whitespace-nowrap"
+                      className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300 border-r-2 border-gray-300 last:border-r-0 whitespace-nowrap transition-colors duration-200 hover:bg-[#00A878]/10"
                     >
                       {col}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white">
+              <tbody className="bg-white divide-y divide-gray-200">
                 {currentData.length === 0 ? (
                   <tr>
                     <td colSpan={columns.length} className="px-4 py-8 text-center text-gray-500">
@@ -192,14 +205,19 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                 ) : (
                   currentData.map((row, rowIdx) => {
                     const actualIndex = startIndex + rowIdx;
+                    const rowNumber = actualIndex + 1; // Excel uses 1-based row numbers
                     const isDuplicate = showDuplicates && duplicateRowIndices.has(actualIndex);
                     return (
                       <tr
                         key={rowIdx}
-                        className={`hover:bg-[#00A878]/5 transition-colors ${
+                        className={`hover:bg-[#00A878]/5 hover:shadow-sm transition-all duration-200 ease-in-out ${
                           isDuplicate ? 'bg-yellow-50 border-l-4 border-yellow-400' : ''
                         }`}
                       >
+                        {/* Row Number Cell */}
+                        <td className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-100 border-r-2 border-gray-400 bg-gray-50 sticky left-0 z-10 min-w-[50px]">
+                          {rowNumber}
+                        </td>
                         {columns.map((col, colIdx) => {
                           const cellStyle = getCellStyle(row, col);
                           const hasFormatting = Object.keys(cellStyle).length > 0;
@@ -207,7 +225,9 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                             <td
                               key={colIdx}
                               style={cellStyle}
-                              className={`px-4 py-2 text-sm border-b border-gray-100 border-r-2 border-gray-300 last:border-r-0 whitespace-nowrap ${
+                              className={`px-4 py-2 text-sm border-b border-gray-100 border-r-2 border-gray-300 last:border-r-0 whitespace-nowrap transition-colors duration-200 ${
+                                !hasFormatting ? 'hover:bg-[#00A878]/10' : ''
+                              } ${
                                 isDuplicate && !hasFormatting
                                   ? 'text-yellow-900 font-medium bg-yellow-50' 
                                   : hasFormatting ? '' : 'text-gray-700'
@@ -227,17 +247,40 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
         </div>
       )}
 
-      {/* Collapsed View */}
+      {/* Collapsed View - Show first few rows */}
       {!isExpanded && (
-        <div className="p-4 flex-1 overflow-auto">
+        <div className="p-4">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-sm">
               <thead>
+                {/* Excel Column Letters Row */}
                 <tr className="bg-gray-50">
+                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border-b border-gray-200 border-r-2 border-gray-400 bg-gray-100">
+                    {/* Empty cell for row numbers */}
+                  </th>
+                  {columns.slice(0, 5).map((col, idx) => (
+                    <th
+                      key={`letter-${idx}`}
+                      className="px-2 py-1 text-center text-xs font-semibold text-gray-600 border-b border-gray-200 border-r border-gray-200 last:border-r-0 bg-gray-50"
+                    >
+                      {getExcelColumnLetter(idx)}
+                    </th>
+                  ))}
+                  {columns.length > 5 && (
+                    <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border-b border-gray-200 border-r-2 border-gray-300 bg-gray-50">
+                      ...
+                    </th>
+                  )}
+                </tr>
+                {/* Actual Column Names Row */}
+                <tr className="bg-gray-50">
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border-b border-gray-200 border-r-2 border-gray-400 bg-gray-100">
+                    {/* Row number header */}
+                  </th>
                   {columns.slice(0, 5).map((col, idx) => (
                     <th
                       key={idx}
-                      className="px-3 py-2 text-left text-xs font-semibold text-gray-700 border-b border-gray-200 border-r-2 border-gray-300 last:border-r-0"
+                      className="px-3 py-2 text-left text-xs font-semibold text-gray-700 border-b border-gray-200 border-r border-gray-200 last:border-r-0"
                     >
                       {col}
                     </th>
@@ -251,6 +294,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               </thead>
               <tbody>
                 {data.slice(0, 5).map((row, rowIdx) => {
+                  const rowNumber = rowIdx + 1; // Excel uses 1-based row numbers
                   const isDuplicate = showDuplicates && duplicateRowIndices.has(rowIdx);
                   return (
                     <tr 
@@ -259,6 +303,10 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                         isDuplicate ? 'bg-yellow-50 border-l-4 border-yellow-400' : ''
                       }`}
                     >
+                      {/* Row Number Cell */}
+                      <td className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-100 border-r-2 border-gray-400 bg-gray-50">
+                        {rowNumber}
+                      </td>
                       {columns.slice(0, 5).map((col, colIdx) => {
                         const cellStyle = getCellStyle(row, col);
                         const hasFormatting = Object.keys(cellStyle).length > 0;
@@ -297,9 +345,9 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
         </div>
       )}
 
-      {/* Pagination */}
+      {/* Pagination (only when expanded) */}
       {isExpanded && totalPages > 1 && (
-        <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 flex-shrink-0">
+        <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200">
           <div className="text-sm text-gray-700">
             Showing {startIndex + 1} to {Math.min(endIndex, data.length)} of {data.length} rows
           </div>
@@ -333,3 +381,4 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
     </div>
   );
 }
+

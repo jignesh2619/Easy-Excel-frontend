@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Loader2, Sparkles, History } from "lucide-react";
 import { Button } from "./ui/button";
 import { processData } from "../services/api";
-import { TokenDisplay } from "./TokenDisplay";
 // Removed auth requirement for chatbot
 
 interface AIChatbotProps {
@@ -18,28 +17,96 @@ interface Message {
   timestamp: Date;
 }
 
+const CHAT_HISTORY_KEY = 'ai-chatbot-history';
+const CHAT_DATA_KEY = 'ai-chatbot-data';
+
 export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatbotProps) {
-  const [isOpen, setIsOpen] = useState(true); // Open by default
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "assistant",
-      content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
-      timestamp: new Date(),
-    },
-  ]);
+  const [isOpen, setIsOpen] = useState(true); // Default to open
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [currentData, setCurrentData] = useState(initialData);
   const [currentColumns, setCurrentColumns] = useState(initialColumns);
-  const [lastTokenInfo, setLastTokenInfo] = useState<{
-    tokens_used?: number;
-    tokens_limit?: number;
-    tokens_remaining?: number;
-  } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
+
+  // Load chat history from sessionStorage on mount
+  useEffect(() => {
+    try {
+      const savedHistory = sessionStorage.getItem(CHAT_HISTORY_KEY);
+      const savedData = sessionStorage.getItem(CHAT_DATA_KEY);
+      
+      if (savedHistory) {
+        const parsedMessages = JSON.parse(savedHistory);
+        // Convert timestamp strings back to Date objects
+        const messagesWithDates = parsedMessages.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp),
+        }));
+        setMessages(messagesWithDates);
+      } else {
+        // Only show initial greeting if no history exists
+        setMessages([
+          {
+            id: "1",
+            role: "assistant",
+            content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
+            timestamp: new Date(),
+          },
+        ]);
+      }
+
+      // Load saved data if available
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        if (parsedData.data && parsedData.columns) {
+          setCurrentData(parsedData.data);
+          setCurrentColumns(parsedData.columns);
+        }
+      }
+      
+      setIsHistoryLoaded(true);
+    } catch (error) {
+      console.error('Error loading chat history:', error);
+      // Fallback to initial greeting
+      setMessages([
+        {
+          id: "1",
+          role: "assistant",
+          content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
+          timestamp: new Date(),
+        },
+      ]);
+      setIsHistoryLoaded(true);
+    }
+  }, []);
+
+  // Save chat history to sessionStorage whenever messages change
+  useEffect(() => {
+    if (isHistoryLoaded && messages.length > 0) {
+      try {
+        sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages));
+      } catch (error) {
+        console.error('Error saving chat history:', error);
+      }
+    }
+  }, [messages, isHistoryLoaded]);
+
+  // Save current data to sessionStorage whenever it changes
+  useEffect(() => {
+    if (isHistoryLoaded && currentData.length > 0) {
+      try {
+        sessionStorage.setItem(CHAT_DATA_KEY, JSON.stringify({
+          data: currentData,
+          columns: currentColumns,
+        }));
+      } catch (error) {
+        console.error('Error saving chat data:', error);
+      }
+    }
+  }, [currentData, currentColumns, isHistoryLoaded]);
 
   const PROCESSING_MESSAGES = [
     "Analyzing your request...",
@@ -77,11 +144,39 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
     return () => clearInterval(interval);
   }, [isProcessing]);
 
-  // Update data when initialData changes
+  // Update data when initialData changes (but only if it's a new file, not just a remount)
   useEffect(() => {
-    setCurrentData(initialData);
-    setCurrentColumns(initialColumns);
-  }, [initialData, initialColumns]);
+    if (isHistoryLoaded) {
+      // Check if this is a completely new dataset (different number of rows/columns)
+      // If it's the same dataset, keep the current data (which might have been modified)
+      const savedData = sessionStorage.getItem(CHAT_DATA_KEY);
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          // Only update if it's clearly a different file (different structure)
+          const isNewFile = 
+            parsed.data.length !== initialData.length ||
+            parsed.columns.length !== initialColumns.length ||
+            JSON.stringify(parsed.columns) !== JSON.stringify(initialColumns);
+          
+          if (isNewFile) {
+            // New file uploaded - update data and optionally clear history
+            setCurrentData(initialData);
+            setCurrentColumns(initialColumns);
+          }
+          // Otherwise, keep the saved data (which includes any modifications from chat)
+        } catch (error) {
+          // If parsing fails, use initial data
+          setCurrentData(initialData);
+          setCurrentColumns(initialColumns);
+        }
+      } else {
+        // No saved data, use initial data
+        setCurrentData(initialData);
+        setCurrentColumns(initialColumns);
+      }
+    }
+  }, [initialData, initialColumns, isHistoryLoaded]);
 
   const handleSend = async () => {
     if (!input.trim() || isProcessing) return;
@@ -101,15 +196,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
     try {
       const response = await processData(currentData, currentColumns, promptText);
       
-      // Store token info from response
-      if (response.tokens_used || response.tokens_limit) {
-        setLastTokenInfo({
-          tokens_used: response.tokens_used,
-          tokens_limit: response.tokens_limit,
-          tokens_remaining: response.tokens_remaining,
-        });
-      }
-      
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
@@ -121,8 +207,21 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       
       // Update the data
       if (response.processed_data) {
-        setCurrentData(response.processed_data);
-        setCurrentColumns(response.columns || currentColumns);
+        const newData = response.processed_data;
+        const newColumns = response.columns || currentColumns;
+        setCurrentData(newData);
+        setCurrentColumns(newColumns);
+        
+        // Save updated data to sessionStorage
+        try {
+          sessionStorage.setItem(CHAT_DATA_KEY, JSON.stringify({
+            data: newData,
+            columns: newColumns,
+          }));
+        } catch (error) {
+          console.error('Error saving updated data:', error);
+        }
+        
         onDataUpdate(response);
       }
     } catch (error: any) {
@@ -188,9 +287,21 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             </div>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => {}}
+                onClick={() => {
+                  if (confirm('Clear chat history? This cannot be undone.')) {
+                    setMessages([
+                      {
+                        id: "1",
+                        role: "assistant",
+                        content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
+                        timestamp: new Date(),
+                      },
+                    ]);
+                    sessionStorage.removeItem(CHAT_HISTORY_KEY);
+                  }
+                }}
                 className="p-1 hover:bg-white/20 rounded transition-colors"
-                title="History"
+                title="Clear History"
               >
                 <History className="w-4 h-4" />
               </button>
@@ -203,19 +314,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               </button>
             </div>
           </div>
-
-          {/* Token Display - Compact */}
-          {lastTokenInfo && (lastTokenInfo.tokens_used || lastTokenInfo.tokens_limit) && (
-            <div className="px-4 pt-2 border-b border-gray-200 bg-white">
-              <TokenDisplay
-                tokensUsed={lastTokenInfo.tokens_used}
-                tokensLimit={lastTokenInfo.tokens_limit}
-                tokensRemaining={lastTokenInfo.tokens_remaining}
-                showLabel={false}
-                compact={true}
-              />
-            </div>
-          )}
 
           {/* Messages - Fully Scrollable */}
           <div 
