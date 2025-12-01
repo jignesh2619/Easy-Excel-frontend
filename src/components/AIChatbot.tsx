@@ -41,10 +41,15 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       if (savedHistory) {
         const parsedMessages = JSON.parse(savedHistory);
         // Convert timestamp strings back to Date objects
+        // CRITICAL: Ensure ALL messages (both user and assistant) are loaded
         const messagesWithDates = parsedMessages.map((msg: any) => ({
           ...msg,
           timestamp: new Date(msg.timestamp),
         }));
+        // Log to verify both user and assistant messages are loaded
+        const userMsgCount = messagesWithDates.filter((m: Message) => m.role === "user").length;
+        const assistantMsgCount = messagesWithDates.filter((m: Message) => m.role === "assistant").length;
+        console.log(`Loaded chat history: ${userMsgCount} user messages, ${assistantMsgCount} assistant messages`);
         setMessages(messagesWithDates);
       } else {
         // Only show initial greeting if no history exists
@@ -87,6 +92,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   useEffect(() => {
     if (isHistoryLoaded && messages.length > 0) {
       try {
+        // CRITICAL: Save ALL messages (both user and assistant)
+        const userMsgCount = messages.filter(m => m.role === "user").length;
+        const assistantMsgCount = messages.filter(m => m.role === "assistant").length;
+        console.log(`Saving chat history: ${userMsgCount} user messages, ${assistantMsgCount} assistant messages`);
         sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages));
       } catch (error) {
         console.error('Error saving chat history:', error);
@@ -188,7 +197,12 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    // CRITICAL: Add user message immediately and ensure it's saved
+    setMessages((prev) => {
+      const newMessages = [...prev, userMessage];
+      console.log(`Added user message. Total messages: ${newMessages.length} (${newMessages.filter(m => m.role === "user").length} user, ${newMessages.filter(m => m.role === "assistant").length} assistant)`);
+      return newMessages;
+    });
     const promptText = input;
     setInput("");
     setIsProcessing(true);
@@ -203,7 +217,14 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
+      // CRITICAL: Preserve ALL previous messages (including user messages) when adding assistant response
+      setMessages((prev) => {
+        const newMessages = [...prev, assistantMessage];
+        const userMsgCount = newMessages.filter(m => m.role === "user").length;
+        const assistantMsgCount = newMessages.filter(m => m.role === "assistant").length;
+        console.log(`Added assistant response. Total messages: ${newMessages.length} (${userMsgCount} user, ${assistantMsgCount} assistant)`);
+        return newMessages;
+      });
       
       // Update the data
       if (response.processed_data) {
@@ -231,7 +252,12 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         content: `❌ Error: ${error.message || "Failed to process your request. Please try again."}`,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, errorMessage]);
+      // CRITICAL: Preserve ALL previous messages (including user messages) when adding error
+      setMessages((prev) => {
+        const newMessages = [...prev, errorMessage];
+        console.log(`Added error message. Total messages: ${newMessages.length} (${newMessages.filter(m => m.role === "user").length} user, ${newMessages.filter(m => m.role === "assistant").length} assistant)`);
+        return newMessages;
+      });
     } finally {
       setIsProcessing(false);
     }
