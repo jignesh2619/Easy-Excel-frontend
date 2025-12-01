@@ -530,9 +530,9 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               </tbody>
             </table>
           </div>
-          {data.length > 5 && (
+          {localData.length > 5 && (
             <p className="text-xs text-gray-500 mt-2 text-center">
-              Showing first 5 rows. Click "Expand" to see all {data.length.toLocaleString()} rows
+              Showing first 5 rows. Click "Expand" to see all {localData.length.toLocaleString()} rows
             </p>
           )}
         </div>
