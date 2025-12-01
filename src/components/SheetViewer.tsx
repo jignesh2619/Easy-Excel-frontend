@@ -167,14 +167,14 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 1 }}>
                 {/* Excel Column Letters Row */}
                 <tr>
-                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border-b border-gray-300 border-r-2 border-gray-400 bg-gray-100 sticky left-0 z-10 min-w-[50px]">
+                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border-b border-black border-r-2 border-black bg-gray-100 sticky left-0 z-10" style={{ width: '50px', minWidth: '50px', maxWidth: '50px' }}>
                     {/* Empty cell for row numbers column */}
                   </th>
                   {columns.map((col, idx) => (
                     <th
                       key={`letter-${idx}`}
-                      className="px-2 py-1 text-center text-xs font-semibold text-gray-600 border-b border-gray-300 border-r-2 border-gray-300 last:border-r-0 whitespace-nowrap bg-gray-50"
-                      style={{ minWidth: '80px' }}
+                      className="px-2 py-1 text-center text-xs font-semibold text-gray-600 border-b border-black border-r-2 border-black whitespace-nowrap bg-gray-50"
+                      style={{ minWidth: '100px', textAlign: 'center' }}
                     >
                       {getExcelColumnLetter(idx)}
                     </th>
@@ -182,13 +182,14 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                 </tr>
                 {/* Actual Column Names Row */}
                 <tr>
-                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border-b-2 border-gray-400 border-r-2 border-gray-400 bg-gray-100 sticky left-0 z-10 min-w-[50px]">
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border-b-2 border-black border-r-2 border-black bg-gray-100 sticky left-0 z-10" style={{ width: '50px', minWidth: '50px', maxWidth: '50px' }}>
                     {/* Row number header */}
                   </th>
                   {columns.map((col, idx) => (
                     <th
                       key={idx}
-                      className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300 border-r-2 border-gray-300 last:border-r-0 whitespace-nowrap transition-colors duration-200 hover:bg-[#00A878]/10"
+                      className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-black border-r-2 border-black whitespace-nowrap transition-colors duration-200 hover:bg-[#00A878]/10"
+                      style={{ minWidth: '100px' }}
                     >
                       {col}
                     </th>
@@ -215,7 +216,10 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                         }`}
                       >
                         {/* Row Number Cell */}
-                        <td className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-100 border-r-2 border-gray-400 bg-gray-50 sticky left-0 z-10 min-w-[50px]">
+                        <td 
+                          className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border-b border-black border-r-2 border-black bg-gray-50 sticky left-0 z-10"
+                          style={{ width: '50px', minWidth: '50px', maxWidth: '50px', textAlign: 'center' }}
+                        >
                           {rowNumber}
                         </td>
                         {columns.map((col, colIdx) => {
@@ -224,8 +228,8 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                           return (
                             <td
                               key={colIdx}
-                              style={cellStyle}
-                              className={`px-4 py-2 text-sm border-b border-gray-100 border-r-2 border-gray-300 last:border-r-0 whitespace-nowrap transition-colors duration-200 ${
+                              style={{ ...cellStyle, minWidth: '100px' }}
+                              className={`px-4 py-2 text-sm border-b border-black border-r-2 border-black whitespace-nowrap transition-colors duration-200 ${
                                 !hasFormatting ? 'hover:bg-[#00A878]/10' : ''
                               } ${
                                 isDuplicate && !hasFormatting
@@ -255,38 +259,40 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               <thead>
                 {/* Excel Column Letters Row */}
                 <tr className="bg-gray-50">
-                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border-b border-gray-200 border-r-2 border-gray-400 bg-gray-100">
+                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border-b border-black border-r-2 border-black bg-gray-100" style={{ width: '50px', minWidth: '50px', maxWidth: '50px' }}>
                     {/* Empty cell for row numbers */}
                   </th>
                   {columns.slice(0, 5).map((col, idx) => (
                     <th
                       key={`letter-${idx}`}
-                      className="px-2 py-1 text-center text-xs font-semibold text-gray-600 border-b border-gray-200 border-r border-gray-200 last:border-r-0 bg-gray-50"
+                      className="px-2 py-1 text-center text-xs font-semibold text-gray-600 border-b border-black border-r-2 border-black bg-gray-50"
+                      style={{ minWidth: '100px', textAlign: 'center' }}
                     >
                       {getExcelColumnLetter(idx)}
                     </th>
                   ))}
                   {columns.length > 5 && (
-                    <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border-b border-gray-200 border-r-2 border-gray-300 bg-gray-50">
+                    <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border-b border-black border-r-2 border-black bg-gray-50" style={{ minWidth: '100px', textAlign: 'center' }}>
                       ...
                     </th>
                   )}
                 </tr>
                 {/* Actual Column Names Row */}
                 <tr className="bg-gray-50">
-                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border-b border-gray-200 border-r-2 border-gray-400 bg-gray-100">
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border-b border-black border-r-2 border-black bg-gray-100" style={{ width: '50px', minWidth: '50px', maxWidth: '50px' }}>
                     {/* Row number header */}
                   </th>
                   {columns.slice(0, 5).map((col, idx) => (
                     <th
                       key={idx}
-                      className="px-3 py-2 text-left text-xs font-semibold text-gray-700 border-b border-gray-200 border-r border-gray-200 last:border-r-0"
+                      className="px-3 py-2 text-left text-xs font-semibold text-gray-700 border-b border-black border-r-2 border-black"
+                      style={{ minWidth: '100px' }}
                     >
                       {col}
                     </th>
                   ))}
                   {columns.length > 5 && (
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-gray-200 border-r-2 border-gray-300">
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-black border-r-2 border-black" style={{ minWidth: '100px' }}>
                       +{columns.length - 5} more
                     </th>
                   )}
@@ -299,12 +305,15 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                   return (
                     <tr 
                       key={rowIdx} 
-                      className={`border-b border-gray-100 ${
+                      className={`border-b border-black ${
                         isDuplicate ? 'bg-yellow-50 border-l-4 border-yellow-400' : ''
                       }`}
                     >
                       {/* Row Number Cell */}
-                      <td className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-100 border-r-2 border-gray-400 bg-gray-50">
+                      <td 
+                        className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border-b border-black border-r-2 border-black bg-gray-50"
+                        style={{ width: '50px', minWidth: '50px', maxWidth: '50px', textAlign: 'center' }}
+                      >
                         {rowNumber}
                       </td>
                       {columns.slice(0, 5).map((col, colIdx) => {
@@ -313,8 +322,8 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                         return (
                           <td 
                             key={colIdx}
-                            style={cellStyle}
-                            className={`px-3 py-2 border-r-2 border-gray-300 last:border-r-0 ${
+                            style={{ ...cellStyle, minWidth: '100px' }}
+                            className={`px-3 py-2 border-b border-black border-r-2 border-black ${
                               isDuplicate && !hasFormatting
                                 ? 'text-yellow-900 font-medium bg-yellow-50' 
                                 : hasFormatting ? '' : 'text-gray-600'
@@ -325,9 +334,9 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                         );
                       })}
                       {columns.length > 5 && (
-                        <td className={`px-3 py-2 text-xs border-r-2 border-gray-300 ${
+                        <td className={`px-3 py-2 text-xs border-b border-black border-r-2 border-black ${
                           isDuplicate ? 'text-yellow-700' : 'text-gray-400'
-                        }`}>
+                        }`} style={{ minWidth: '100px' }}>
                           ...
                         </td>
                       )}
@@ -347,7 +356,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
 
       {/* Pagination (only when expanded) */}
       {isExpanded && totalPages > 1 && (
-        <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200">
+        <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-black">
           <div className="text-sm text-gray-700">
             Showing {startIndex + 1} to {Math.min(endIndex, data.length)} of {data.length} rows
           </div>
@@ -357,7 +366,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               disabled={currentPage === 1}
               variant="outline"
               size="sm"
-              className="border-gray-300"
+              className="border-black"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -370,7 +379,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               disabled={currentPage === totalPages}
               variant="outline"
               size="sm"
-              className="border-gray-300"
+              className="border-black"
             >
               Next
               <ChevronRight className="w-4 h-4" />
