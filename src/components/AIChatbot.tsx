@@ -19,7 +19,7 @@ interface Message {
 }
 
 export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatbotProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true); // Open by default
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
