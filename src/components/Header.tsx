@@ -158,20 +158,6 @@ export function Header() {
                   <span className="hidden sm:block text-sm text-gray-600">
                     Hi, {user.email?.split("@")[0] || "there"}
                   </span>
-                  <a 
-                    href="https://www.producthunt.com/products/easyexcel?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-easyexcel" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="hidden md:block"
-                  >
-                    <img 
-                      src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1044628&theme=light&t=1764598786487" 
-                      alt="EasyExcel - Clean sheets and build dashboards with one click | Product Hunt" 
-                      style={{ width: "250px", height: "54px" }} 
-                      width="250" 
-                      height="54" 
-                    />
-                  </a>
                   <Button
                     variant="outline"
                     className="border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 rounded-full px-4"

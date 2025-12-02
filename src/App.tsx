@@ -10,32 +10,20 @@ import { Footer } from "./components/Footer";
 import { InteractiveSheetEditor } from "./components/InteractiveSheetEditor";
 import { ChartViewer } from "./components/ChartViewer";
 import { FullScreenSheetPreview } from "./components/FullScreenSheetPreview";
-import { FullScreenDashboardPreview } from "./components/FullScreenDashboardPreview";
 import { useEffect, useState } from "react";
 
 export default function App() {
   const [editorData, setEditorData] = useState<{ data: any[]; columns: string[] } | null>(null);
   const [chartViewerData, setChartViewerData] = useState<{ charts: Array<{ chartUrl: string; chartType: string; title?: string }> } | null>(null);
   const [showPreview, setShowPreview] = useState(false);
-  const [showDashboard, setShowDashboard] = useState(false);
 
   useEffect(() => {
     const checkRoute = () => {
-      // Check if we're on the dashboard page
-      if (window.location.pathname === '/dashboard') {
-        setShowDashboard(true);
-        setShowPreview(false);
-        setChartViewerData(null);
-        setEditorData(null);
-        return;
-      }
-      
       // Check if we're on the preview page
       if (window.location.pathname === '/preview' || window.location.search.includes('preview=true')) {
         const previewDataStr = sessionStorage.getItem('previewData');
         if (previewDataStr) {
           setShowPreview(true);
-          setShowDashboard(false);
           return;
         }
       } else {
@@ -81,20 +69,6 @@ export default function App() {
       window.removeEventListener('popstate', checkRoute);
     };
   }, []);
-
-  // If dashboard is requested, show dashboard preview
-  if (showDashboard) {
-    return (
-      <FullScreenDashboardPreview
-        onClose={() => {
-          window.history.pushState({}, '', '/');
-          setShowDashboard(false);
-          // Trigger popstate to update route
-          window.dispatchEvent(new PopStateEvent('popstate'));
-        }}
-      />
-    );
-  }
 
   // If preview is requested, show full-screen preview
   if (showPreview) {
@@ -155,6 +129,24 @@ export default function App() {
         <PromptToolSection />
         <FeaturesSection />
         <DashboardPreviewSection />
+        {/* Product Hunt Badge */}
+        <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
+          <div className="max-w-7xl mx-auto flex justify-center">
+            <a 
+              href="https://www.producthunt.com/products/easyexcel?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-easyexcel" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              <img 
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1044628&theme=light&t=1764598786487" 
+                alt="EasyExcel - Clean sheets and build dashboards with one click | Product Hunt" 
+                style={{ width: "250px", height: "54px" }} 
+                width="250" 
+                height="54" 
+              />
+            </a>
+          </div>
+        </section>
         <PricingSection />
         <TokenDashboard />
         <FeedbackSection />
