@@ -44,8 +44,8 @@ export default function App() {
         setEditorData(null);
       }
       
-      // Check if we're on the chart viewer page
-      if (window.location.search.includes('charts=true')) {
+      // Check if we're on the dashboard page or chart viewer page
+      if (window.location.pathname === '/dashboard' || window.location.search.includes('charts=true')) {
         const chartViewerDataStr = sessionStorage.getItem('chartViewerData');
         if (chartViewerDataStr) {
           try {
