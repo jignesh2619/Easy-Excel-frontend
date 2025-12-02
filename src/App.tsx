@@ -10,9 +10,8 @@ import { Footer } from "./components/Footer";
 import { InteractiveSheetEditor } from "./components/InteractiveSheetEditor";
 import { ChartViewer } from "./components/ChartViewer";
 import { FullScreenSheetPreview } from "./components/FullScreenSheetPreview";
-import { DashboardPreview } from "./components/DashboardPreview";
+import { FullScreenDashboardPreview } from "./components/FullScreenDashboardPreview";
 import { useEffect, useState } from "react";
-import { trackPageView } from "./utils/analytics";
 
 export default function App() {
   const [editorData, setEditorData] = useState<{ data: any[]; columns: string[] } | null>(null);
@@ -21,31 +20,22 @@ export default function App() {
   const [showDashboard, setShowDashboard] = useState(false);
 
   useEffect(() => {
-    // Track initial page view
-    trackPageView(window.location.pathname + window.location.search);
-
     const checkRoute = () => {
-      // Track page view on route change
-      trackPageView(window.location.pathname + window.location.search);
-      
-      // Check if we're on the dashboard preview page
-      if (window.location.pathname === '/preview-dashboard') {
-        const dashboardDataStr = sessionStorage.getItem('dashboardData');
-        if (dashboardDataStr) {
-          setShowDashboard(true);
-          return;
-        } else {
-          setShowDashboard(false);
-        }
-      } else {
-        setShowDashboard(false);
+      // Check if we're on the dashboard page
+      if (window.location.pathname === '/dashboard') {
+        setShowDashboard(true);
+        setShowPreview(false);
+        setChartViewerData(null);
+        setEditorData(null);
+        return;
       }
-
+      
       // Check if we're on the preview page
       if (window.location.pathname === '/preview' || window.location.search.includes('preview=true')) {
         const previewDataStr = sessionStorage.getItem('previewData');
         if (previewDataStr) {
           setShowPreview(true);
+          setShowDashboard(false);
           return;
         }
       } else {
@@ -92,12 +82,12 @@ export default function App() {
     };
   }, []);
 
-  // If dashboard preview is requested, show dashboard
+  // If dashboard is requested, show dashboard preview
   if (showDashboard) {
     return (
-      <DashboardPreview
+      <FullScreenDashboardPreview
         onClose={() => {
-          window.history.pushState({}, '', '/preview');
+          window.history.pushState({}, '', '/');
           setShowDashboard(false);
           // Trigger popstate to update route
           window.dispatchEvent(new PopStateEvent('popstate'));

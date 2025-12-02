@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SheetViewer } from "./SheetViewer";
 import { AIChatbot } from "./AIChatbot";
-import { ArrowLeft, Download, Undo2 } from "lucide-react";
+import { ArrowLeft, Download, Undo2, LayoutDashboard } from "lucide-react";
 import { Button } from "./ui/button";
 import { getFileDownloadUrl, downloadFile } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
@@ -175,6 +175,18 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              onClick={() => {
+                window.history.pushState({}, '', '/dashboard');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              Dashboard
+            </Button>
             <Button
               onClick={handleUndo}
               variant="outline"
