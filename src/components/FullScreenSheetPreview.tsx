@@ -176,6 +176,17 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
           </div>
           <div className="flex items-center gap-2">
             <Button
+              onClick={handleUndo}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+              disabled={!canUndo}
+              title={canUndo ? "Undo last change" : "No changes to undo"}
+            >
+              <Undo2 className="w-4 h-4" />
+              Undo
+            </Button>
+            <Button
               onClick={() => {
                 window.history.pushState({}, '', '/dashboard');
                 window.dispatchEvent(new PopStateEvent('popstate'));
@@ -186,16 +197,6 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
             >
               <LayoutDashboard className="w-4 h-4" />
               Dashboard
-            </Button>
-            <Button
-              onClick={handleUndo}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-              disabled={!canUndo}
-            >
-              <Undo2 className="w-4 h-4" />
-              Undo
             </Button>
             <Button
               onClick={handleDownload}
