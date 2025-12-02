@@ -117,9 +117,9 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
   }
 
   return (
-    <div className="h-screen bg-gray-50 flex overflow-hidden">
+    <div className="h-screen bg-gray-50 flex">
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col" style={{ marginRight: '420px' }}>
+      <div className="flex-1 flex flex-col" style={{ marginRight: '420px', minWidth: 0 }}>
         {/* Top Bar */}
         <div className="bg-white border-b border-gray-200 shadow-sm flex-shrink-0">
           <div className="px-4 py-2 flex items-center justify-between">
@@ -153,8 +153,8 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
         </div>
 
         {/* Sheet Container - Windowed View */}
-        <div className="flex-1 p-4" style={{ overflow: 'visible' }}>
-          <div className="bg-white rounded-lg shadow-lg border border-gray-300" style={{ height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
+        <div className="flex-1 p-4" style={{ minWidth: 0, overflow: 'visible' }}>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-300" style={{ height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             {/* Spreadsheet Title Bar */}
             <div className="bg-gray-100 border-b border-gray-300 px-3 py-1.5 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2">
@@ -191,8 +191,9 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
               className="flex-1" 
               style={{ 
                 minHeight: 0,
-                overflowX: 'auto',
-                overflowY: 'auto',
+                minWidth: 0,
+                overflowX: 'scroll',
+                overflowY: 'scroll',
                 width: '100%',
                 height: '100%',
                 position: 'relative'
