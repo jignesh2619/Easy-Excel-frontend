@@ -45,23 +45,6 @@ export function Footer() {
               © {new Date().getFullYear()} EasyExcel
             </div>
           </div>
-          
-          {/* Product Hunt Badge */}
-          <div className="mt-8 flex justify-center">
-            <a 
-              href="https://www.producthunt.com/products/easyexcel?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-easyexcel" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              <img 
-                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1044628&theme=light&t=1764598786487" 
-                alt="EasyExcel - Clean sheets and build dashboards with one click | Product Hunt" 
-                style={{ width: '250px', height: '54px' }} 
-                width="250" 
-                height="54" 
-              />
-            </a>
-          </div>
         </div>
       </div>
     </footer>
