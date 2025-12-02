@@ -41,13 +41,19 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       if (savedHistory) {
         const parsedMessages = JSON.parse(savedHistory);
         console.log('📥 Loading messages from sessionStorage:', parsedMessages.length, 'messages');
-        // Convert timestamp strings back to Date objects
-        const messagesWithDates = parsedMessages.map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp),
-        }));
+        // Convert timestamp strings back to Date objects and ensure all messages are valid
+        const messagesWithDates = parsedMessages
+          .filter((msg: any) => msg && msg.role && msg.content) // Filter out invalid messages
+          .map((msg: any) => ({
+            ...msg,
+            timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
+          }));
+        console.log('✅ Messages loaded:', messagesWithDates.length, 'valid messages');
+        console.log('📋 Message breakdown:', {
+          user: messagesWithDates.filter((m: Message) => m.role === 'user').length,
+          assistant: messagesWithDates.filter((m: Message) => m.role === 'assistant').length,
+        });
         setMessages(messagesWithDates);
-        console.log('✅ Messages loaded:', messagesWithDates.map(m => `${m.role}: ${m.content.substring(0, 50)}...`));
       } else {
         // Only show initial greeting if no history exists
         const initialMessage = {
@@ -197,6 +203,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       try {
         sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(newMessages));
         console.log('✅ User message saved immediately:', userMessage.content);
+        console.log('📊 Total messages after user input:', newMessages.length, {
+          user: newMessages.filter(m => m.role === 'user').length,
+          assistant: newMessages.filter(m => m.role === 'assistant').length,
+        });
       } catch (error) {
         console.error('Error saving user message:', error);
       }
@@ -364,30 +374,33 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                 <p>No messages yet. Start a conversation!</p>
               </div>
             ) : (
-              messages.map((message) => {
-                console.log('🎨 Rendering message:', message.role, message.content.substring(0, 50));
-                return (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                  >
+              messages
+                .filter((message) => message && message.role && message.content) // Filter out any invalid messages
+                .map((message) => {
+                  const isUser = message.role === "user";
+                  console.log('🎨 Rendering message:', isUser ? 'USER' : 'AI', message.content.substring(0, 50));
+                  return (
                     <div
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        message.role === "user"
-                          ? "bg-[#00A878] text-white"
-                          : "bg-white text-gray-800 border border-gray-200"
-                      }`}
+                      key={message.id}
+                      className={`flex ${isUser ? "justify-end" : "justify-start"}`}
                     >
-                      <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                      <p className={`text-xs mt-1 ${
-                        message.role === "user" ? "text-white/70" : "text-gray-500"
-                      }`}>
-                        {message.role === "user" ? "You" : "AI"} • {message.timestamp.toLocaleTimeString()}
-                      </p>
+                      <div
+                        className={`max-w-[80%] rounded-lg p-3 ${
+                          isUser
+                            ? "bg-[#00A878] text-white"
+                            : "bg-white text-gray-800 border border-gray-200"
+                        }`}
+                      >
+                        <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                        <p className={`text-xs mt-1 ${
+                          isUser ? "text-white/70" : "text-gray-500"
+                        }`}>
+                          {isUser ? "You" : "AI"} • {message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString()}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })
             )}
             {isProcessing && (
               <div className="flex justify-start">
