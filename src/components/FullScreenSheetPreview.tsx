@@ -19,6 +19,8 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     processed_file_url?: string;
   } | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [selectedCell, setSelectedCell] = useState<{row: number, col: string} | null>(null);
+  const [selectedCellValue, setSelectedCellValue] = useState<string>("");
   const { user, session } = useAuth();
 
   useEffect(() => {
@@ -101,59 +103,79 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     );
   }
 
+  const [selectedCell, setSelectedCell] = useState<{row: number, col: string} | null>(null);
+  const [selectedCellValue, setSelectedCellValue] = useState<string>("");
+
   return (
-    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
-      {/* Top Bar */}
-      <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
-        <div className="max-w-full mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+    <div className="h-screen bg-gray-50 flex overflow-hidden">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col" style={{ marginRight: '420px' }}>
+        {/* Top Bar */}
+        <div className="bg-white border-b border-gray-200 shadow-sm flex-shrink-0">
+          <div className="px-4 py-2 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={onClose}
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+              <div>
+                <h1 className="text-sm font-medium text-gray-700">processed_data</h1>
+                <p className="text-xs text-gray-500">
+                  {previewData.data.length.toLocaleString()} rows • {previewData.columns.length} columns
+                </p>
+              </div>
+            </div>
             <Button
-              onClick={onClose}
-              variant="ghost"
+              onClick={handleDownload}
+              variant="outline"
               size="sm"
               className="flex items-center gap-2"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Back
+              <Download className="w-4 h-4" />
+              Download Excel
             </Button>
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900">Processed Sheet Preview</h1>
-              <p className="text-sm text-gray-500">
-                {previewData.data.length.toLocaleString()} rows • {previewData.columns.length} columns
-              </p>
+          </div>
+        </div>
+
+        {/* Sheet Container - Windowed View */}
+        <div className="flex-1 p-4 overflow-auto">
+          <div className="bg-white rounded-lg shadow-lg border border-gray-300" style={{ height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
+            {/* Spreadsheet Title Bar */}
+            <div className="bg-gray-100 border-b border-gray-300 px-3 py-1.5 flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-gray-700">Processed Data</span>
+              </div>
+            </div>
+
+            {/* Formula Bar */}
+            <div className="bg-gray-50 border-b border-gray-300 px-3 py-1 flex items-center gap-2 flex-shrink-0">
+              <span className="text-xs font-mono text-gray-600 w-12">{selectedCell ? `${selectedCell.col}${selectedCell.row + 1}` : 'A1'}</span>
+              <div className="flex-1 bg-white border border-gray-300 rounded px-2 py-1">
+                <span className="text-xs text-gray-700">{selectedCellValue || ''}</span>
+              </div>
+            </div>
+
+            {/* Sheet Viewer */}
+            <div className="flex-1 overflow-auto" style={{ minHeight: 0 }}>
+              <SheetViewer
+                data={previewData.data}
+                columns={previewData.columns}
+                rowCount={previewData.data.length}
+                onDownload={handleDownload}
+                onDataChange={handleCellChange}
+                onCellSelect={(row, col, value) => {
+                  setSelectedCell({ row, col });
+                  setSelectedCellValue(value ? String(value) : '');
+                }}
+              />
             </div>
           </div>
-          <Button
-            onClick={handleDownload}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Download Excel
-          </Button>
         </div>
-      </div>
-
-      {/* Sheet Viewer - Full Screen */}
-      <div 
-        className="flex-1" 
-        style={{ 
-          paddingRight: '420px', 
-          zIndex: 1, 
-          height: '100%', 
-          overflow: 'hidden', 
-          display: 'flex', 
-          flexDirection: 'column'
-        }}
-      >
-        <SheetViewer
-          data={previewData.data}
-          columns={previewData.columns}
-          rowCount={previewData.data.length}
-          onDownload={handleDownload}
-          onDataChange={handleCellChange}
-        />
       </div>
 
       {/* AI Chatbot */}

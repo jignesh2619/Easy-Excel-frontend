@@ -9,6 +9,7 @@ interface SheetViewerProps {
   onDownload?: () => void;
   highlightDuplicates?: boolean;
   onDataChange?: (rowIndex: number, column: string, value: any) => void;
+  onCellSelect?: (rowIndex: number, column: string, value: any) => void;
 }
 
 // Convert column index to Excel column letter (A, B, C, ..., Z, AA, AB, etc.)
@@ -23,7 +24,7 @@ function getExcelColumnLetter(index: number): string {
   return result;
 }
 
-export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true, onDataChange }: SheetViewerProps) {
+export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true, onDataChange, onCellSelect }: SheetViewerProps) {
   const [isExpanded, setIsExpanded] = useState(true); // Default to expanded to show preview
   const [currentPage, setCurrentPage] = useState(1);
   const [showDuplicates, setShowDuplicates] = useState(highlightDuplicates);
@@ -179,61 +180,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
   };
 
   return (
-    <div className="h-full w-full bg-white border-2 border-gray-200 rounded-xl shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-[#00A878] flex flex-col" style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <Eye className="w-5 h-5" />
-          <div>
-            <h3 className="font-bold text-lg">Processed Sheet Preview</h3>
-            <p className="text-sm text-white/90">
-              {rowCount.toLocaleString()} {rowCount === 1 ? "row" : "rows"} • {columns.length} {columns.length === 1 ? "column" : "columns"}
-              {localData.length < rowCount && ` (showing first ${localData.length.toLocaleString()})`}
-              {duplicateCount > 0 && showDuplicates && (
-                <span className="ml-2 inline-flex items-center gap-1 bg-yellow-500/20 px-2 py-0.5 rounded">
-                  <AlertTriangle className="w-3 h-3" />
-                  {duplicateCount} duplicate{duplicateCount !== 1 ? 's' : ''}
-                </span>
-              )}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {duplicateCount > 0 && (
-            <Button
-              onClick={() => setShowDuplicates(!showDuplicates)}
-              variant="ghost"
-              size="sm"
-              className={`text-white hover:bg-white/20 ${showDuplicates ? 'bg-yellow-500/30' : ''}`}
-              title={showDuplicates ? "Hide duplicate highlighting" : "Show duplicate highlighting"}
-            >
-              <AlertTriangle className="w-4 h-4 mr-1" />
-              {showDuplicates ? "Hide" : "Show"} Duplicates
-            </Button>
-          )}
-          <Button
-            onClick={() => setIsExpanded(!isExpanded)}
-            variant="ghost"
-            size="sm"
-            className="text-white hover:bg-white/20"
-          >
-            {isExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            {isExpanded ? "Collapse" : "Expand"}
-          </Button>
-          {onDownload && (
-            <Button
-              onClick={onDownload}
-              variant="ghost"
-              size="sm"
-              className="text-white hover:bg-white/20"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Download
-            </Button>
-          )}
-        </div>
-      </div>
-
+    <div className="h-full w-full bg-white flex flex-col" style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Sheet Content */}
       {isExpanded && (
         <div 
@@ -243,8 +190,8 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
             minHeight: 0,
             width: '100%',
             height: '100%',
-            overflowX: 'scroll',
-            overflowY: 'scroll',
+            overflowX: 'auto',
+            overflowY: 'auto',
             WebkitOverflowScrolling: 'touch',
             position: 'relative'
           }}
@@ -357,13 +304,18 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                                 borderTop: 'none',
                                 padding: '4px'
                               }}
-                              className={`text-sm border border-black transition-colors duration-200 ${
+                              className={`text-sm border border-black transition-colors duration-200 cursor-pointer ${
                                 !hasFormatting ? 'hover:bg-[#00A878]/10' : ''
                               } ${
                                 isDuplicate && !hasFormatting
                                   ? 'text-yellow-900 font-medium bg-yellow-50' 
                                   : hasFormatting ? '' : 'text-gray-700'
                               }`}
+                              onClick={() => {
+                                if (onCellSelect) {
+                                  onCellSelect(actualIndex, col, cellValue);
+                                }
+                              }}
                               onDoubleClick={() => handleCellEditStart(actualIndex, col, cellValue)}
                             >
                               {isEditing ? (
