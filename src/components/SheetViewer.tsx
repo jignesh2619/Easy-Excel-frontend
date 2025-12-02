@@ -190,17 +190,18 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
             minHeight: 0,
             width: '100%',
             height: '100%',
-            overflow: 'auto',
+            overflowX: 'auto',
+            overflowY: 'auto',
             position: 'relative'
           }}
         >
-          <div style={{ display: "block", width: "max-content" }}>
+          <div style={{ display: "inline-block", width: "max-content", minWidth: "100%" }}>
             <table 
               className="border-collapse" 
               style={{ 
                 width: "max-content",
                 borderSpacing: 0,
-                tableLayout: 'auto'
+                tableLayout: 'fixed'
               }}
             >
               <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 1 }}>
