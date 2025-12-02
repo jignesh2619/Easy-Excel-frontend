@@ -36,6 +36,19 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     }
   }, []);
 
+  useEffect(() => {
+    // Load preview data from sessionStorage
+    const previewDataStr = sessionStorage.getItem('previewData');
+    if (previewDataStr) {
+      try {
+        const data = JSON.parse(previewDataStr);
+        setPreviewData(data);
+      } catch (error) {
+        console.error('Error parsing preview data:', error);
+      }
+    }
+  }, []);
+
   const handleDownload = async () => {
     if (!user || !session) {
       setShowAuthModal(true);
@@ -102,9 +115,6 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       </div>
     );
   }
-
-  const [selectedCell, setSelectedCell] = useState<{row: number, col: string} | null>(null);
-  const [selectedCellValue, setSelectedCellValue] = useState<string>("");
 
   return (
     <div className="h-screen bg-gray-50 flex overflow-hidden">
