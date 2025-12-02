@@ -207,7 +207,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                 tableLayout: 'auto'
               }}
             >
-              <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 10 }}>
+              <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 25 }}>
                 {/* Excel Column Letters Row */}
                 <tr>
                   <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black bg-gray-100 sticky left-0" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '1px solid black', zIndex: 30, backgroundColor: '#f9fafb', position: 'sticky' }}>
@@ -225,7 +225,8 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                           borderRight: '2px solid black', 
                           borderBottom: '1px solid black', 
                           borderLeft: idx === 0 ? '2px solid black' : 'none',
-                          borderTop: 'none'
+                          borderTop: 'none',
+                          backgroundColor: '#f9fafb'
                         }}
                       >
                         {getExcelColumnLetter(idx)}
@@ -251,7 +252,8 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                           borderRight: '2px solid black', 
                           borderBottom: '2px solid black', 
                           borderLeft: idx === 0 ? '2px solid black' : 'none',
-                          borderTop: 'none'
+                          borderTop: 'none',
+                          backgroundColor: '#f9fafb'
                         }}
                       >
                         {col}
