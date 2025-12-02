@@ -164,7 +164,23 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
 
             {/* Formula Bar */}
             <div className="bg-gray-50 border-b border-gray-300 px-3 py-1 flex items-center gap-2 flex-shrink-0">
-              <span className="text-xs font-mono text-gray-600 w-12">{selectedCell ? `${selectedCell.col}${selectedCell.row + 1}` : 'A1'}</span>
+              <span className="text-xs font-mono text-gray-600 w-12">
+                {selectedCell 
+                  ? `${(() => {
+                      const colIndex = previewData.columns.indexOf(selectedCell.col);
+                      if (colIndex === -1) return selectedCell.col;
+                      let result = '';
+                      let index = colIndex;
+                      index++;
+                      while (index > 0) {
+                        index--;
+                        result = String.fromCharCode(65 + (index % 26)) + result;
+                        index = Math.floor(index / 26);
+                      }
+                      return result;
+                    })()}${selectedCell.row + 1}`
+                  : 'A1'}
+              </span>
               <div className="flex-1 bg-white border border-gray-300 rounded px-2 py-1">
                 <span className="text-xs text-gray-700">{selectedCellValue || ''}</span>
               </div>
