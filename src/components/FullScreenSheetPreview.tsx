@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SheetViewer } from "./SheetViewer";
 import { AIChatbot } from "./AIChatbot";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Undo2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { getFileDownloadUrl, downloadFile } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
@@ -20,6 +20,14 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
   } | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { user, session } = useAuth();
+  const historyRef = useRef<Array<{
+    data: Record<string, any>[];
+    columns: string[];
+    formatting_metadata?: any;
+    processed_file_url?: string;
+  }>>([]);
+  const historyIndexRef = useRef<number>(-1);
+  const isUndoingRef = useRef<boolean>(false);
 
   useEffect(() => {
     // Load preview data from sessionStorage
@@ -28,11 +36,50 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       try {
         const data = JSON.parse(previewDataStr);
         setPreviewData(data);
+        // Initialize history with the loaded data
+        historyRef.current = [JSON.parse(JSON.stringify(data))];
+        historyIndexRef.current = 0;
       } catch (error) {
         console.error('Error parsing preview data:', error);
       }
     }
   }, []);
+
+  const addToHistory = (newState: typeof previewData) => {
+    if (!newState || isUndoingRef.current) return;
+    
+    const currentState = historyRef.current[historyIndexRef.current];
+    // Only add if state actually changed
+    if (JSON.stringify(currentState) !== JSON.stringify(newState)) {
+      // Remove any future history if we're not at the end
+      historyRef.current = historyRef.current.slice(0, historyIndexRef.current + 1);
+      // Add new state (deep copy)
+      historyRef.current.push(JSON.parse(JSON.stringify(newState)));
+      historyIndexRef.current = historyRef.current.length - 1;
+      // Limit history to last 50 states
+      if (historyRef.current.length > 50) {
+        historyRef.current.shift();
+        historyIndexRef.current = historyRef.current.length - 1;
+      }
+    }
+  };
+
+  const handleUndo = () => {
+    if (historyIndexRef.current > 0) {
+      isUndoingRef.current = true;
+      historyIndexRef.current--;
+      const previousState = historyRef.current[historyIndexRef.current];
+      const restoredState = JSON.parse(JSON.stringify(previousState));
+      setPreviewData(restoredState);
+      sessionStorage.setItem('previewData', JSON.stringify(restoredState));
+      // Reset flag after state update
+      setTimeout(() => {
+        isUndoingRef.current = false;
+      }, 0);
+    }
+  };
+
+  const canUndo = historyIndexRef.current > 0;
 
   const handleDownload = async () => {
     if (!user || !session) {
@@ -66,6 +113,8 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       setPreviewData(updatedData);
       // Update sessionStorage
       sessionStorage.setItem('previewData', JSON.stringify(updatedData));
+      // Add to history
+      addToHistory(updatedData);
     }
   };
 
@@ -84,6 +133,8 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       setPreviewData(updatedPreviewData);
       // Update sessionStorage
       sessionStorage.setItem('previewData', JSON.stringify(updatedPreviewData));
+      // Add to history
+      addToHistory(updatedPreviewData);
     }
   };
 
@@ -123,15 +174,27 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
               </p>
             </div>
           </div>
-          <Button
-            onClick={handleDownload}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Download Excel
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleUndo}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+              disabled={!canUndo}
+            >
+              <Undo2 className="w-4 h-4" />
+              Undo
+            </Button>
+            <Button
+              onClick={handleDownload}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Download Excel
+            </Button>
+          </div>
         </div>
       </div>
 
