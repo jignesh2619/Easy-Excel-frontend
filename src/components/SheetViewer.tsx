@@ -237,27 +237,24 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
       {/* Sheet Content */}
       {isExpanded && (
         <div 
-          className="flex-1 relative" 
+          className="flex-1" 
           style={{ 
             zIndex: 1, 
-            minHeight: 0, 
-            overflowX: 'scroll', 
-            overflowY: 'scroll', 
-            WebkitOverflowScrolling: 'touch',
+            minHeight: 0,
             position: 'relative',
             width: '100%',
-            height: '100%'
+            height: '100%',
+            overflow: 'auto',
+            overflowX: 'scroll',
+            overflowY: 'scroll'
           }}
         >
-          <div style={{ display: "inline-block", minWidth: "100%" }}>
+          <div style={{ display: "inline-block", width: "max-content", minWidth: "100%" }}>
             <table 
               className="border-collapse" 
               style={{ 
-                width: "max-content", 
-                minWidth: "100%",
-                borderSpacing: 0, 
-                tableLayout: 'auto',
-                display: 'table'
+                width: "max-content",
+                borderSpacing: 0
               }}
             >
               <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 1 }}>
