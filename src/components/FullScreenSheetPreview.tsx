@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SheetViewer } from "./SheetViewer";
 import { AIChatbot } from "./AIChatbot";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Undo2, LayoutDashboard } from "lucide-react";
 import { Button } from "./ui/button";
 import { getFileDownloadUrl, downloadFile } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
@@ -21,20 +21,45 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [selectedCell, setSelectedCell] = useState<{row: number, col: string} | null>(null);
   const [selectedCellValue, setSelectedCellValue] = useState<string>("");
+  const [formulaBarValue, setFormulaBarValue] = useState<string>("");
+  const [isEditingFormulaBar, setIsEditingFormulaBar] = useState(false);
+  const [canUndo, setCanUndo] = useState(false);
+  const historyRef = useRef<Array<typeof previewData>>([]);
+  const historyIndexRef = useRef<number>(-1);
+  const isUndoingRef = useRef<boolean>(false);
   const { user, session } = useAuth();
 
-  useEffect(() => {
-    // Load preview data from sessionStorage
-    const previewDataStr = sessionStorage.getItem('previewData');
-    if (previewDataStr) {
-      try {
-        const data = JSON.parse(previewDataStr);
-        setPreviewData(data);
-      } catch (error) {
-        console.error('Error parsing preview data:', error);
+  const addToHistory = (newState: typeof previewData) => {
+    if (!newState || isUndoingRef.current) return;
+    const currentState = historyRef.current[historyIndexRef.current];
+    if (!currentState || JSON.stringify(currentState) !== JSON.stringify(newState)) {
+      // Remove any future history if we're not at the end
+      historyRef.current = historyRef.current.slice(0, historyIndexRef.current + 1);
+      historyRef.current.push(JSON.parse(JSON.stringify(newState)));
+      historyIndexRef.current = historyRef.current.length - 1;
+      // Limit history to 50 states
+      if (historyRef.current.length > 50) {
+        historyRef.current.shift();
+        historyIndexRef.current = historyRef.current.length - 1;
       }
+      setCanUndo(historyIndexRef.current > 0);
     }
-  }, []);
+  };
+
+  const handleUndo = () => {
+    if (historyIndexRef.current > 0) {
+      isUndoingRef.current = true;
+      historyIndexRef.current--;
+      const previousState = historyRef.current[historyIndexRef.current];
+      const restoredState = JSON.parse(JSON.stringify(previousState));
+      setPreviewData(restoredState);
+      sessionStorage.setItem('previewData', JSON.stringify(restoredState));
+      setCanUndo(historyIndexRef.current > 0);
+      setTimeout(() => {
+        isUndoingRef.current = false;
+      }, 0);
+    }
+  };
 
   useEffect(() => {
     // Load preview data from sessionStorage
@@ -43,11 +68,22 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       try {
         const data = JSON.parse(previewDataStr);
         setPreviewData(data);
+        // Initialize history with the loaded data
+        historyRef.current = [JSON.parse(JSON.stringify(data))];
+        historyIndexRef.current = 0;
+        setCanUndo(false);
       } catch (error) {
         console.error('Error parsing preview data:', error);
       }
     }
   }, []);
+
+  // Add to history when previewData changes (but not during undo)
+  useEffect(() => {
+    if (previewData && !isUndoingRef.current) {
+      addToHistory(previewData);
+    }
+  }, [previewData]);
 
   const handleDownload = async () => {
     if (!user || !session) {
@@ -81,6 +117,7 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       setPreviewData(updatedData);
       // Update sessionStorage
       sessionStorage.setItem('previewData', JSON.stringify(updatedData));
+      // History will be added via useEffect
     }
   };
 
@@ -99,6 +136,12 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       setPreviewData(updatedPreviewData);
       // Update sessionStorage
       sessionStorage.setItem('previewData', JSON.stringify(updatedPreviewData));
+      // Update formula bar if this is the selected cell
+      if (selectedCell && selectedCell.row === rowIndex && selectedCell.col === column) {
+        setSelectedCellValue(value ? String(value) : '');
+        setFormulaBarValue(value ? String(value) : '');
+      }
+      // History will be added via useEffect
     }
   };
 
@@ -140,15 +183,41 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
                 </p>
               </div>
             </div>
-            <Button
-              onClick={handleDownload}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              Download Excel
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleUndo}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+                disabled={!canUndo}
+                title="Undo last change"
+              >
+                <Undo2 className="w-4 h-4" />
+                Undo
+              </Button>
+              <Button
+                onClick={() => {
+                  window.history.pushState({}, '', '/dashboard');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+                title="Go to Dashboard"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </Button>
+              <Button
+                onClick={handleDownload}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Download Excel
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -181,9 +250,44 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
                     })()}${selectedCell.row + 1}`
                   : 'A1'}
               </span>
-              <div className="flex-1 bg-white border border-gray-300 rounded px-2 py-1">
-                <span className="text-xs text-gray-700">{selectedCellValue || ''}</span>
-              </div>
+              {isEditingFormulaBar && selectedCell ? (
+                <input
+                  type="text"
+                  value={formulaBarValue}
+                  onChange={(e) => setFormulaBarValue(e.target.value)}
+                  onBlur={() => {
+                    if (selectedCell) {
+                      handleCellChange(selectedCell.row, selectedCell.col, formulaBarValue);
+                      setIsEditingFormulaBar(false);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (selectedCell) {
+                        handleCellChange(selectedCell.row, selectedCell.col, formulaBarValue);
+                        setIsEditingFormulaBar(false);
+                      }
+                    } else if (e.key === 'Escape') {
+                      setFormulaBarValue(selectedCellValue);
+                      setIsEditingFormulaBar(false);
+                    }
+                  }}
+                  autoFocus
+                  className="flex-1 bg-white border border-blue-500 rounded px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              ) : (
+                <div 
+                  className="flex-1 bg-white border border-gray-300 rounded px-2 py-1 cursor-text hover:border-gray-400 transition-colors"
+                  onClick={() => {
+                    if (selectedCell) {
+                      setIsEditingFormulaBar(true);
+                    }
+                  }}
+                >
+                  <span className="text-xs text-gray-700">{selectedCellValue || ''}</span>
+                </div>
+              )}
             </div>
 
             {/* Sheet Viewer */}
@@ -208,7 +312,10 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
                 onDataChange={handleCellChange}
                 onCellSelect={(row, col, value) => {
                   setSelectedCell({ row, col });
-                  setSelectedCellValue(value ? String(value) : '');
+                  const cellValue = value ? String(value) : '';
+                  setSelectedCellValue(cellValue);
+                  setFormulaBarValue(cellValue);
+                  setIsEditingFormulaBar(false);
                 }}
               />
             </div>

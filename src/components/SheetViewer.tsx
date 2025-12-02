@@ -210,7 +210,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 10 }}>
                 {/* Excel Column Letters Row */}
                 <tr>
-                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black bg-gray-100 sticky left-0" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '1px solid black', zIndex: 20, backgroundColor: '#f9fafb' }}>
+                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black bg-gray-100 sticky left-0" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '1px solid black', zIndex: 30, backgroundColor: '#f9fafb', position: 'sticky' }}>
                     {/* Empty cell for row numbers column */}
                   </th>
                   {columns.map((col, idx) => {
@@ -235,7 +235,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                 </tr>
                 {/* Actual Column Names Row */}
                 <tr>
-                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border border-black bg-gray-100 sticky left-0" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '2px solid black', zIndex: 20, backgroundColor: '#f9fafb' }}>
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border border-black bg-gray-100 sticky left-0" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '2px solid black', zIndex: 30, backgroundColor: '#f9fafb', position: 'sticky' }}>
                     {/* Row number header */}
                   </th>
                   {columns.map((col, idx) => {
@@ -282,7 +282,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                         {/* Row Number Cell */}
                         <td 
                           className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border border-black bg-gray-50 sticky left-0"
-                          style={{ width: '50px', minWidth: '50px', maxWidth: '50px', textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black', zIndex: 15, backgroundColor: '#f9fafb' }}
+                          style={{ width: '50px', minWidth: '50px', maxWidth: '50px', textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black', zIndex: 20, backgroundColor: '#f9fafb', position: 'sticky' }}
                         >
                           {rowNumber}
                         </td>
