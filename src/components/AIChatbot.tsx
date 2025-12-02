@@ -40,26 +40,24 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       
       if (savedHistory) {
         const parsedMessages = JSON.parse(savedHistory);
-        console.log('📥 Loaded messages from sessionStorage:', parsedMessages.length, 'messages');
+        console.log('📥 Loading messages from sessionStorage:', parsedMessages.length, 'messages');
         // Convert timestamp strings back to Date objects
         const messagesWithDates = parsedMessages.map((msg: any) => ({
           ...msg,
           timestamp: new Date(msg.timestamp),
         }));
-        // Filter out any invalid messages
-        const validMessages = messagesWithDates.filter((msg: any) => msg && msg.role && msg.content);
-        console.log('✅ Valid messages:', validMessages.length);
-        setMessages(validMessages);
+        setMessages(messagesWithDates);
+        console.log('✅ Messages loaded:', messagesWithDates.map(m => `${m.role}: ${m.content.substring(0, 50)}...`));
       } else {
         // Only show initial greeting if no history exists
-        setMessages([
-          {
-            id: "1",
-            role: "assistant",
-            content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
-            timestamp: new Date(),
-          },
-        ]);
+        const initialMessage = {
+          id: "1",
+          role: "assistant" as const,
+          content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
+          timestamp: new Date(),
+        };
+        setMessages([initialMessage]);
+        console.log('📝 No saved history, showing initial greeting');
       }
 
       // Load saved data if available
@@ -192,13 +190,13 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       timestamp: new Date(),
     };
 
-    // Add user message immediately and save to sessionStorage
+    // Immediately update state and save to sessionStorage synchronously
     setMessages((prev) => {
       const newMessages = [...prev, userMessage];
-      // Immediately save to sessionStorage
+      // Save immediately to sessionStorage
       try {
         sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(newMessages));
-        console.log('✅ User message saved to sessionStorage:', userMessage.content);
+        console.log('✅ User message saved immediately:', userMessage.content);
       } catch (error) {
         console.error('Error saving user message:', error);
       }
@@ -219,13 +217,12 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         timestamp: new Date(),
       };
 
-      // Add assistant message and save to sessionStorage
       setMessages((prev) => {
         const newMessages = [...prev, assistantMessage];
-        // Immediately save to sessionStorage
+        // Save immediately to sessionStorage
         try {
           sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(newMessages));
-          console.log('✅ Assistant message saved to sessionStorage');
+          console.log('✅ Assistant message saved immediately');
         } catch (error) {
           console.error('Error saving assistant message:', error);
         }
@@ -258,7 +255,16 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         content: `❌ Error: ${error.message || "Failed to process your request. Please try again."}`,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => {
+        const newMessages = [...prev, errorMessage];
+        // Save immediately to sessionStorage
+        try {
+          sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(newMessages));
+        } catch (error) {
+          console.error('Error saving error message:', error);
+        }
+        return newMessages;
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -353,33 +359,36 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               WebkitOverflowScrolling: 'touch' // Smooth scrolling on mobile
             }}
           >
-            {messages.length === 0 && (
-              <div className="text-center text-gray-500 text-sm py-4">
-                No messages yet. Start a conversation!
+            {messages.length === 0 ? (
+              <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+                <p>No messages yet. Start a conversation!</p>
               </div>
-            )}
-            {messages.map((message) => {
-              console.log('Rendering message:', message.id, message.role, message.content.substring(0, 50));
-              return (
-                <div
-                  key={message.id}
-                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                >
+            ) : (
+              messages.map((message) => {
+                console.log('🎨 Rendering message:', message.role, message.content.substring(0, 50));
+                return (
                   <div
-                    className={`max-w-[80%] rounded-lg p-3 ${
-                      message.role === "user"
-                        ? "bg-[#00A878] text-white"
-                        : "bg-white text-gray-800 border border-gray-200"
-                    }`}
+                    key={message.id}
+                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   >
-                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                    <p className="text-xs opacity-70 mt-1">
-                      {message.role === "user" ? "You" : "AI"} • {new Date(message.timestamp).toLocaleTimeString()}
-                    </p>
+                    <div
+                      className={`max-w-[80%] rounded-lg p-3 ${
+                        message.role === "user"
+                          ? "bg-[#00A878] text-white"
+                          : "bg-white text-gray-800 border border-gray-200"
+                      }`}
+                    >
+                      <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                      <p className={`text-xs mt-1 ${
+                        message.role === "user" ? "text-white/70" : "text-gray-500"
+                      }`}>
+                        {message.role === "user" ? "You" : "AI"} • {message.timestamp.toLocaleTimeString()}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
             {isProcessing && (
               <div className="flex justify-start">
                 <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-2">
