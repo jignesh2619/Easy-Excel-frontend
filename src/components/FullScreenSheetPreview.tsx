@@ -187,7 +187,16 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
             </div>
 
             {/* Sheet Viewer */}
-            <div className="flex-1 overflow-auto" style={{ minHeight: 0 }}>
+            <div 
+              className="flex-1" 
+              style={{ 
+                minHeight: 0,
+                overflowX: 'auto',
+                overflowY: 'auto',
+                width: '100%',
+                height: '100%'
+              }}
+            >
               <SheetViewer
                 data={previewData.data}
                 columns={previewData.columns}

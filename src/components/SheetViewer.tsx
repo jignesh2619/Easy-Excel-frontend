@@ -180,7 +180,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
   };
 
   return (
-    <div className="h-full w-full bg-white flex flex-col" style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div className="h-full w-full bg-white flex flex-col" style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* Sheet Content */}
       {isExpanded && (
         <div 
@@ -190,18 +190,20 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
             minHeight: 0,
             width: '100%',
             height: '100%',
-            overflowX: 'auto',
-            overflowY: 'auto',
+            overflowX: 'scroll',
+            overflowY: 'scroll',
             WebkitOverflowScrolling: 'touch',
             position: 'relative'
           }}
         >
-          <div style={{ display: "inline-block", width: "max-content" }}>
+          <div style={{ display: "inline-block", width: "max-content", minWidth: "100%" }}>
             <table 
               className="border-collapse" 
               style={{ 
                 width: "max-content",
-                borderSpacing: 0
+                minWidth: "100%",
+                borderSpacing: 0,
+                tableLayout: 'auto'
               }}
             >
               <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 1 }}>
