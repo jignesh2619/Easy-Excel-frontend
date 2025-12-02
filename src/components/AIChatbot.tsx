@@ -40,17 +40,16 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       
       if (savedHistory) {
         const parsedMessages = JSON.parse(savedHistory);
+        console.log('📥 Loaded messages from sessionStorage:', parsedMessages.length, 'messages');
         // Convert timestamp strings back to Date objects
-        // CRITICAL: Ensure ALL messages (both user and assistant) are loaded
         const messagesWithDates = parsedMessages.map((msg: any) => ({
           ...msg,
           timestamp: new Date(msg.timestamp),
         }));
-        // Log to verify both user and assistant messages are loaded
-        const userMsgCount = messagesWithDates.filter((m: Message) => m.role === "user").length;
-        const assistantMsgCount = messagesWithDates.filter((m: Message) => m.role === "assistant").length;
-        console.log(`Loaded chat history: ${userMsgCount} user messages, ${assistantMsgCount} assistant messages`);
-        setMessages(messagesWithDates);
+        // Filter out any invalid messages
+        const validMessages = messagesWithDates.filter((msg: any) => msg && msg.role && msg.content);
+        console.log('✅ Valid messages:', validMessages.length);
+        setMessages(validMessages);
       } else {
         // Only show initial greeting if no history exists
         setMessages([
@@ -92,10 +91,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   useEffect(() => {
     if (isHistoryLoaded && messages.length > 0) {
       try {
-        // CRITICAL: Save ALL messages (both user and assistant)
-        const userMsgCount = messages.filter(m => m.role === "user").length;
-        const assistantMsgCount = messages.filter(m => m.role === "assistant").length;
-        console.log(`Saving chat history: ${userMsgCount} user messages, ${assistantMsgCount} assistant messages`);
         sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages));
       } catch (error) {
         console.error('Error saving chat history:', error);
@@ -197,12 +192,19 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       timestamp: new Date(),
     };
 
-    // CRITICAL: Add user message immediately and ensure it's saved
+    // Add user message immediately and save to sessionStorage
     setMessages((prev) => {
       const newMessages = [...prev, userMessage];
-      console.log(`Added user message. Total messages: ${newMessages.length} (${newMessages.filter(m => m.role === "user").length} user, ${newMessages.filter(m => m.role === "assistant").length} assistant)`);
+      // Immediately save to sessionStorage
+      try {
+        sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(newMessages));
+        console.log('✅ User message saved to sessionStorage:', userMessage.content);
+      } catch (error) {
+        console.error('Error saving user message:', error);
+      }
       return newMessages;
     });
+    
     const promptText = input;
     setInput("");
     setIsProcessing(true);
@@ -217,12 +219,16 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         timestamp: new Date(),
       };
 
-      // CRITICAL: Preserve ALL previous messages (including user messages) when adding assistant response
+      // Add assistant message and save to sessionStorage
       setMessages((prev) => {
         const newMessages = [...prev, assistantMessage];
-        const userMsgCount = newMessages.filter(m => m.role === "user").length;
-        const assistantMsgCount = newMessages.filter(m => m.role === "assistant").length;
-        console.log(`Added assistant response. Total messages: ${newMessages.length} (${userMsgCount} user, ${assistantMsgCount} assistant)`);
+        // Immediately save to sessionStorage
+        try {
+          sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(newMessages));
+          console.log('✅ Assistant message saved to sessionStorage');
+        } catch (error) {
+          console.error('Error saving assistant message:', error);
+        }
         return newMessages;
       });
       
@@ -252,12 +258,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         content: `❌ Error: ${error.message || "Failed to process your request. Please try again."}`,
         timestamp: new Date(),
       };
-      // CRITICAL: Preserve ALL previous messages (including user messages) when adding error
-      setMessages((prev) => {
-        const newMessages = [...prev, errorMessage];
-        console.log(`Added error message. Total messages: ${newMessages.length} (${newMessages.filter(m => m.role === "user").length} user, ${newMessages.filter(m => m.role === "assistant").length} assistant)`);
-        return newMessages;
-      });
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsProcessing(false);
     }
@@ -352,22 +353,33 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               WebkitOverflowScrolling: 'touch' // Smooth scrolling on mobile
             }}
           >
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.role === "user"
-                      ? "bg-[#00A878] text-white"
-                      : "bg-white text-gray-800 border border-gray-200"
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                </div>
+            {messages.length === 0 && (
+              <div className="text-center text-gray-500 text-sm py-4">
+                No messages yet. Start a conversation!
               </div>
-            ))}
+            )}
+            {messages.map((message) => {
+              console.log('Rendering message:', message.id, message.role, message.content.substring(0, 50));
+              return (
+                <div
+                  key={message.id}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-lg p-3 ${
+                      message.role === "user"
+                        ? "bg-[#00A878] text-white"
+                        : "bg-white text-gray-800 border border-gray-200"
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                    <p className="text-xs opacity-70 mt-1">
+                      {message.role === "user" ? "You" : "AI"} • {new Date(message.timestamp).toLocaleTimeString()}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
             {isProcessing && (
               <div className="flex justify-start">
                 <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-2">
