@@ -191,10 +191,10 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
               className="flex-1" 
               style={{ 
                 minHeight: 0,
-                overflowX: 'auto',
-                overflowY: 'auto',
+                overflow: 'auto',
                 width: '100%',
-                height: '100%'
+                height: '100%',
+                position: 'relative'
               }}
             >
               <SheetViewer
