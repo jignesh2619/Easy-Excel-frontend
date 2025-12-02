@@ -244,17 +244,18 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
             position: 'relative',
             width: '100%',
             height: '100%',
-            overflow: 'auto',
-            overflowX: 'scroll',
-            overflowY: 'scroll'
+            overflowX: 'auto',
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch'
           }}
         >
-          <div style={{ display: "inline-block", width: "max-content", minWidth: "100%" }}>
+          <div style={{ display: "inline-block" }}>
             <table 
               className="border-collapse" 
               style={{ 
                 width: "max-content",
-                borderSpacing: 0
+                borderSpacing: 0,
+                minWidth: "100%"
               }}
             >
               <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 1 }}>

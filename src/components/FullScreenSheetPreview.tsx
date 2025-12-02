@@ -136,16 +136,24 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       </div>
 
       {/* Sheet Viewer - Full Screen */}
-      <div className="flex-1" style={{ paddingRight: '420px', zIndex: 1, height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-        <div style={{ height: '100%', width: '100%', position: 'relative', overflow: 'hidden' }}>
-          <SheetViewer
-            data={previewData.data}
-            columns={previewData.columns}
-            rowCount={previewData.data.length}
-            onDownload={handleDownload}
-            onDataChange={handleCellChange}
-          />
-        </div>
+      <div 
+        className="flex-1" 
+        style={{ 
+          paddingRight: '420px', 
+          zIndex: 1, 
+          height: '100%', 
+          overflow: 'hidden', 
+          display: 'flex', 
+          flexDirection: 'column'
+        }}
+      >
+        <SheetViewer
+          data={previewData.data}
+          columns={previewData.columns}
+          rowCount={previewData.data.length}
+          onDownload={handleDownload}
+          onDataChange={handleCellChange}
+        />
       </div>
 
       {/* AI Chatbot */}
