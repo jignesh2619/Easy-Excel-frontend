@@ -7,14 +7,27 @@
 const rawUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 export const API_BASE_URL = rawUrl.toString().replace(/\/+$/, '');
 
+/**
+ * Fetch with timeout wrapper
+ * Prevents indefinite waiting for requests
+ */
+function fetchWithTimeout(
+  url: string, 
+  options: RequestInit, 
+  timeoutMs: number = 300000
+): Promise<Response> {
+  return Promise.race([
+    fetch(url, options),
+    new Promise<Response>((_, reject) =>
+      setTimeout(() => reject(new Error('Request timeout')), timeoutMs)
+    )
+  ]) as Promise<Response>;
+}
+
 export interface ProcessFileResponse {
   status: string;
   processed_file_url?: string;
   chart_url?: string;
-  chart_urls?: string[]; // Array of chart URLs for multiple charts
-  chart_data?: any | any[]; // Chart data for interactive rendering (single object or array)
-  chart_type?: string; // Chart type for single chart
-  chart_types?: string[]; // Chart types for multiple charts
   summary: string[];
   action_plan?: any;
   message?: string;
@@ -30,10 +43,6 @@ export interface ProcessFileResponse {
       italic?: boolean;
     }>;
   };
-  // Token usage information
-  tokens_used?: number; // Tokens used for this operation (OpenAI API calls only)
-  tokens_limit?: number; // User's token limit
-  tokens_remaining?: number; // Remaining tokens after this operation
 }
 
 export interface HealthResponse {
@@ -89,16 +98,20 @@ export async function processData(
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_BASE_URL}/process-data`, {
-      method: 'POST',
-      headers,
-      credentials: 'include',
-      body: JSON.stringify({
-        data,
-        columns,
-        prompt,
-      }),
-    });
+    const response = await fetchWithTimeout(
+      `${API_BASE_URL}/process-data`,
+      {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body: JSON.stringify({
+          data,
+          columns,
+          prompt,
+        }),
+      },
+      300000 // 5 minutes timeout
+    );
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
@@ -108,6 +121,14 @@ export async function processData(
     const result = await response.json();
     return result;
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === 'Request timeout') {
+        throw new Error('Request timed out. The data processing might be taking longer than expected. Please try again.');
+      }
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        throw new Error('Connection failed. The server may be temporarily unavailable. Please try again.');
+      }
+    }
     console.error('Data processing failed:', error);
     throw error;
   }
@@ -153,7 +174,11 @@ export async function processFile(
       };
     }
 
-    const response = await fetch(`${API_BASE_URL}/process-file`, fetchOptions);
+    const response = await fetchWithTimeout(
+      `${API_BASE_URL}/process-file`, 
+      fetchOptions,
+      300000 // 5 minutes timeout
+    );
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
@@ -163,6 +188,14 @@ export async function processFile(
     const result = await response.json();
     return result;
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === 'Request timeout') {
+        throw new Error('Request timed out. The file might be too large or the server is busy. Please try again.');
+      }
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        throw new Error('Connection failed. The server may be processing a large file or temporarily unavailable. Please wait a moment and try again.');
+      }
+    }
     console.error('File processing failed:', error);
     throw error;
   }
@@ -342,49 +375,6 @@ export async function getSubscriptionDetails(subscriptionId: string): Promise<an
     return await response.json();
   } catch (error) {
     console.error('Get subscription details failed:', error);
-    throw error;
-  }
-}
-
-/**
- * Token Statistics Interface
- */
-export interface TokenStats {
-  status: string;
-  tokens_used: number;
-  tokens_limit: number;
-  tokens_remaining: number;
-  plan: string;
-}
-
-/**
- * Get current user token statistics
- */
-export async function getTokenStats(): Promise<TokenStats> {
-  try {
-    const token = await getAuthToken();
-    
-    if (!token) {
-      throw new Error('Authentication required');
-    }
-
-    const response = await fetch(`${API_BASE_URL}/api/users/token-stats`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
-      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Get token stats failed:', error);
     throw error;
   }
 }
