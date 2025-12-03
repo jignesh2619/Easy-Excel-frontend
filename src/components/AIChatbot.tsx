@@ -38,12 +38,26 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       const savedHistory = sessionStorage.getItem(CHAT_HISTORY_KEY);
       const savedData = sessionStorage.getItem(CHAT_DATA_KEY);
       
+      console.log('🔍 Checking sessionStorage:', {
+        hasHistory: !!savedHistory,
+        hasData: !!savedData,
+        historyLength: savedHistory ? savedHistory.length : 0
+      });
+      
       if (savedHistory) {
         const parsedMessages = JSON.parse(savedHistory);
         console.log('📥 Loading messages from sessionStorage:', parsedMessages.length, 'messages');
+        console.log('📥 Raw messages:', parsedMessages);
+        
         // Convert timestamp strings back to Date objects and ensure all messages are valid
         const messagesWithDates = parsedMessages
-          .filter((msg: any) => msg && msg.role && msg.content) // Filter out invalid messages
+          .filter((msg: any) => {
+            const isValid = msg && msg.role && msg.content;
+            if (!isValid) {
+              console.warn('⚠️ Filtering out invalid message:', msg);
+            }
+            return isValid;
+          })
           .map((msg: any) => ({
             ...msg,
             timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
@@ -53,7 +67,21 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
           user: messagesWithDates.filter((m: Message) => m.role === 'user').length,
           assistant: messagesWithDates.filter((m: Message) => m.role === 'assistant').length,
         });
-        setMessages(messagesWithDates);
+        console.log('📋 All loaded messages:', messagesWithDates);
+        
+        if (messagesWithDates.length > 0) {
+          setMessages(messagesWithDates);
+        } else {
+          // If all messages were filtered out, show initial greeting
+          console.warn('⚠️ All messages were invalid, showing initial greeting');
+          const initialMessage = {
+            id: "1",
+            role: "assistant" as const,
+            content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
+            timestamp: new Date(),
+          };
+          setMessages([initialMessage]);
+        }
       } else {
         // Only show initial greeting if no history exists
         const initialMessage = {
@@ -167,19 +195,43 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             parsed.columns.length !== initialColumns.length ||
             JSON.stringify(parsed.columns) !== JSON.stringify(initialColumns);
           
+          console.log('🔍 Checking if new file:', {
+            isNewFile,
+            savedRows: parsed.data.length,
+            initialRows: initialData.length,
+            savedCols: parsed.columns.length,
+            initialCols: initialColumns.length
+          });
+          
           if (isNewFile) {
-            // New file uploaded - update data and optionally clear history
+            // New file uploaded - update data and clear chat history
+            console.log('📁 New file detected, clearing chat history');
             setCurrentData(initialData);
             setCurrentColumns(initialColumns);
+            // Clear chat history for new file
+            setMessages([
+              {
+                id: "1",
+                role: "assistant",
+                content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
+                timestamp: new Date(),
+              },
+            ]);
+            sessionStorage.removeItem(CHAT_HISTORY_KEY);
+          } else {
+            // Same file - keep existing messages and data
+            console.log('📋 Same file detected, preserving chat history');
+            // Don't update data or clear messages - keep what we have
           }
-          // Otherwise, keep the saved data (which includes any modifications from chat)
         } catch (error) {
-          // If parsing fails, use initial data
+          console.error('Error parsing saved data:', error);
+          // If parsing fails, use initial data but don't clear history
           setCurrentData(initialData);
           setCurrentColumns(initialColumns);
         }
       } else {
         // No saved data, use initial data
+        console.log('📝 No saved data, using initial data');
         setCurrentData(initialData);
         setCurrentColumns(initialColumns);
       }
@@ -366,7 +418,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               minHeight: 0, // Ensure proper scrolling
               maxHeight: '100%',
               overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch' // Smooth scrolling on mobile
+              WebkitOverflowScrolling: 'touch', // Smooth scrolling on mobile
+              position: 'relative', // Ensure proper positioning
+              visibility: 'visible', // Ensure visibility
+              opacity: 1 // Ensure opacity
             }}
           >
             {messages.length === 0 ? (
@@ -374,9 +429,30 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                 <p>No messages yet. Start a conversation!</p>
               </div>
             ) : (
-              messages
-                .filter((message) => message && message.role && message.content) // Filter out any invalid messages
-                .map((message) => {
+              (() => {
+                const validMessages = messages.filter((message) => {
+                  const isValid = message && message.role && message.content;
+                  if (!isValid) {
+                    console.warn('⚠️ Filtering out invalid message during render:', message);
+                  }
+                  return isValid;
+                });
+                
+                console.log('🎨 Rendering messages:', {
+                  total: messages.length,
+                  valid: validMessages.length,
+                  messages: validMessages
+                });
+                
+                if (validMessages.length === 0) {
+                  return (
+                    <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+                      <p>No valid messages found. Start a conversation!</p>
+                    </div>
+                  );
+                }
+                
+                return validMessages.map((message) => {
                   const isUser = message.role === "user";
                   console.log('🎨 Rendering message:', isUser ? 'USER' : 'AI', message.content.substring(0, 50));
                   return (
@@ -400,7 +476,8 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                       </div>
                     </div>
                   );
-                })
+                });
+              })()
             )}
             {isProcessing && (
               <div className="flex justify-start">
