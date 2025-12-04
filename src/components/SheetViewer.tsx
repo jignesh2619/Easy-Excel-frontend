@@ -78,7 +78,11 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
 
   // Format cell value for display
   const formatCellValue = (value: any): string => {
-    if (value === null || value === undefined) return "";
+    // Handle empty/null/nan values
+    if (value === null || value === undefined || value === "" || 
+        (typeof value === "string" && value.toLowerCase() === "nan")) {
+      return "";
+    }
     if (typeof value === "number") {
       // Format numbers with commas
       return value.toLocaleString();
