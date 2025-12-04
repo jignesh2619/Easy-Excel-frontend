@@ -17,6 +17,7 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     columns: string[];
     formatting_metadata?: any;
     processed_file_url?: string;
+    row_count?: number;
   } | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [selectedCell, setSelectedCell] = useState<{row: number, col: string} | null>(null);
@@ -113,6 +114,7 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
         columns: newResult.columns,
         formatting_metadata: newResult.formatting_metadata,
         processed_file_url: newResult.processed_file_url,
+        row_count: newResult.row_count,
       };
       setPreviewData(updatedData);
       // Update sessionStorage
@@ -180,6 +182,11 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
                 <h1 className="text-sm font-medium text-gray-700">processed_data</h1>
                 <p className="text-xs text-gray-500">
                   {previewData.data.length.toLocaleString()} rows • {previewData.columns.length} columns
+                  {previewData.data.length === 300 && previewData.row_count && previewData.row_count > 300 && (
+                    <span className="ml-2 px-2 py-0.5 bg-amber-50 text-amber-700 rounded border border-amber-200">
+                      Showing 300 preview rows • Changes applied to all {previewData.row_count.toLocaleString()} rows
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
