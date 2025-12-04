@@ -34,6 +34,23 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
 
+  // Save current route and preview data when modal opens
+  useEffect(() => {
+    if (open) {
+      // Save current route
+      const currentPath = window.location.pathname;
+      const currentSearch = window.location.search;
+      const fullPath = currentPath + currentSearch;
+      sessionStorage.setItem('authRedirectPath', fullPath);
+      
+      // Backup preview data if it exists
+      const previewData = sessionStorage.getItem('previewData');
+      if (previewData) {
+        sessionStorage.setItem('previewDataBackup', previewData);
+      }
+    }
+  }, [open]);
+
   // Debug logging
   React.useEffect(() => {
     console.log('AuthModal render - open:', open);
@@ -65,8 +82,31 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
       if (authError) {
         setError(authError.message);
       } else {
+        // Mark that user just signed in
+        sessionStorage.setItem('justSignedIn', 'true');
+        
+        // Get saved redirect path
+        const redirectPath = sessionStorage.getItem('authRedirectPath') || '/preview';
+        
+        // Restore preview data backup if needed
+        const previewBackup = sessionStorage.getItem('previewDataBackup');
+        if (previewBackup && !sessionStorage.getItem('previewData')) {
+          sessionStorage.setItem('previewData', previewBackup);
+        }
+        
         onSuccess?.();
         onOpenChange(false);
+        
+        // Navigate to saved route if different from current
+        if (redirectPath && redirectPath !== window.location.pathname + window.location.search) {
+          // Use a small delay to ensure state is updated
+          setTimeout(() => {
+            window.history.pushState({}, '', redirectPath);
+            // Trigger a custom event to notify App.tsx
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          }, 100);
+        }
+        
         // Reset form
         setEmail('');
         setPassword('');
@@ -83,6 +123,20 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
     setError(null);
     setLoading(true);
     try {
+      // Save current route before redirect (already done in useEffect, but ensure it's set)
+      const currentPath = window.location.pathname;
+      const currentSearch = window.location.search;
+      const fullPath = currentPath + currentSearch;
+      if (!sessionStorage.getItem('authRedirectPath')) {
+        sessionStorage.setItem('authRedirectPath', fullPath || '/preview');
+      }
+      
+      // Backup preview data
+      const previewData = sessionStorage.getItem('previewData');
+      if (previewData) {
+        sessionStorage.setItem('previewDataBackup', previewData);
+      }
+      
       await signInWithGoogle();
       // Note: Google OAuth redirects, so we don't close modal here
       // Don't set loading to false here since we're redirecting

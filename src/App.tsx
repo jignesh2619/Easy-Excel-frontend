@@ -19,10 +19,29 @@ export default function App() {
 
   useEffect(() => {
     const checkRoute = () => {
-      // Check if we're on the preview page
-      if (window.location.pathname === '/preview' || window.location.search.includes('preview=true')) {
-        const previewDataStr = sessionStorage.getItem('previewData');
-        if (previewDataStr) {
+      // Check if user just signed in and restore preview
+      const justSignedIn = sessionStorage.getItem('justSignedIn') === 'true';
+      const previewDataStr = sessionStorage.getItem('previewData') || 
+                            sessionStorage.getItem('previewDataBackup');
+      
+      if (previewDataStr) {
+        // If user just signed in, show preview regardless of route
+        if (justSignedIn) {
+          // Restore backup if needed
+          if (!sessionStorage.getItem('previewData') && sessionStorage.getItem('previewDataBackup')) {
+            sessionStorage.setItem('previewData', sessionStorage.getItem('previewDataBackup')!);
+          }
+          // Navigate to preview route if not already there
+          if (window.location.pathname !== '/preview') {
+            window.history.pushState({}, '', '/preview');
+          }
+          setShowPreview(true);
+          sessionStorage.removeItem('justSignedIn');
+          return;
+        }
+        
+        // Check if we're on the preview page
+        if (window.location.pathname === '/preview' || window.location.search.includes('preview=true')) {
           setShowPreview(true);
           return;
         }

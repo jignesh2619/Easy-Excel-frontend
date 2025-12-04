@@ -315,6 +315,7 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
                 data={previewData.data}
                 columns={previewData.columns}
                 rowCount={previewData.data.length}
+                formatting_metadata={previewData.formatting_metadata}
                 onDownload={handleDownload}
                 onDataChange={handleCellChange}
                 onCellSelect={(row, col, value) => {

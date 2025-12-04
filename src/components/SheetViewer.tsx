@@ -10,6 +10,15 @@ interface SheetViewerProps {
   highlightDuplicates?: boolean;
   onDataChange?: (rowIndex: number, column: string, value: any) => void;
   onCellSelect?: (rowIndex: number, column: string, value: any) => void;
+  formatting_metadata?: {
+    conditional_formatting?: any[];
+    cell_formats?: Record<string, {
+      bg_color?: string;
+      text_color?: string;
+      bold?: boolean;
+      italic?: boolean;
+    }>;
+  };
 }
 
 // Convert column index to Excel column letter (A, B, C, ..., Z, AA, AB, etc.)
@@ -24,7 +33,7 @@ function getExcelColumnLetter(index: number): string {
   return result;
 }
 
-export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true, onDataChange, onCellSelect }: SheetViewerProps) {
+export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true, onDataChange, onCellSelect, formatting_metadata }: SheetViewerProps) {
   const [isExpanded, setIsExpanded] = useState(true); // Default to expanded to show preview
   const [currentPage, setCurrentPage] = useState(1);
   const [showDuplicates, setShowDuplicates] = useState(highlightDuplicates);
@@ -156,14 +165,41 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
     return maxWidth;
   };
 
-  // Get cell formatting style from {column}_format field
-  const getCellStyle = (row: Record<string, any>, column: string): React.CSSProperties => {
+  // Get cell formatting style from formatting_metadata or {column}_format field
+  const getCellStyle = (rowIndex: number, row: Record<string, any>, column: string): React.CSSProperties => {
+    const style: React.CSSProperties = {};
+    
+    // First, try formatting_metadata (from backend conditional formatting)
+    if (formatting_metadata?.cell_formats) {
+      const cellKey = `${rowIndex}_${column}`;
+      const cellFormat = formatting_metadata.cell_formats[cellKey];
+      
+      if (cellFormat) {
+        if (cellFormat.bg_color) {
+          style.backgroundColor = cellFormat.bg_color;
+        }
+        if (cellFormat.text_color) {
+          style.color = cellFormat.text_color;
+        }
+        if (cellFormat.bold) {
+          style.fontWeight = 'bold';
+        }
+        if (cellFormat.italic) {
+          style.fontStyle = 'italic';
+        }
+        // Return early if we found formatting from metadata
+        if (Object.keys(style).length > 0) {
+          return style;
+        }
+      }
+    }
+    
+    // Fallback: try {column}_format field in row data
     const formatKey = `${column}_format`;
     const cellFormat = row[formatKey];
     
-    if (!cellFormat) return {};
+    if (!cellFormat) return style;
     
-    const style: React.CSSProperties = {};
     if (cellFormat.bg_color) {
       style.backgroundColor = cellFormat.bg_color;
     }
@@ -293,7 +329,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                           {rowNumber}
                         </td>
                         {columns.map((col, colIdx) => {
-                          const cellStyle = getCellStyle(row, col);
+                          const cellStyle = getCellStyle(actualIndex, row, col);
                           const hasFormatting = Object.keys(cellStyle).length > 0;
                           const isEditing = editingCell?.row === actualIndex && editingCell?.col === col;
                           const colWidth = calculateColumnWidth(col);
@@ -444,7 +480,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                         {rowNumber}
                       </td>
                       {columns.slice(0, 5).map((col, colIdx) => {
-                        const cellStyle = getCellStyle(row, col);
+                        const cellStyle = getCellStyle(rowIdx, row, col);
                         const hasFormatting = Object.keys(cellStyle).length > 0;
                         const isEditing = editingCell?.row === rowIdx && editingCell?.col === col;
                         const colWidth = calculateColumnWidth(col);
