@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Upload, Sparkles, Loader2, CheckCircle2, AlertCircle, X, Download, Eye, BarChart3, LayoutDashboard, FileSpreadsheet } from "lucide-react";
+import { Upload, Loader2, CheckCircle2, AlertCircle, X, Download, Eye, BarChart3, LayoutDashboard, FileSpreadsheet } from "lucide-react";
 import { processFile, getFileDownloadUrl, getChartDownloadUrl, downloadFile, API_BASE_URL } from "../services/api";
 import { getFileValidationError } from "../utils/fileUtils";
 import { SafariBrowser } from "./SafariBrowser";
@@ -42,36 +42,6 @@ export function PromptToolSection() {
     }
   }, [result]);
 
-  const promptTemplates = [
-    "Clean this column",
-    "Remove duplicates",
-    "Fix formatting issues",
-    "Generate dashboard with KPIs",
-    "Split full names into first/last name",
-    "Summarize the sheet"
-  ];
-
-  const handleTemplateClick = (template: string) => {
-    const currentPrompt = prompt.trim();
-    if (!currentPrompt) {
-      // If prompt is empty, set it to the template
-      setPrompt(template);
-    } else {
-      // Append template to existing prompt with better formatting
-      const separator = currentPrompt.endsWith('.') || currentPrompt.endsWith('!') ? ' ' : '. ';
-      setPrompt(currentPrompt + separator + template);
-    }
-    
-    // Focus back to textarea
-    setTimeout(() => {
-      const textarea = document.querySelector('textarea');
-      if (textarea) {
-        textarea.focus();
-        // Move cursor to end
-        textarea.setSelectionRange(textarea.value.length, textarea.value.length);
-      }
-    }, 100);
-  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -455,28 +425,6 @@ export function PromptToolSection() {
             }}
           />
 
-          {/* Pre-built Prompt Suggestions - Below the prompt area */}
-          <div className="mt-8 text-center">
-            <h3 className="text-gray-900 text-xl font-bold mb-6">
-              Pre-built Prompt Suggestions
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              {promptTemplates.map((template, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleTemplateClick(template)}
-                  className="bg-white border-2 border-gray-200 hover:border-[#00A878] rounded-lg p-4 text-left transition-all shadow-sm hover:shadow-md hover:bg-[#00A878]/5 duration-200 cursor-pointer"
-                >
-                  <span className="text-gray-700 hover:text-[#00A878] transition-colors text-sm font-medium">
-                    {template}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <p className="text-gray-500 text-sm font-medium">
-              Click a template to add it to your prompt, or type your own custom prompt above.
-            </p>
-          </div>
         </div>
       </div>
 
