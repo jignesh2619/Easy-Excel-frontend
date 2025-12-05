@@ -38,60 +38,24 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       const savedHistory = sessionStorage.getItem(CHAT_HISTORY_KEY);
       const savedData = sessionStorage.getItem(CHAT_DATA_KEY);
       
-      console.log('🔍 Checking sessionStorage:', {
-        hasHistory: !!savedHistory,
-        hasData: !!savedData,
-        historyLength: savedHistory ? savedHistory.length : 0
-      });
-      
       if (savedHistory) {
         const parsedMessages = JSON.parse(savedHistory);
-        console.log('📥 Loading messages from sessionStorage:', parsedMessages.length, 'messages');
-        console.log('📥 Raw messages:', parsedMessages);
-        
-        // Convert timestamp strings back to Date objects and ensure all messages are valid
-        const messagesWithDates = parsedMessages
-          .filter((msg: any) => {
-            const isValid = msg && msg.role && msg.content;
-            if (!isValid) {
-              console.warn('⚠️ Filtering out invalid message:', msg);
-            }
-            return isValid;
-          })
-          .map((msg: any) => ({
-            ...msg,
-            timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
-          }));
-        console.log('✅ Messages loaded:', messagesWithDates.length, 'valid messages');
-        console.log('📋 Message breakdown:', {
-          user: messagesWithDates.filter((m: Message) => m.role === 'user').length,
-          assistant: messagesWithDates.filter((m: Message) => m.role === 'assistant').length,
-        });
-        console.log('📋 All loaded messages:', messagesWithDates);
-        
-        if (messagesWithDates.length > 0) {
-          setMessages(messagesWithDates);
-        } else {
-          // If all messages were filtered out, show initial greeting
-          console.warn('⚠️ All messages were invalid, showing initial greeting');
-          const initialMessage = {
-            id: "1",
-            role: "assistant" as const,
-            content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
-            timestamp: new Date(),
-          };
-          setMessages([initialMessage]);
-        }
+        // Convert timestamp strings back to Date objects
+        const messagesWithDates = parsedMessages.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp),
+        }));
+        setMessages(messagesWithDates);
       } else {
         // Only show initial greeting if no history exists
-        const initialMessage = {
-          id: "1",
-          role: "assistant" as const,
-          content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
-          timestamp: new Date(),
-        };
-        setMessages([initialMessage]);
-        console.log('📝 No saved history, showing initial greeting');
+        setMessages([
+          {
+            id: "1",
+            role: "assistant",
+            content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
+            timestamp: new Date(),
+          },
+        ]);
       }
 
       // Load saved data if available
@@ -195,43 +159,19 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             parsed.columns.length !== initialColumns.length ||
             JSON.stringify(parsed.columns) !== JSON.stringify(initialColumns);
           
-          console.log('🔍 Checking if new file:', {
-            isNewFile,
-            savedRows: parsed.data.length,
-            initialRows: initialData.length,
-            savedCols: parsed.columns.length,
-            initialCols: initialColumns.length
-          });
-          
           if (isNewFile) {
-            // New file uploaded - update data and clear chat history
-            console.log('📁 New file detected, clearing chat history');
+            // New file uploaded - update data and optionally clear history
             setCurrentData(initialData);
             setCurrentColumns(initialColumns);
-            // Clear chat history for new file
-            setMessages([
-              {
-                id: "1",
-                role: "assistant",
-                content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
-                timestamp: new Date(),
-              },
-            ]);
-            sessionStorage.removeItem(CHAT_HISTORY_KEY);
-          } else {
-            // Same file - keep existing messages and data
-            console.log('📋 Same file detected, preserving chat history');
-            // Don't update data or clear messages - keep what we have
           }
+          // Otherwise, keep the saved data (which includes any modifications from chat)
         } catch (error) {
-          console.error('Error parsing saved data:', error);
-          // If parsing fails, use initial data but don't clear history
+          // If parsing fails, use initial data
           setCurrentData(initialData);
           setCurrentColumns(initialColumns);
         }
       } else {
         // No saved data, use initial data
-        console.log('📝 No saved data, using initial data');
         setCurrentData(initialData);
         setCurrentColumns(initialColumns);
       }
@@ -248,23 +188,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       timestamp: new Date(),
     };
 
-    // Immediately update state and save to sessionStorage synchronously
-    setMessages((prev) => {
-      const newMessages = [...prev, userMessage];
-      // Save immediately to sessionStorage
-      try {
-        sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(newMessages));
-        console.log('✅ User message saved immediately:', userMessage.content);
-        console.log('📊 Total messages after user input:', newMessages.length, {
-          user: newMessages.filter(m => m.role === 'user').length,
-          assistant: newMessages.filter(m => m.role === 'assistant').length,
-        });
-      } catch (error) {
-        console.error('Error saving user message:', error);
-      }
-      return newMessages;
-    });
-    
+    setMessages((prev) => [...prev, userMessage]);
     const promptText = input;
     setInput("");
     setIsProcessing(true);
@@ -279,17 +203,60 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         timestamp: new Date(),
       };
 
-      setMessages((prev) => {
-        const newMessages = [...prev, assistantMessage];
-        // Save immediately to sessionStorage
-        try {
-          sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(newMessages));
-          console.log('✅ Assistant message saved immediately');
-        } catch (error) {
-          console.error('Error saving assistant message:', error);
+      setMessages((prev) => [...prev, assistantMessage]);
+      
+      // Check if response contains chart configurations
+      const actionPlan = response.action_plan;
+      if (actionPlan) {
+        const chartConfig = actionPlan.chart_config;
+        const chartConfigs = actionPlan.chart_configs;
+        
+        if (chartConfig || chartConfigs) {
+          // Store dashboard data
+          const charts = chartConfigs 
+            ? chartConfigs.map((c: any) => ({
+                chart_type: c.chart_type || 'bar',
+                x_column: c.x_column,
+                y_column: c.y_column,
+                title: c.title,
+                description: c.description,
+              }))
+            : chartConfig 
+              ? [{
+                  chart_type: chartConfig.chart_type || 'bar',
+                  x_column: chartConfig.x_column,
+                  y_column: chartConfig.y_column,
+                  title: chartConfig.title,
+                  description: chartConfig.description,
+                }]
+              : [];
+
+          if (charts.length > 0) {
+            const dashboardData = {
+              id: Date.now().toString(),
+              title: `Dashboard ${Date.now()}`,
+              charts,
+              data: response.processed_data || currentData,
+              columns: response.columns || currentColumns,
+              createdAt: new Date().toISOString(),
+            };
+
+            // Load existing dashboards
+            const existingDashboards = (() => {
+              try {
+                const stored = sessionStorage.getItem('dashboard-data');
+                return stored ? JSON.parse(stored) : [];
+              } catch {
+                return [];
+              }
+            })();
+
+            // Add new dashboard
+            const updatedDashboards = [...existingDashboards, dashboardData];
+            sessionStorage.setItem('dashboard-data', JSON.stringify(updatedDashboards));
+          }
         }
-        return newMessages;
-      });
+      }
       
       // Update the data
       if (response.processed_data) {
@@ -317,16 +284,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         content: `❌ Error: ${error.message || "Failed to process your request. Please try again."}`,
         timestamp: new Date(),
       };
-      setMessages((prev) => {
-        const newMessages = [...prev, errorMessage];
-        // Save immediately to sessionStorage
-        try {
-          sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(newMessages));
-        } catch (error) {
-          console.error('Error saving error message:', error);
-        }
-        return newMessages;
-      });
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsProcessing(false);
     }
@@ -418,67 +376,25 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               minHeight: 0, // Ensure proper scrolling
               maxHeight: '100%',
               overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch', // Smooth scrolling on mobile
-              position: 'relative', // Ensure proper positioning
-              visibility: 'visible', // Ensure visibility
-              opacity: 1 // Ensure opacity
+              WebkitOverflowScrolling: 'touch' // Smooth scrolling on mobile
             }}
           >
-            {messages.length === 0 ? (
-              <div className="flex items-center justify-center h-full text-gray-500 text-sm">
-                <p>No messages yet. Start a conversation!</p>
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[80%] rounded-lg p-3 ${
+                    message.role === "user"
+                      ? "bg-[#00A878] text-white"
+                      : "bg-white text-gray-800 border border-gray-200"
+                  }`}
+                >
+                  <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                </div>
               </div>
-            ) : (
-              (() => {
-                const validMessages = messages.filter((message) => {
-                  const isValid = message && message.role && message.content;
-                  if (!isValid) {
-                    console.warn('⚠️ Filtering out invalid message during render:', message);
-                  }
-                  return isValid;
-                });
-                
-                console.log('🎨 Rendering messages:', {
-                  total: messages.length,
-                  valid: validMessages.length,
-                  messages: validMessages
-                });
-                
-                if (validMessages.length === 0) {
-                  return (
-                    <div className="flex items-center justify-center h-full text-gray-500 text-sm">
-                      <p>No valid messages found. Start a conversation!</p>
-                    </div>
-                  );
-                }
-                
-                return validMessages.map((message) => {
-                  const isUser = message.role === "user";
-                  console.log('🎨 Rendering message:', isUser ? 'USER' : 'AI', message.content.substring(0, 50));
-                  return (
-                    <div
-                      key={message.id}
-                      className={`flex ${isUser ? "justify-end" : "justify-start"}`}
-                    >
-                      <div
-                        className={`max-w-[80%] rounded-lg p-3 ${
-                          isUser
-                            ? "bg-[#00A878] text-white"
-                            : "bg-white text-gray-800 border border-gray-200"
-                        }`}
-                      >
-                        <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                        <p className={`text-xs mt-1 ${
-                          isUser ? "text-white/70" : "text-gray-500"
-                        }`}>
-                          {isUser ? "You" : "AI"} • {message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString()}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                });
-              })()
-            )}
+            ))}
             {isProcessing && (
               <div className="flex justify-start">
                 <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-2">

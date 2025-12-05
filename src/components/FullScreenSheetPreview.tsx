@@ -148,10 +148,9 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
   };
 
   const handleDashboardClick = () => {
-    // Clear preview data from sessionStorage to ensure we don't show preview on home
-    sessionStorage.removeItem('previewData');
-    // Navigate to home page
-    window.location.href = '/';
+    // Navigate to dashboard page
+    window.history.pushState({}, '', '/dashboard');
+    window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
   if (!previewData) {

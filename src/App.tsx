@@ -10,6 +10,7 @@ import { Footer } from "./components/Footer";
 import { InteractiveSheetEditor } from "./components/InteractiveSheetEditor";
 import { ChartViewer } from "./components/ChartViewer";
 import { FullScreenSheetPreview } from "./components/FullScreenSheetPreview";
+import { DashboardView } from "./components/DashboardView";
 import { useEffect, useState } from "react";
 
 export default function App() {
@@ -19,9 +20,14 @@ export default function App() {
 
   useEffect(() => {
     const checkRoute = () => {
+      // Check if we're on the dashboard page
+      if (window.location.pathname === '/dashboard') {
+        setShowPreview(false);
+        return;
+      }
+      
       // Check if we're on the preview page
       const isPreviewRoute = window.location.pathname === '/preview' || 
-                            window.location.pathname === '/dashboard' ||
                             window.location.search.includes('preview=true');
       
       if (isPreviewRoute) {
@@ -80,6 +86,19 @@ export default function App() {
       window.removeEventListener('popstate', checkRoute);
     };
   }, []);
+
+  // If on dashboard route, show dashboard view
+  if (window.location.pathname === '/dashboard') {
+    return (
+      <DashboardView
+        onClose={() => {
+          window.history.pushState({}, '', '/');
+          // Trigger popstate to update route
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        }}
+      />
+    );
+  }
 
   // If preview is requested, show full-screen preview
   if (showPreview) {
