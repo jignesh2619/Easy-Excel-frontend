@@ -98,11 +98,26 @@ export function DashboardView({ onClose }: DashboardViewProps) {
   }, [currentDashboardIndex, dashboards]);
 
   const handleDataUpdate = (newResult: any) => {
+    console.log('handleDataUpdate: Received result', {
+      hasActionPlan: !!newResult.action_plan,
+      hasProcessedData: !!newResult.processed_data,
+      hasData: !!newResult.data,
+      columns: newResult.columns,
+      actionPlan: newResult.action_plan
+    });
+
     // Check if the result contains chart configurations
     const actionPlan = newResult.action_plan;
     if (actionPlan) {
       const chartConfig = actionPlan.chart_config;
       const chartConfigs = actionPlan.chart_configs;
+      
+      console.log('handleDataUpdate: Chart configs found', {
+        hasChartConfig: !!chartConfig,
+        hasChartConfigs: !!chartConfigs,
+        chartConfig,
+        chartConfigs
+      });
       
       if (chartConfig || chartConfigs) {
         const charts: ChartConfig[] = chartConfigs 
@@ -123,13 +138,25 @@ export function DashboardView({ onClose }: DashboardViewProps) {
               }]
             : [];
 
+        console.log('handleDataUpdate: Processed charts', charts);
+
         if (charts.length > 0) {
+          const dashboardData = newResult.processed_data || newResult.data || currentData;
+          const dashboardColumns = newResult.columns || currentColumns;
+          
+          console.log('handleDataUpdate: Creating dashboard', {
+            chartsCount: charts.length,
+            dataLength: dashboardData?.length,
+            columns: dashboardColumns,
+            sampleRow: dashboardData?.[0]
+          });
+
           const newDashboard: DashboardData = {
             id: Date.now().toString(),
             title: `Dashboard ${dashboards.length + 1}`,
             charts,
-            data: newResult.processed_data || newResult.data || currentData,
-            columns: newResult.columns || currentColumns,
+            data: dashboardData,
+            columns: dashboardColumns,
             createdAt: new Date(),
           };
 
@@ -141,8 +168,15 @@ export function DashboardView({ onClose }: DashboardViewProps) {
           
           // Save to sessionStorage
           sessionStorage.setItem(DASHBOARD_STORAGE_KEY, JSON.stringify(updatedDashboards));
+          console.log('handleDataUpdate: Dashboard saved to sessionStorage');
+        } else {
+          console.warn('handleDataUpdate: No valid charts found after processing');
         }
+      } else {
+        console.log('handleDataUpdate: No chart config found in action plan');
       }
+    } else {
+      console.log('handleDataUpdate: No action plan in result');
     }
 
     // Update current data if it changed
@@ -168,12 +202,53 @@ export function DashboardView({ onClose }: DashboardViewProps) {
 
   // Prepare chart data from dashboard data
   const prepareChartData = (chart: ChartConfig, data: Record<string, any>[]) => {
-    if (!data || data.length === 0) return [];
+    if (!data || data.length === 0) {
+      console.warn('prepareChartData: No data provided');
+      return [];
+    }
 
     const xCol = chart.x_column;
     const yCol = chart.y_column;
 
-    if (!xCol || !yCol) return [];
+    if (!xCol || !yCol) {
+      console.warn('prepareChartData: Missing column names', { xCol, yCol });
+      return [];
+    }
+
+    // Get actual column names from data (case-insensitive matching)
+    const actualColumns = data.length > 0 ? Object.keys(data[0]) : [];
+    console.log('prepareChartData: Available columns', actualColumns);
+    console.log('prepareChartData: Chart config', { xCol, yCol, chart_type: chart.chart_type });
+
+    // Find matching columns (case-insensitive)
+    const findColumn = (targetCol: string): string | null => {
+      if (!targetCol) return null;
+      // Exact match first
+      if (actualColumns.includes(targetCol)) return targetCol;
+      // Case-insensitive match
+      const lowerTarget = targetCol.toLowerCase();
+      const found = actualColumns.find(col => col.toLowerCase() === lowerTarget);
+      if (found) return found;
+      // Partial match (contains)
+      const partial = actualColumns.find(col => 
+        col.toLowerCase().includes(lowerTarget) || lowerTarget.includes(col.toLowerCase())
+      );
+      return partial || null;
+    };
+
+    const matchedXCol = findColumn(xCol);
+    const matchedYCol = findColumn(yCol);
+
+    if (!matchedXCol || !matchedYCol) {
+      console.error('prepareChartData: Column mismatch', {
+        expected: { xCol, yCol },
+        available: actualColumns,
+        matched: { matchedXCol, matchedYCol }
+      });
+      return [];
+    }
+
+    console.log('prepareChartData: Using columns', { matchedXCol, matchedYCol });
 
     // Helper function to check if a value is valid (not NaN, null, undefined, empty string, or "nan")
     const isValidValue = (val: any): boolean => {
@@ -200,10 +275,10 @@ export function DashboardView({ onClose }: DashboardViewProps) {
     if (chart.chart_type === 'pie') {
       const aggregated: Record<string, number> = {};
       data.forEach(row => {
-        const category = normalizeCategory(row[xCol]);
+        const category = normalizeCategory(row[matchedXCol]);
         if (!category) return; // Skip invalid categories
         
-        const value = parseFloat(row[yCol]);
+        const value = parseFloat(row[matchedYCol]);
         if (isNaN(value) || !isFinite(value)) return; // Skip invalid values
         
         aggregated[category] = (aggregated[category] || 0) + value;
@@ -223,63 +298,101 @@ export function DashboardView({ onClose }: DashboardViewProps) {
     if (['bar', 'line', 'area'].includes(chart.chart_type)) {
       const aggregated: Record<string, number> = {};
       data.forEach(row => {
-        const category = normalizeCategory(row[xCol]);
+        const category = normalizeCategory(row[matchedXCol]);
         if (!category) return; // Skip invalid categories
         
-        const value = parseFloat(row[yCol]);
+        const value = parseFloat(row[matchedYCol]);
         if (isNaN(value) || !isFinite(value)) return; // Skip invalid values
         
         aggregated[category] = (aggregated[category] || 0) + value;
       });
       
       // Convert to array and filter out zero values, sort by value descending
-      return Object.entries(aggregated)
+      const result = Object.entries(aggregated)
         .filter(([_, value]) => value > 0)
         .sort(([_, a], [__, b]) => b - a)
-        .map(([category, value]) => ({
-          [xCol]: category,
-          [yCol]: value,
-        }));
+        .map(([category, value]) => {
+          const row: Record<string, any> = {};
+          row[matchedXCol] = category;
+          row[matchedYCol] = value;
+          return row;
+        });
+      
+      console.log('prepareChartData: Bar/Line/Area chart result', { 
+        chart_type: chart.chart_type, 
+        dataPoints: result.length,
+        sample: result.slice(0, 3),
+        keys: result.length > 0 ? Object.keys(result[0]) : []
+      });
+      
+      return result;
     }
 
     // For scatter charts, return data as-is but filter invalid values
     if (chart.chart_type === 'scatter') {
       return data
         .filter(row => {
-          const xVal = parseFloat(row[xCol]);
-          const yVal = parseFloat(row[yCol]);
+          const xVal = parseFloat(row[matchedXCol]);
+          const yVal = parseFloat(row[matchedYCol]);
           return !isNaN(xVal) && !isNaN(yVal) && isFinite(xVal) && isFinite(yVal);
         })
         .map(row => ({
-          [xCol]: parseFloat(row[xCol]),
-          [yCol]: parseFloat(row[yCol]),
+          [matchedXCol]: parseFloat(row[matchedXCol]),
+          [matchedYCol]: parseFloat(row[matchedYCol]),
         }));
     }
 
     // Default: return filtered data
     return data
       .filter(row => {
-        const category = normalizeCategory(row[xCol]);
-        const value = parseFloat(row[yCol]);
+        const category = normalizeCategory(row[matchedXCol]);
+        const value = parseFloat(row[matchedYCol]);
         return category && !isNaN(value) && isFinite(value);
       })
       .map(row => ({
-        [xCol]: normalizeCategory(row[xCol]),
-        [yCol]: parseFloat(row[yCol]),
+        [matchedXCol]: normalizeCategory(row[matchedXCol]),
+        [matchedYCol]: parseFloat(row[matchedYCol]),
       }));
   };
 
   const renderChart = (chart: ChartConfig, index: number) => {
+    if (!currentDashboard || !currentDashboard.data) {
+      console.error('renderChart: No dashboard data available');
+      return (
+        <div key={index} className="bg-white rounded-lg p-6 border border-gray-200">
+          <h3 className="text-lg font-semibold mb-4">{chart.title || `Chart ${index + 1}`}</h3>
+          <p className="text-gray-500">No dashboard data available.</p>
+        </div>
+      );
+    }
+
     const chartData = prepareChartData(chart, currentDashboard.data);
     
     if (chartData.length === 0) {
+      console.warn('renderChart: No chart data prepared', {
+        chart,
+        dataLength: currentDashboard.data.length,
+        columns: currentDashboard.columns,
+        sampleRow: currentDashboard.data[0]
+      });
       return (
         <div key={index} className="bg-white rounded-lg p-6 border border-gray-200">
           <h3 className="text-lg font-semibold mb-4">{chart.title || `Chart ${index + 1}`}</h3>
           <p className="text-gray-500">No data available for this chart.</p>
+          <p className="text-xs text-gray-400 mt-2">
+            Expected columns: {chart.x_column} (X), {chart.y_column} (Y)
+            {currentDashboard.data.length > 0 && (
+              <> • Available columns: {Object.keys(currentDashboard.data[0]).join(', ')}</>
+            )}
+          </p>
         </div>
       );
     }
+
+    // Get the actual keys from the prepared chart data
+    const dataKeys = chartData.length > 0 ? Object.keys(chartData[0]) : [];
+    const xDataKey = dataKeys[0] || chart.x_column;
+    const yDataKey = dataKeys[1] || chart.y_column;
 
     const colors = ['#00A878', '#00c98c', '#10b981', '#14b8a6', '#22c55e', '#059669'];
     const chartColor = colors[index % colors.length];
@@ -298,7 +411,7 @@ export function DashboardView({ onClose }: DashboardViewProps) {
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
-                  dataKey={chart.x_column} 
+                  dataKey={xDataKey}
                   stroke="#6b7280"
                   tick={{ fill: '#6b7280', fontSize: 11 }}
                   angle={-45}
@@ -319,7 +432,7 @@ export function DashboardView({ onClose }: DashboardViewProps) {
                   }}
                 />
                 <Bar 
-                  dataKey={chart.y_column} 
+                  dataKey={yDataKey}
                   fill={chartColor}
                   radius={[8, 8, 0, 0]}
                   animationDuration={800}
@@ -338,7 +451,7 @@ export function DashboardView({ onClose }: DashboardViewProps) {
               <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
-                  dataKey={chart.x_column} 
+                  dataKey={xDataKey} 
                   stroke="#6b7280"
                   tick={{ fill: '#6b7280', fontSize: 11 }}
                   angle={-45}
@@ -360,7 +473,7 @@ export function DashboardView({ onClose }: DashboardViewProps) {
                 />
                 <Line 
                   type="monotone" 
-                  dataKey={chart.y_column} 
+                  dataKey={yDataKey} 
                   stroke={chartColor}
                   strokeWidth={3}
                   dot={{ fill: chartColor, r: 5 }}
@@ -432,7 +545,7 @@ export function DashboardView({ onClose }: DashboardViewProps) {
               <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
-                  dataKey={chart.x_column} 
+                  dataKey={xDataKey} 
                   stroke="#6b7280"
                   tick={{ fill: '#6b7280', fontSize: 11 }}
                   angle={-45}
@@ -454,7 +567,7 @@ export function DashboardView({ onClose }: DashboardViewProps) {
                 />
                 <Area 
                   type="monotone" 
-                  dataKey={chart.y_column} 
+                  dataKey={yDataKey} 
                   stroke={chartColor}
                   fill={chartColor}
                   fillOpacity={0.6}
@@ -474,12 +587,12 @@ export function DashboardView({ onClose }: DashboardViewProps) {
               <ScatterChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
-                  dataKey={chart.x_column} 
+                  dataKey={xDataKey} 
                   stroke="#6b7280"
                   tick={{ fill: '#6b7280', fontSize: 11 }}
                 />
                 <YAxis 
-                  dataKey={chart.y_column}
+                  dataKey={yDataKey}
                   stroke="#6b7280"
                   tick={{ fill: '#6b7280', fontSize: 11 }}
                 />
@@ -492,7 +605,7 @@ export function DashboardView({ onClose }: DashboardViewProps) {
                   }}
                 />
                 <Scatter 
-                  dataKey={chart.y_column} 
+                  dataKey={yDataKey} 
                   fill={chartColor}
                   animationDuration={800}
                 />
