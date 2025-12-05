@@ -332,7 +332,24 @@ export function DashboardView({ onClose }: DashboardViewProps) {
         const category = normalizeCategory(row[matchedXCol]);
         if (!category) return; // Skip invalid categories
         
-        const value = parseFloat(row[matchedYCol]);
+        // Use same robust parsing as bar charts
+        let value: number;
+        const rawValue = row[matchedYCol];
+        
+        if (rawValue === null || rawValue === undefined) return;
+        
+        if (typeof rawValue === 'number') {
+          value = rawValue;
+        } else if (typeof rawValue === 'string') {
+          const cleaned = rawValue.replace(/,/g, '').replace(/\$/g, '').trim();
+          const numberMatch = cleaned.match(/[-+]?[\d.]+/);
+          value = numberMatch ? parseFloat(numberMatch[0]) : NaN;
+        } else if (typeof rawValue === 'boolean') {
+          value = rawValue ? 1 : 0;
+        } else {
+          value = parseFloat(String(rawValue).replace(/,/g, ''));
+        }
+        
         if (isNaN(value) || !isFinite(value)) return; // Skip invalid values
         
         aggregated[category] = (aggregated[category] || 0) + value;
