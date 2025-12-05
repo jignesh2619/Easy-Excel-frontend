@@ -360,25 +360,50 @@ export function DashboardView({ onClose }: DashboardViewProps) {
           return; // Skip invalid categories
         }
         
-        // Try to parse as number, handle string numbers
+        // Try to parse as number, handle string numbers with multiple formats
         let value: number;
         const rawValue = row[matchedYCol];
+        
+        if (rawValue === null || rawValue === undefined) {
+          console.warn('prepareChartData: Skipping row with null/undefined value', { category });
+          return;
+        }
         
         if (typeof rawValue === 'number') {
           value = rawValue;
         } else if (typeof rawValue === 'string') {
-          // Remove commas and whitespace, then parse
-          const cleaned = rawValue.replace(/,/g, '').trim();
+          // Remove commas, currency symbols, whitespace, then parse
+          let cleaned = rawValue
+            .replace(/,/g, '')  // Remove commas
+            .replace(/\$/g, '')  // Remove dollar signs
+            .replace(/€/g, '')    // Remove euro signs
+            .replace(/£/g, '')    // Remove pound signs
+            .replace(/%/g, '')    // Remove percent signs
+            .trim();
+          
+          // Try to extract number from strings like "5218.00" or "5,218.00" or "$5,218.00"
+          const numberMatch = cleaned.match(/[-+]?[\d.]+/);
+          if (numberMatch) {
+            cleaned = numberMatch[0];
+          }
+          
           value = parseFloat(cleaned);
+        } else if (typeof rawValue === 'boolean') {
+          // Convert boolean to number (true = 1, false = 0)
+          value = rawValue ? 1 : 0;
         } else {
-          value = parseFloat(rawValue);
+          // Try to convert to string first, then parse
+          const stringValue = String(rawValue).replace(/,/g, '').trim();
+          value = parseFloat(stringValue);
         }
         
         if (isNaN(value) || !isFinite(value)) {
           console.warn('prepareChartData: Skipping row with invalid numeric value', { 
             category, 
             rawValue, 
-            parsed: value 
+            rawValueType: typeof rawValue,
+            parsed: value,
+            row: row
           });
           return; // Skip invalid values
         }
