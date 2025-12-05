@@ -19,32 +19,24 @@ export default function App() {
 
   useEffect(() => {
     const checkRoute = () => {
-      // Check if user just signed in and restore preview
-      const justSignedIn = sessionStorage.getItem('justSignedIn') === 'true';
-      const previewDataStr = sessionStorage.getItem('previewData') || 
-                            sessionStorage.getItem('previewDataBackup');
+      // Check if we're on the preview page
+      const isPreviewRoute = window.location.pathname === '/preview' || 
+                            window.location.pathname === '/dashboard' ||
+                            window.location.search.includes('preview=true');
       
-      if (previewDataStr) {
-        // If user just signed in, show preview regardless of route
-        if (justSignedIn) {
-          // Restore backup if needed
-          if (!sessionStorage.getItem('previewData') && sessionStorage.getItem('previewDataBackup')) {
-            sessionStorage.setItem('previewData', sessionStorage.getItem('previewDataBackup')!);
-          }
-          // Navigate to preview route if not already there
-          if (window.location.pathname !== '/preview') {
-            window.history.pushState({}, '', '/preview');
-          }
-          setShowPreview(true);
-          sessionStorage.removeItem('justSignedIn');
-          return;
-        }
-        
-        // Check if we're on the preview page
-        if (window.location.pathname === '/preview' || window.location.search.includes('preview=true')) {
+      if (isPreviewRoute) {
+        const previewDataStr = sessionStorage.getItem('previewData');
+        if (previewDataStr) {
           setShowPreview(true);
           return;
         }
+      }
+      
+      // If we're on home page (/), clear preview
+      if (window.location.pathname === '/' || window.location.pathname === '') {
+        setShowPreview(false);
+        // Optionally clear preview data when navigating to home
+        // sessionStorage.removeItem('previewData');
       } else {
         setShowPreview(false);
       }
@@ -63,8 +55,8 @@ export default function App() {
         setEditorData(null);
       }
       
-      // Check if we're on the dashboard page or chart viewer page
-      if (window.location.pathname === '/dashboard' || window.location.search.includes('charts=true')) {
+      // Check if we're on the chart viewer page
+      if (window.location.search.includes('charts=true')) {
         const chartViewerDataStr = sessionStorage.getItem('chartViewerData');
         if (chartViewerDataStr) {
           try {
@@ -148,24 +140,6 @@ export default function App() {
         <PromptToolSection />
         <FeaturesSection />
         <DashboardPreviewSection />
-        {/* Product Hunt Badge */}
-        <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
-          <div className="max-w-7xl mx-auto flex justify-center">
-            <a 
-              href="https://www.producthunt.com/products/easyexcel?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-easyexcel" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              <img 
-                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1044628&theme=light&t=1764598786487" 
-                alt="EasyExcel - Clean sheets and build dashboards with one click | Product Hunt" 
-                style={{ width: "250px", height: "54px" }} 
-                width="250" 
-                height="54" 
-              />
-            </a>
-          </div>
-        </section>
         <PricingSection />
         <TokenDashboard />
         <FeedbackSection />
