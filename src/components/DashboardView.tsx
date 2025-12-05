@@ -248,17 +248,55 @@ export function DashboardView({ onClose }: DashboardViewProps) {
         sampleRow: data.length > 0 ? data[0] : null
       });
       // Try to use first two columns as fallback if exact match fails
-      if (actualColumns.length >= 2 && (!matchedXCol || !matchedYCol)) {
-        console.warn('prepareChartData: Using fallback columns', {
-          fallbackX: actualColumns[0],
-          fallbackY: actualColumns[1]
-        });
+      if (actualColumns.length >= 2) {
         const fallbackX = matchedXCol || actualColumns[0];
         const fallbackY = matchedYCol || actualColumns[1];
-        if (fallbackX && fallbackY) {
-          // Recursively call with fallback columns
-          const fallbackChart = { ...chart, x_column: fallbackX, y_column: fallbackY };
-          return prepareChartData(fallbackChart, data);
+        if (fallbackX && fallbackY && (!matchedXCol || !matchedYCol)) {
+          console.warn('prepareChartData: Using fallback columns', {
+            fallbackX,
+            fallbackY,
+            original: { xCol, yCol }
+          });
+          // Use fallback columns directly instead of recursive call
+          const finalXCol = fallbackX;
+          const finalYCol = fallbackY;
+          
+          // Process with fallback columns
+          const aggregated: Record<string, number> = {};
+          let validRowsCount = 0;
+          
+          data.forEach(row => {
+            const category = normalizeCategory(row[finalXCol]);
+            if (!category) return;
+            
+            let value: number;
+            const rawValue = row[finalYCol];
+            if (typeof rawValue === 'number') {
+              value = rawValue;
+            } else if (typeof rawValue === 'string') {
+              const cleaned = rawValue.replace(/,/g, '').trim();
+              value = parseFloat(cleaned);
+            } else {
+              value = parseFloat(rawValue);
+            }
+            
+            if (isNaN(value) || !isFinite(value)) return;
+            
+            validRowsCount++;
+            aggregated[category] = (aggregated[category] || 0) + value;
+          });
+          
+          const entries = Object.entries(aggregated);
+          const filtered = validRowsCount <= 1 ? entries : entries.filter(([_, value]) => value > 0);
+          
+          return filtered
+            .sort(([_, a], [__, b]) => b - a)
+            .map(([category, value]) => {
+              const row: Record<string, any> = {};
+              row[finalXCol] = category;
+              row[finalYCol] = value;
+              return row;
+            });
         }
       }
       return [];
