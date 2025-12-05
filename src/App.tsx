@@ -4,6 +4,7 @@ import { TokenDashboard } from "./components/TokenDashboard";
 import { PromptToolSection } from "./components/PromptToolSection";
 import { FeaturesSection } from "./components/FeaturesSection";
 import { DashboardPreviewSection } from "./components/DashboardPreviewSection";
+import { ProductHuntSection } from "./components/ProductHuntSection";
 import { PricingSection } from "./components/PricingSection";
 import { FeedbackSection } from "./components/FeedbackSection";
 import { Footer } from "./components/Footer";
@@ -159,6 +160,7 @@ export default function App() {
         <PromptToolSection />
         <FeaturesSection />
         <DashboardPreviewSection />
+        <ProductHuntSection />
         <PricingSection />
         <TokenDashboard />
         <FeedbackSection />
