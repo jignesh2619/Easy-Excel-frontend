@@ -234,7 +234,7 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
 
         {/* Sheet Container - Windowed View */}
         <div className="flex-1 p-4" style={{ minWidth: 0, maxWidth: '100%', overflow: 'hidden' }}>
-          <div className="bg-white rounded-lg shadow-lg border border-gray-300" style={{ height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-300" style={{ height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column', minWidth: 0, width: '100%' }}>
             {/* Spreadsheet Title Bar */}
             <div className="bg-gray-100 border-b border-gray-300 px-3 py-1.5 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2">
@@ -307,12 +307,10 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
               style={{ 
                 minHeight: 0,
                 minWidth: 0,
-                maxWidth: '100%',
-                overflowX: 'auto',
-                overflowY: 'auto',
                 width: '100%',
                 height: '100%',
-                position: 'relative'
+                position: 'relative',
+                overflow: 'hidden'
               }}
             >
               <SheetViewer
