@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowLeft, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { AIChatbot } from "./AIChatbot";
@@ -34,7 +34,7 @@ const DASHBOARD_STORAGE_KEY = 'dashboard-data';
 export function DashboardView({ onClose }: DashboardViewProps) {
   const [dashboards, setDashboards] = useState<DashboardData[]>([]);
   const [currentDashboardIndex, setCurrentDashboardIndex] = useState(0);
-  const [isChatbotOpen, setIsChatbotOpen] = useState(true);
+  const [isChatbotOpen] = useState(true);
   const [currentData, setCurrentData] = useState<Record<string, any>[]>([]);
   const [currentColumns, setCurrentColumns] = useState<string[]>([]);
 
@@ -175,25 +175,98 @@ export function DashboardView({ onClose }: DashboardViewProps) {
 
     if (!xCol || !yCol) return [];
 
+    // Helper function to check if a value is valid (not NaN, null, undefined, empty string, or "nan")
+    const isValidValue = (val: any): boolean => {
+      if (val === null || val === undefined) return false;
+      if (typeof val === 'string') {
+        const trimmed = val.trim().toLowerCase();
+        return trimmed !== '' && trimmed !== 'nan' && trimmed !== 'null' && trimmed !== 'undefined';
+      }
+      if (typeof val === 'number') {
+        return !isNaN(val) && isFinite(val);
+      }
+      return true;
+    };
+
+    // Helper function to normalize category names
+    const normalizeCategory = (val: any): string | null => {
+      if (!isValidValue(val)) return null;
+      const str = String(val).trim();
+      if (str.toLowerCase() === 'nan' || str.toLowerCase() === 'category') return null;
+      return str;
+    };
+
     // For pie charts, aggregate by x_column and sum y_column
     if (chart.chart_type === 'pie') {
       const aggregated: Record<string, number> = {};
       data.forEach(row => {
-        const key = String(row[xCol] || '');
-        const value = parseFloat(row[yCol]) || 0;
-        aggregated[key] = (aggregated[key] || 0) + value;
+        const category = normalizeCategory(row[xCol]);
+        if (!category) return; // Skip invalid categories
+        
+        const value = parseFloat(row[yCol]);
+        if (isNaN(value) || !isFinite(value)) return; // Skip invalid values
+        
+        aggregated[category] = (aggregated[category] || 0) + value;
       });
-      return Object.entries(aggregated).map(([name, value]) => ({
-        name,
-        value,
-      }));
+      
+      // Filter out entries with zero or negative values and sort by value descending
+      return Object.entries(aggregated)
+        .filter(([_, value]) => value > 0)
+        .sort(([_, a], [__, b]) => b - a)
+        .map(([name, value]) => ({
+          name,
+          value,
+        }));
     }
 
-    // For other charts, return data as-is (may need aggregation in future)
-    return data.map(row => ({
-      [xCol]: row[xCol],
-      [yCol]: parseFloat(row[yCol]) || 0,
-    }));
+    // For bar, line, area charts - aggregate by x_column
+    if (['bar', 'line', 'area'].includes(chart.chart_type)) {
+      const aggregated: Record<string, number> = {};
+      data.forEach(row => {
+        const category = normalizeCategory(row[xCol]);
+        if (!category) return; // Skip invalid categories
+        
+        const value = parseFloat(row[yCol]);
+        if (isNaN(value) || !isFinite(value)) return; // Skip invalid values
+        
+        aggregated[category] = (aggregated[category] || 0) + value;
+      });
+      
+      // Convert to array and filter out zero values, sort by value descending
+      return Object.entries(aggregated)
+        .filter(([_, value]) => value > 0)
+        .sort(([_, a], [__, b]) => b - a)
+        .map(([category, value]) => ({
+          [xCol]: category,
+          [yCol]: value,
+        }));
+    }
+
+    // For scatter charts, return data as-is but filter invalid values
+    if (chart.chart_type === 'scatter') {
+      return data
+        .filter(row => {
+          const xVal = parseFloat(row[xCol]);
+          const yVal = parseFloat(row[yCol]);
+          return !isNaN(xVal) && !isNaN(yVal) && isFinite(xVal) && isFinite(yVal);
+        })
+        .map(row => ({
+          [xCol]: parseFloat(row[xCol]),
+          [yCol]: parseFloat(row[yCol]),
+        }));
+    }
+
+    // Default: return filtered data
+    return data
+      .filter(row => {
+        const category = normalizeCategory(row[xCol]);
+        const value = parseFloat(row[yCol]);
+        return category && !isNaN(value) && isFinite(value);
+      })
+      .map(row => ({
+        [xCol]: normalizeCategory(row[xCol]),
+        [yCol]: parseFloat(row[yCol]),
+      }));
   };
 
   const renderChart = (chart: ChartConfig, index: number) => {
@@ -214,20 +287,28 @@ export function DashboardView({ onClose }: DashboardViewProps) {
     switch (chart.chart_type) {
       case 'bar':
         return (
-          <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">{chart.title || `Bar Chart ${index + 1}`}</h3>
+          <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm mb-6">
+            <h3 className="text-lg font-semibold mb-2 text-gray-800">{chart.title || `Bar Chart ${index + 1}`}</h3>
             {chart.description && <p className="text-sm text-gray-600 mb-4">{chart.description}</p>}
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart 
+                data={chartData} 
+                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                barCategoryGap="20%"
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={chart.x_column} 
                   stroke="#6b7280"
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: '#6b7280', fontSize: 11 }}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                  interval={0}
                 />
                 <YAxis 
                   stroke="#6b7280"
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: '#6b7280', fontSize: 11 }}
                 />
                 <Tooltip 
                   contentStyle={{ 
@@ -250,20 +331,24 @@ export function DashboardView({ onClose }: DashboardViewProps) {
 
       case 'line':
         return (
-          <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">{chart.title || `Line Chart ${index + 1}`}</h3>
+          <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm mb-6">
+            <h3 className="text-lg font-semibold mb-2 text-gray-800">{chart.title || `Line Chart ${index + 1}`}</h3>
             {chart.description && <p className="text-sm text-gray-600 mb-4">{chart.description}</p>}
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <ResponsiveContainer width="100%" height={350}>
+              <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={chart.x_column} 
                   stroke="#6b7280"
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: '#6b7280', fontSize: 11 }}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                  interval={0}
                 />
                 <YAxis 
                   stroke="#6b7280"
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: '#6b7280', fontSize: 11 }}
                 />
                 <Tooltip 
                   contentStyle={{ 
@@ -289,18 +374,21 @@ export function DashboardView({ onClose }: DashboardViewProps) {
 
       case 'pie':
         return (
-          <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">{chart.title || `Pie Chart ${index + 1}`}</h3>
+          <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm mb-6">
+            <h3 className="text-lg font-semibold mb-2 text-gray-800">{chart.title || `Pie Chart ${index + 1}`}</h3>
             {chart.description && <p className="text-sm text-gray-600 mb-4">{chart.description}</p>}
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
                   data={chartData}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
+                  label={({ name, percent }) => {
+                    if (percent < 0.01) return ''; // Don't show labels for very small slices
+                    return `${name}: ${(percent * 100).toFixed(0)}%`;
+                  }}
+                  outerRadius={120}
                   fill="#8884d8"
                   dataKey="value"
                   animationDuration={800}
@@ -316,6 +404,19 @@ export function DashboardView({ onClose }: DashboardViewProps) {
                     borderRadius: '8px',
                     boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
                   }}
+                  formatter={(value: number) => [value.toLocaleString(), 'Value']}
+                />
+                <Legend 
+                  verticalAlign="bottom" 
+                  height={36}
+                  formatter={(value: string) => {
+                    const entry = chartData.find((d: any) => d.name === value);
+                    if (!entry || !entry.value) return value;
+                    const total = chartData.reduce((sum: number, d: any) => sum + (d.value || 0), 0);
+                    if (total === 0) return value;
+                    const percent = ((entry.value / total) * 100).toFixed(1);
+                    return `${value} (${percent}%)`;
+                  }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -324,20 +425,24 @@ export function DashboardView({ onClose }: DashboardViewProps) {
 
       case 'area':
         return (
-          <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">{chart.title || `Area Chart ${index + 1}`}</h3>
+          <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm mb-6">
+            <h3 className="text-lg font-semibold mb-2 text-gray-800">{chart.title || `Area Chart ${index + 1}`}</h3>
             {chart.description && <p className="text-sm text-gray-600 mb-4">{chart.description}</p>}
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <ResponsiveContainer width="100%" height={350}>
+              <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={chart.x_column} 
                   stroke="#6b7280"
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: '#6b7280', fontSize: 11 }}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                  interval={0}
                 />
                 <YAxis 
                   stroke="#6b7280"
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: '#6b7280', fontSize: 11 }}
                 />
                 <Tooltip 
                   contentStyle={{ 
@@ -362,21 +467,21 @@ export function DashboardView({ onClose }: DashboardViewProps) {
 
       case 'scatter':
         return (
-          <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">{chart.title || `Scatter Chart ${index + 1}`}</h3>
+          <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm mb-6">
+            <h3 className="text-lg font-semibold mb-2 text-gray-800">{chart.title || `Scatter Chart ${index + 1}`}</h3>
             {chart.description && <p className="text-sm text-gray-600 mb-4">{chart.description}</p>}
-            <ResponsiveContainer width="100%" height={300}>
-              <ScatterChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <ResponsiveContainer width="100%" height={350}>
+              <ScatterChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={chart.x_column} 
                   stroke="#6b7280"
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: '#6b7280', fontSize: 11 }}
                 />
                 <YAxis 
                   dataKey={chart.y_column}
                   stroke="#6b7280"
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: '#6b7280', fontSize: 11 }}
                 />
                 <Tooltip 
                   contentStyle={{ 
@@ -519,9 +624,9 @@ export function DashboardView({ onClose }: DashboardViewProps) {
           </div>
         </div>
 
-        {/* Dashboard Content - Scrollable with Horizontal Scroll */}
-        <div className="flex-1 p-4 overflow-y-auto overflow-x-auto" style={{ minWidth: 0 }}>
-          <div className="max-w-7xl mx-auto space-y-6" style={{ minWidth: 'max-content', width: '100%' }}>
+        {/* Dashboard Content - Scrollable */}
+        <div className="flex-1 p-6 overflow-y-auto" style={{ minWidth: 0 }}>
+          <div className="max-w-7xl mx-auto">
             {currentDashboard.charts.map((chart, index) => renderChart(chart, index))}
           </div>
         </div>
