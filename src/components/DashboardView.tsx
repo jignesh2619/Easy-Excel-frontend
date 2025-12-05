@@ -219,6 +219,7 @@ export function DashboardView({ onClose }: DashboardViewProps) {
     const actualColumns = data.length > 0 ? Object.keys(data[0]) : [];
     console.log('prepareChartData: Available columns', actualColumns);
     console.log('prepareChartData: Chart config', { xCol, yCol, chart_type: chart.chart_type });
+    console.log('prepareChartData: Sample data row', data.length > 0 ? data[0] : 'No data');
 
     // Find matching columns (case-insensitive)
     const findColumn = (targetCol: string): string | null => {
@@ -243,8 +244,23 @@ export function DashboardView({ onClose }: DashboardViewProps) {
       console.error('prepareChartData: Column mismatch', {
         expected: { xCol, yCol },
         available: actualColumns,
-        matched: { matchedXCol, matchedYCol }
+        matched: { matchedXCol, matchedYCol },
+        sampleRow: data.length > 0 ? data[0] : null
       });
+      // Try to use first two columns as fallback if exact match fails
+      if (actualColumns.length >= 2 && (!matchedXCol || !matchedYCol)) {
+        console.warn('prepareChartData: Using fallback columns', {
+          fallbackX: actualColumns[0],
+          fallbackY: actualColumns[1]
+        });
+        const fallbackX = matchedXCol || actualColumns[0];
+        const fallbackY = matchedYCol || actualColumns[1];
+        if (fallbackX && fallbackY) {
+          // Recursively call with fallback columns
+          const fallbackChart = { ...chart, x_column: fallbackX, y_column: fallbackY };
+          return prepareChartData(fallbackChart, data);
+        }
+      }
       return [];
     }
 
@@ -297,19 +313,57 @@ export function DashboardView({ onClose }: DashboardViewProps) {
     // For bar, line, area charts - aggregate by x_column
     if (['bar', 'line', 'area'].includes(chart.chart_type)) {
       const aggregated: Record<string, number> = {};
+      let validRowsCount = 0;
+      
       data.forEach(row => {
         const category = normalizeCategory(row[matchedXCol]);
-        if (!category) return; // Skip invalid categories
+        if (!category) {
+          console.warn('prepareChartData: Skipping row with invalid category', row);
+          return; // Skip invalid categories
+        }
         
-        const value = parseFloat(row[matchedYCol]);
-        if (isNaN(value) || !isFinite(value)) return; // Skip invalid values
+        // Try to parse as number, handle string numbers
+        let value: number;
+        const rawValue = row[matchedYCol];
         
+        if (typeof rawValue === 'number') {
+          value = rawValue;
+        } else if (typeof rawValue === 'string') {
+          // Remove commas and whitespace, then parse
+          const cleaned = rawValue.replace(/,/g, '').trim();
+          value = parseFloat(cleaned);
+        } else {
+          value = parseFloat(rawValue);
+        }
+        
+        if (isNaN(value) || !isFinite(value)) {
+          console.warn('prepareChartData: Skipping row with invalid numeric value', { 
+            category, 
+            rawValue, 
+            parsed: value 
+          });
+          return; // Skip invalid values
+        }
+        
+        validRowsCount++;
         aggregated[category] = (aggregated[category] || 0) + value;
       });
       
-      // Convert to array and filter out zero values, sort by value descending
-      const result = Object.entries(aggregated)
-        .filter(([_, value]) => value > 0)
+      console.log('prepareChartData: Aggregation complete', {
+        validRows: validRowsCount,
+        totalRows: data.length,
+        aggregatedCount: Object.keys(aggregated).length,
+        aggregated: aggregated
+      });
+      
+      // Convert to array - allow zero values for single-row datasets
+      // Only filter zeros if we have multiple categories (aggregated data)
+      const entries = Object.entries(aggregated);
+      const filtered = validRowsCount <= 1 
+        ? entries  // Don't filter zeros for single-row datasets
+        : entries.filter(([_, value]) => value > 0);  // Filter zeros for aggregated data
+      
+      const result = filtered
         .sort(([_, a], [__, b]) => b - a)
         .map(([category, value]) => {
           const row: Record<string, any> = {};
@@ -322,7 +376,8 @@ export function DashboardView({ onClose }: DashboardViewProps) {
         chart_type: chart.chart_type, 
         dataPoints: result.length,
         sample: result.slice(0, 3),
-        keys: result.length > 0 ? Object.keys(result[0]) : []
+        keys: result.length > 0 ? Object.keys(result[0]) : [],
+        originalDataLength: data.length
       });
       
       return result;
