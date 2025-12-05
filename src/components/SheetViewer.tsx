@@ -244,7 +244,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 1 }}>
                 {/* Excel Column Letters Row */}
                 <tr>
-                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black bg-gray-100 sticky left-0 z-10" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '1px solid black' }}>
+                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black sticky left-0 z-10" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '1px solid black', backgroundColor: '#f3f4f6' }}>
                     {/* Empty cell for row numbers column */}
                   </th>
                   {columns.map((col, idx) => {
@@ -252,14 +252,15 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                     return (
                       <th
                         key={`letter-${idx}`}
-                        className="px-2 py-1 text-center text-xs font-semibold text-gray-600 border border-black whitespace-nowrap bg-gray-50"
+                        className="px-2 py-1 text-center text-xs font-semibold text-gray-600 border border-black whitespace-nowrap"
                         style={{ 
                           minWidth: '100px', 
                           textAlign: 'center', 
                           borderRight: '2px solid black', 
                           borderBottom: '1px solid black', 
                           borderLeft: idx === 0 ? '2px solid black' : 'none',
-                          borderTop: 'none'
+                          borderTop: 'none',
+                          backgroundColor: '#f9fafb'
                         }}
                       >
                         {getExcelColumnLetter(idx)}
@@ -269,7 +270,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                 </tr>
                 {/* Actual Column Names Row */}
                 <tr>
-                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border border-black bg-gray-100 sticky left-0 z-10" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '2px solid black' }}>
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border border-black sticky left-0 z-10" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '2px solid black', backgroundColor: '#f3f4f6' }}>
                     {/* Row number header */}
                   </th>
                   {columns.map((col, idx) => {
@@ -315,8 +316,8 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                       >
                         {/* Row Number Cell */}
                         <td 
-                          className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border border-black bg-gray-50 sticky left-0 z-10"
-                          style={{ width: '50px', minWidth: '50px', maxWidth: '50px', textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black' }}
+                          className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border border-black sticky left-0 z-10"
+                          style={{ width: '50px', minWidth: '50px', maxWidth: '50px', textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black', backgroundColor: '#f3f4f6' }}
                         >
                           {rowNumber}
                         </td>
@@ -403,7 +404,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
               <thead>
                 {/* Excel Column Letters Row */}
                 <tr className="bg-gray-50">
-                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black bg-gray-100" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '1px solid black' }}>
+                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '1px solid black', backgroundColor: '#f3f4f6' }}>
                     {/* Empty cell for row numbers */}
                   </th>
                   {columns.slice(0, 5).map((col, idx) => {
@@ -411,22 +412,22 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                     return (
                       <th
                         key={`letter-${idx}`}
-                        className="px-2 py-1 text-center text-xs font-semibold text-gray-600 border border-black bg-gray-50"
-                        style={{ width: `${colWidth}px`, minWidth: `${colWidth}px`, maxWidth: `${colWidth}px`, textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black', borderLeft: idx === 0 ? '2px solid black' : 'none' }}
+                        className="px-2 py-1 text-center text-xs font-semibold text-gray-600 border border-black"
+                        style={{ width: `${colWidth}px`, minWidth: `${colWidth}px`, maxWidth: `${colWidth}px`, textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black', borderLeft: idx === 0 ? '2px solid black' : 'none', backgroundColor: '#f9fafb' }}
                       >
                         {getExcelColumnLetter(idx)}
                       </th>
                     );
                   })}
                   {columns.length > 5 && (
-                    <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black bg-gray-50" style={{ minWidth: '100px', textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black' }}>
+                    <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black" style={{ minWidth: '100px', textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black', backgroundColor: '#f9fafb' }}>
                       ...
                     </th>
                   )}
                 </tr>
                 {/* Actual Column Names Row */}
                 <tr className="bg-gray-50">
-                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border border-black bg-gray-100" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '2px solid black' }}>
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border border-black" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '2px solid black', backgroundColor: '#f3f4f6' }}>
                     {/* Row number header */}
                   </th>
                   {columns.slice(0, 5).map((col, idx) => {
@@ -461,8 +462,8 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                     >
                       {/* Row Number Cell */}
                       <td 
-                        className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border border-black bg-gray-50"
-                        style={{ width: '50px', minWidth: '50px', maxWidth: '50px', textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black' }}
+                        className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border border-black"
+                        style={{ width: '50px', minWidth: '50px', maxWidth: '50px', textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black', backgroundColor: '#f3f4f6' }}
                       >
                         {rowNumber}
                       </td>
