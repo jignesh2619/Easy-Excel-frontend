@@ -9,16 +9,8 @@ interface SheetViewerProps {
   onDownload?: () => void;
   highlightDuplicates?: boolean;
   onDataChange?: (rowIndex: number, column: string, value: any) => void;
-  onCellSelect?: (rowIndex: number, column: string, value: any) => void;
-  formatting_metadata?: {
-    conditional_formatting?: any[];
-    cell_formats?: Record<string, {
-      bg_color?: string;
-      text_color?: string;
-      bold?: boolean;
-      italic?: boolean;
-    }>;
-  };
+  formatting_metadata?: any;
+  onCellSelect?: (row: number, col: string, value: any) => void;
 }
 
 // Convert column index to Excel column letter (A, B, C, ..., Z, AA, AB, etc.)
@@ -33,7 +25,7 @@ function getExcelColumnLetter(index: number): string {
   return result;
 }
 
-export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true, onDataChange, onCellSelect, formatting_metadata }: SheetViewerProps) {
+export function SheetViewer({ data, columns, rowCount, onDownload, highlightDuplicates = true, onDataChange, formatting_metadata, onCellSelect }: SheetViewerProps) {
   const [isExpanded, setIsExpanded] = useState(true); // Default to expanded to show preview
   const [currentPage, setCurrentPage] = useState(1);
   const [showDuplicates, setShowDuplicates] = useState(highlightDuplicates);
@@ -87,11 +79,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
 
   // Format cell value for display
   const formatCellValue = (value: any): string => {
-    // Handle empty/null/nan values
-    if (value === null || value === undefined || value === "" || 
-        (typeof value === "string" && value.toLowerCase() === "nan")) {
-      return "";
-    }
+    if (value === null || value === undefined) return "";
     if (typeof value === "number") {
       // Format numbers with commas
       return value.toLocaleString();
@@ -165,41 +153,14 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
     return maxWidth;
   };
 
-  // Get cell formatting style from formatting_metadata or {column}_format field
-  const getCellStyle = (rowIndex: number, row: Record<string, any>, column: string): React.CSSProperties => {
-    const style: React.CSSProperties = {};
-    
-    // First, try formatting_metadata (from backend conditional formatting)
-    if (formatting_metadata?.cell_formats) {
-      const cellKey = `${rowIndex}_${column}`;
-      const cellFormat = formatting_metadata.cell_formats[cellKey];
-      
-      if (cellFormat) {
-        if (cellFormat.bg_color) {
-          style.backgroundColor = cellFormat.bg_color;
-        }
-        if (cellFormat.text_color) {
-          style.color = cellFormat.text_color;
-        }
-        if (cellFormat.bold) {
-          style.fontWeight = 'bold';
-        }
-        if (cellFormat.italic) {
-          style.fontStyle = 'italic';
-        }
-        // Return early if we found formatting from metadata
-        if (Object.keys(style).length > 0) {
-          return style;
-        }
-      }
-    }
-    
-    // Fallback: try {column}_format field in row data
+  // Get cell formatting style from {column}_format field
+  const getCellStyle = (row: Record<string, any>, column: string): React.CSSProperties => {
     const formatKey = `${column}_format`;
     const cellFormat = row[formatKey];
     
-    if (!cellFormat) return style;
+    if (!cellFormat) return {};
     
+    const style: React.CSSProperties = {};
     if (cellFormat.bg_color) {
       style.backgroundColor = cellFormat.bg_color;
     }
@@ -220,37 +181,70 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
   };
 
   return (
-    <div className="h-full w-full bg-white flex flex-col" style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
+    <div className="h-full w-full bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-[#00A878] flex flex-col" style={{ height: '100%', width: '100%' }}>
+      {/* Header */}
+      <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Eye className="w-5 h-5" />
+          <div>
+            <h3 className="font-bold text-lg">Processed Sheet Preview</h3>
+            <p className="text-sm text-white/90">
+              {rowCount.toLocaleString()} {rowCount === 1 ? "row" : "rows"} • {columns.length} {columns.length === 1 ? "column" : "columns"}
+              {localData.length < rowCount && ` (showing first ${localData.length.toLocaleString()})`}
+              {duplicateCount > 0 && showDuplicates && (
+                <span className="ml-2 inline-flex items-center gap-1 bg-yellow-500/20 px-2 py-0.5 rounded">
+                  <AlertTriangle className="w-3 h-3" />
+                  {duplicateCount} duplicate{duplicateCount !== 1 ? 's' : ''}
+                </span>
+              )}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {duplicateCount > 0 && (
+            <Button
+              onClick={() => setShowDuplicates(!showDuplicates)}
+              variant="ghost"
+              size="sm"
+              className={`text-white hover:bg-white/20 ${showDuplicates ? 'bg-yellow-500/30' : ''}`}
+              title={showDuplicates ? "Hide duplicate highlighting" : "Show duplicate highlighting"}
+            >
+              <AlertTriangle className="w-4 h-4 mr-1" />
+              {showDuplicates ? "Hide" : "Show"} Duplicates
+            </Button>
+          )}
+          <Button
+            onClick={() => setIsExpanded(!isExpanded)}
+            variant="ghost"
+            size="sm"
+            className="text-white hover:bg-white/20"
+          >
+            {isExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {isExpanded ? "Collapse" : "Expand"}
+          </Button>
+          {onDownload && (
+            <Button
+              onClick={onDownload}
+              variant="ghost"
+              size="sm"
+              className="text-white hover:bg-white/20"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download
+            </Button>
+          )}
+        </div>
+      </div>
+
       {/* Sheet Content */}
       {isExpanded && (
-        <div 
-          className="flex-1" 
-          style={{ 
-            zIndex: 1, 
-            minHeight: 0,
-            minWidth: 0,
-            maxWidth: '100%',
-            width: '100%',
-            height: '100%',
-            overflowX: 'auto',
-            overflowY: 'auto',
-            position: 'relative'
-          }}
-        >
-          <div style={{ display: "inline-block", width: "max-content", minWidth: "100%" }}>
-            <table 
-              className="border-collapse" 
-              style={{ 
-                width: "max-content",
-                minWidth: "100%",
-                borderSpacing: 0,
-                tableLayout: 'auto'
-              }}
-            >
-              <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 25 }}>
+        <div className="flex-1 overflow-auto relative" style={{ zIndex: 1, minHeight: 0, height: '100%', width: '100%' }}>
+          <div style={{ display: "inline-block", minWidth: "100%" }}>
+            <table className="border-collapse" style={{ width: "max-content", minWidth: "100%", borderSpacing: 0 }}>
+              <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 1 }}>
                 {/* Excel Column Letters Row */}
                 <tr>
-                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black bg-gray-100 sticky left-0" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '1px solid black', zIndex: 30, backgroundColor: '#f9fafb', position: 'sticky' }}>
+                  <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black bg-gray-100 sticky left-0 z-10" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '1px solid black' }}>
                     {/* Empty cell for row numbers column */}
                   </th>
                   {columns.map((col, idx) => {
@@ -265,8 +259,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                           borderRight: '2px solid black', 
                           borderBottom: '1px solid black', 
                           borderLeft: idx === 0 ? '2px solid black' : 'none',
-                          borderTop: 'none',
-                          backgroundColor: '#f9fafb'
+                          borderTop: 'none'
                         }}
                       >
                         {getExcelColumnLetter(idx)}
@@ -276,7 +269,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                 </tr>
                 {/* Actual Column Names Row */}
                 <tr>
-                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border border-black bg-gray-100 sticky left-0" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '2px solid black', zIndex: 30, backgroundColor: '#f9fafb', position: 'sticky' }}>
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-gray-700 border border-black bg-gray-100 sticky left-0 z-10" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '2px solid black' }}>
                     {/* Row number header */}
                   </th>
                   {columns.map((col, idx) => {
@@ -292,8 +285,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                           borderRight: '2px solid black', 
                           borderBottom: '2px solid black', 
                           borderLeft: idx === 0 ? '2px solid black' : 'none',
-                          borderTop: 'none',
-                          backgroundColor: '#f9fafb'
+                          borderTop: 'none'
                         }}
                       >
                         {col}
@@ -323,13 +315,13 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                       >
                         {/* Row Number Cell */}
                         <td 
-                          className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border border-black bg-gray-50 sticky left-0"
-                          style={{ width: '50px', minWidth: '50px', maxWidth: '50px', textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black', zIndex: 20, backgroundColor: '#f9fafb', position: 'sticky' }}
+                          className="px-2 py-2 text-center text-xs font-semibold text-gray-600 border border-black bg-gray-50 sticky left-0 z-10"
+                          style={{ width: '50px', minWidth: '50px', maxWidth: '50px', textAlign: 'center', borderRight: '2px solid black', borderBottom: '1px solid black' }}
                         >
                           {rowNumber}
                         </td>
                         {columns.map((col, colIdx) => {
-                          const cellStyle = getCellStyle(actualIndex, row, col);
+                          const cellStyle = getCellStyle(row, col);
                           const hasFormatting = Object.keys(cellStyle).length > 0;
                           const isEditing = editingCell?.row === actualIndex && editingCell?.col === col;
                           const colWidth = calculateColumnWidth(col);
@@ -349,18 +341,13 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                                 borderTop: 'none',
                                 padding: '4px'
                               }}
-                              className={`text-sm border border-black transition-colors duration-200 cursor-pointer ${
+                              className={`text-sm border border-black transition-colors duration-200 ${
                                 !hasFormatting ? 'hover:bg-[#00A878]/10' : ''
                               } ${
                                 isDuplicate && !hasFormatting
                                   ? 'text-yellow-900 font-medium bg-yellow-50' 
                                   : hasFormatting ? '' : 'text-gray-700'
                               }`}
-                              onClick={() => {
-                                if (onCellSelect) {
-                                  onCellSelect(actualIndex, col, cellValue);
-                                }
-                              }}
                               onDoubleClick={() => handleCellEditStart(actualIndex, col, cellValue)}
                             >
                               {isEditing ? (
@@ -480,7 +467,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                         {rowNumber}
                       </td>
                       {columns.slice(0, 5).map((col, colIdx) => {
-                        const cellStyle = getCellStyle(rowIdx, row, col);
+                        const cellStyle = getCellStyle(row, col);
                         const hasFormatting = Object.keys(cellStyle).length > 0;
                         const isEditing = editingCell?.row === rowIdx && editingCell?.col === col;
                         const colWidth = calculateColumnWidth(col);
@@ -504,6 +491,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                                 ? 'text-yellow-900 font-medium bg-yellow-50' 
                                 : hasFormatting ? '' : 'text-gray-600'
                             }`}
+                            onClick={() => onCellSelect && onCellSelect(rowIdx, col, cellValue)}
                             onDoubleClick={() => handleCellEditStart(rowIdx, col, cellValue)}
                           >
                             {isEditing ? (

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SheetViewer } from "./SheetViewer";
 import { AIChatbot } from "./AIChatbot";
-import { ArrowLeft, Download, LayoutDashboard } from "lucide-react";
+import { ArrowLeft, Download, Undo2, LayoutDashboard } from "lucide-react";
 import { Button } from "./ui/button";
 import { getFileDownloadUrl, downloadFile } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
@@ -17,9 +17,50 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     columns: string[];
     formatting_metadata?: any;
     processed_file_url?: string;
+    row_count?: number;
   } | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [selectedCell, setSelectedCell] = useState<{row: number, col: string} | null>(null);
+  const [selectedCellValue, setSelectedCellValue] = useState<string>("");
+  const [formulaBarValue, setFormulaBarValue] = useState<string>("");
+  const [isEditingFormulaBar, setIsEditingFormulaBar] = useState(false);
+  const [canUndo, setCanUndo] = useState(false);
+  const historyRef = useRef<Array<typeof previewData>>([]);
+  const historyIndexRef = useRef<number>(-1);
+  const isUndoingRef = useRef<boolean>(false);
   const { user, session } = useAuth();
+
+  const addToHistory = (newState: typeof previewData) => {
+    if (!newState || isUndoingRef.current) return;
+    const currentState = historyRef.current[historyIndexRef.current];
+    if (!currentState || JSON.stringify(currentState) !== JSON.stringify(newState)) {
+      // Remove any future history if we're not at the end
+      historyRef.current = historyRef.current.slice(0, historyIndexRef.current + 1);
+      historyRef.current.push(JSON.parse(JSON.stringify(newState)));
+      historyIndexRef.current = historyRef.current.length - 1;
+      // Limit history to 50 states
+      if (historyRef.current.length > 50) {
+        historyRef.current.shift();
+        historyIndexRef.current = historyRef.current.length - 1;
+      }
+      setCanUndo(historyIndexRef.current > 0);
+    }
+  };
+
+  const handleUndo = () => {
+    if (historyIndexRef.current > 0) {
+      isUndoingRef.current = true;
+      historyIndexRef.current--;
+      const previousState = historyRef.current[historyIndexRef.current];
+      const restoredState = JSON.parse(JSON.stringify(previousState));
+      setPreviewData(restoredState);
+      sessionStorage.setItem('previewData', JSON.stringify(restoredState));
+      setCanUndo(historyIndexRef.current > 0);
+      setTimeout(() => {
+        isUndoingRef.current = false;
+      }, 0);
+    }
+  };
 
   useEffect(() => {
     // Load preview data from sessionStorage
@@ -28,11 +69,22 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       try {
         const data = JSON.parse(previewDataStr);
         setPreviewData(data);
+        // Initialize history with the loaded data
+        historyRef.current = [JSON.parse(JSON.stringify(data))];
+        historyIndexRef.current = 0;
+        setCanUndo(false);
       } catch (error) {
         console.error('Error parsing preview data:', error);
       }
     }
   }, []);
+
+  // Add to history when previewData changes (but not during undo)
+  useEffect(() => {
+    if (previewData && !isUndoingRef.current) {
+      addToHistory(previewData);
+    }
+  }, [previewData]);
 
   const handleDownload = async () => {
     if (!user || !session) {
@@ -62,10 +114,12 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
         columns: newResult.columns,
         formatting_metadata: newResult.formatting_metadata,
         processed_file_url: newResult.processed_file_url,
+        row_count: newResult.row_count,
       };
       setPreviewData(updatedData);
       // Update sessionStorage
       sessionStorage.setItem('previewData', JSON.stringify(updatedData));
+      // History will be added via useEffect
     }
   };
 
@@ -84,6 +138,12 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       setPreviewData(updatedPreviewData);
       // Update sessionStorage
       sessionStorage.setItem('previewData', JSON.stringify(updatedPreviewData));
+      // Update formula bar if this is the selected cell
+      if (selectedCell && selectedCell.row === rowIndex && selectedCell.col === column) {
+        setSelectedCellValue(value ? String(value) : '');
+        setFormulaBarValue(value ? String(value) : '');
+      }
+      // History will be added via useEffect
     }
   };
 
@@ -109,60 +169,169 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
   }
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
-      {/* Top Bar */}
-      <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
-        <div className="max-w-full mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={onClose}
-              variant="ghost"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900">Processed Sheet Preview</h1>
-              <p className="text-sm text-gray-500">
-                {previewData.data.length.toLocaleString()} rows • {previewData.columns.length} columns
-              </p>
+    <div className="h-screen bg-gray-50 flex">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col" style={{ marginRight: '420px', minWidth: 0 }}>
+        {/* Top Bar */}
+        <div className="bg-white border-b border-gray-200 shadow-sm flex-shrink-0">
+          <div className="px-4 py-2 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={onClose}
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+              <div>
+                <h1 className="text-sm font-medium text-gray-700">processed_data</h1>
+                <p className="text-xs text-gray-500">
+                  {previewData.data.length.toLocaleString()} rows • {previewData.columns.length} columns
+                  {previewData.row_count && previewData.row_count > previewData.data.length && (
+                    <span className="ml-2 px-2 py-0.5 bg-amber-50 text-amber-700 rounded border border-amber-200">
+                      Showing {previewData.data.length.toLocaleString()} preview rows • Changes applied to all {previewData.row_count.toLocaleString()} rows
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleUndo}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+                disabled={!canUndo}
+                title="Undo last change"
+              >
+                <Undo2 className="w-4 h-4" />
+                Undo
+              </Button>
+              <Button
+                onClick={handleDashboardClick}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+                title="Go to Dashboard"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </Button>
+              <Button
+                onClick={handleDownload}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Download Excel
+              </Button>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleDashboardClick}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              Dashboard
-            </Button>
-            <Button
-              onClick={handleDownload}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              Download Excel
-            </Button>
-          </div>
         </div>
-      </div>
 
-      {/* Sheet Viewer - Full Screen */}
-      <div className="flex-1 overflow-hidden" style={{ paddingRight: '420px', zIndex: 1, height: '100%' }}>
-        <div className="h-full w-full" style={{ height: '100%', width: '100%' }}>
-          <SheetViewer
-            data={previewData.data}
-            columns={previewData.columns}
-            rowCount={previewData.data.length}
-            onDownload={handleDownload}
-            onDataChange={handleCellChange}
-          />
+        {/* Sheet Container - Windowed View */}
+        <div className="flex-1 p-4" style={{ minWidth: 0, maxWidth: '100%', overflow: 'hidden' }}>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-300" style={{ height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
+            {/* Spreadsheet Title Bar */}
+            <div className="bg-gray-100 border-b border-gray-300 px-3 py-1.5 flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-gray-700">Processed Data</span>
+              </div>
+            </div>
+
+            {/* Formula Bar */}
+            <div className="bg-gray-50 border-b border-gray-300 px-3 py-1 flex items-center gap-2 flex-shrink-0">
+              <span className="text-xs font-mono text-gray-600 w-12">
+                {selectedCell 
+                  ? `${(() => {
+                      const colIndex = previewData.columns.indexOf(selectedCell.col);
+                      if (colIndex === -1) return selectedCell.col;
+                      let result = '';
+                      let index = colIndex;
+                      index++;
+                      while (index > 0) {
+                        index--;
+                        result = String.fromCharCode(65 + (index % 26)) + result;
+                        index = Math.floor(index / 26);
+                      }
+                      return result;
+                    })()}${selectedCell.row + 1}`
+                  : 'A1'}
+              </span>
+              {isEditingFormulaBar && selectedCell ? (
+                <input
+                  type="text"
+                  value={formulaBarValue}
+                  onChange={(e) => setFormulaBarValue(e.target.value)}
+                  onBlur={() => {
+                    if (selectedCell) {
+                      handleCellChange(selectedCell.row, selectedCell.col, formulaBarValue);
+                      setIsEditingFormulaBar(false);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (selectedCell) {
+                        handleCellChange(selectedCell.row, selectedCell.col, formulaBarValue);
+                        setIsEditingFormulaBar(false);
+                      }
+                    } else if (e.key === 'Escape') {
+                      setFormulaBarValue(selectedCellValue);
+                      setIsEditingFormulaBar(false);
+                    }
+                  }}
+                  autoFocus
+                  className="flex-1 bg-white border border-blue-500 rounded px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              ) : (
+                <div 
+                  className="flex-1 bg-white border border-gray-300 rounded px-2 py-1 cursor-text hover:border-gray-400 transition-colors"
+                  onClick={() => {
+                    if (selectedCell) {
+                      setIsEditingFormulaBar(true);
+                    }
+                  }}
+                >
+                  <span className="text-xs text-gray-700">{selectedCellValue || ''}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Sheet Viewer */}
+            <div 
+              className="flex-1" 
+              style={{ 
+                minHeight: 0,
+                minWidth: 0,
+                maxWidth: '100%',
+                overflowX: 'auto',
+                overflowY: 'auto',
+                width: '100%',
+                height: '100%',
+                position: 'relative'
+              }}
+            >
+              <SheetViewer
+                data={previewData.data}
+                columns={previewData.columns}
+                rowCount={previewData.data.length}
+                formatting_metadata={previewData.formatting_metadata}
+                onDownload={handleDownload}
+                onDataChange={handleCellChange}
+                onCellSelect={(row, col, value) => {
+                  setSelectedCell({ row, col });
+                  const cellValue = value ? String(value) : '';
+                  setSelectedCellValue(cellValue);
+                  setFormulaBarValue(cellValue);
+                  setIsEditingFormulaBar(false);
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -184,4 +353,3 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     </div>
   );
 }
-
