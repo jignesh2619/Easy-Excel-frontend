@@ -343,7 +343,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       {/* Chatbot Sidebar - Opens upwards from bottom right - Always Visible */}
       {isOpen && (
         <div 
-          className="fixed w-96 bg-white border border-gray-200 shadow-2xl flex flex-col rounded-t-lg overflow-hidden"
+          className="fixed w-96 bg-white border border-gray-200 shadow-2xl flex flex-col rounded-t-lg"
           style={{ 
             right: '24px', 
             bottom: '88px',
@@ -354,7 +354,11 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             zIndex: 9999, // Very high z-index to ensure it's always on top
             isolation: 'isolate', // Create new stacking context
             display: 'flex', // Ensure flex layout
-            flexDirection: 'column' // Column layout
+            flexDirection: 'column', // Column layout
+            width: '384px', // w-96 = 384px
+            minWidth: '384px',
+            maxWidth: '384px',
+            overflow: 'hidden' // Only hide overflow on the container, not on inner scrollable areas
           }}>
           {/* Header */}
           <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between">
@@ -395,24 +399,22 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
           {/* Messages - Fully Scrollable */}
           <div 
             ref={messagesContainerRef}
-            className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+            className="flex-1 overflow-y-auto p-4 bg-gray-50"
             style={{ 
-              minHeight: 0, // Ensure proper scrolling
+              minHeight: 0,
               maxHeight: '100%',
               overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch', // Smooth scrolling on mobile
-              position: 'relative',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column'
+              overflowX: 'hidden',
+              WebkitOverflowScrolling: 'touch',
+              position: 'relative'
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
-              {messages.length === 0 && (
-                <div className="text-center text-gray-500 text-sm py-4">
-                  No messages yet. Start a conversation!
-                </div>
-              )}
+            {messages.length === 0 && (
+              <div className="text-center text-gray-500 text-sm py-4">
+                No messages yet. Start a conversation!
+              </div>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {messages.map((message) => {
                 console.log('Rendering message:', message.id, message.role, message.content.substring(0, 50));
                 return (
@@ -420,9 +422,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                     key={message.id}
                     className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                     style={{ 
-                      opacity: 1, 
-                      visibility: 'visible',
-                      display: 'flex',
                       width: '100%',
                       flexShrink: 0
                     }}
@@ -433,15 +432,8 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                           ? "bg-[#00A878] text-white"
                           : "bg-white text-gray-800 border border-gray-200"
                       }`}
-                      style={{
-                        opacity: 1,
-                        visibility: 'visible',
-                        display: 'block',
-                        position: 'relative',
-                        zIndex: 1
-                      }}
                     >
-                      <p className="text-sm whitespace-pre-wrap break-words" style={{ opacity: 1, visibility: 'visible', margin: 0 }}>
+                      <p className="text-sm whitespace-pre-wrap break-words">
                         {message.content || '(empty message)'}
                       </p>
                     </div>
