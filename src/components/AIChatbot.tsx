@@ -445,7 +445,8 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                         style={{
                           color: isUser ? '#000000' : undefined,
                           margin: 0,
-                          padding: 0
+                          padding: 0,
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
                         }}
                       >
                         {message.content || '(empty message)'}
