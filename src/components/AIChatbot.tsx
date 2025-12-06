@@ -428,7 +428,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                     }}
                   >
                     <div
-                      className={`max-w-[80%] rounded-lg ${isUser ? "pr-1 pl-3 py-3" : "p-3 bg-white border border-gray-200"}`}
+                      className={`max-w-[80%] rounded-lg ${isUser ? "pr-0 pl-3 py-3" : "p-3 bg-white border border-gray-200"}`}
                       style={{
                         backgroundColor: isUser ? 'transparent' : undefined,
                         color: isUser ? '#000000' : undefined,
