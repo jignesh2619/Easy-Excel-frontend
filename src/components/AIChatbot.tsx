@@ -408,6 +408,11 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                 <div
                   key={message.id}
                   className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                  style={{ 
+                    opacity: 1, 
+                    visibility: 'visible',
+                    display: 'flex'
+                  }}
                 >
                   <div
                     className={`max-w-[80%] rounded-lg p-3 ${
@@ -415,8 +420,15 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                         ? "bg-[#00A878] text-white"
                         : "bg-white text-gray-800 border border-gray-200"
                     }`}
+                    style={{
+                      opacity: 1,
+                      visibility: 'visible',
+                      display: 'block'
+                    }}
                   >
-                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                    <p className="text-sm whitespace-pre-wrap break-words" style={{ opacity: 1, visibility: 'visible' }}>
+                      {message.content || '(empty message)'}
+                    </p>
                   </div>
                 </div>
               );
