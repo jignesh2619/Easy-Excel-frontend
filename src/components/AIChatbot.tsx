@@ -407,7 +407,8 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               overflowX: 'hidden',
               WebkitOverflowScrolling: 'touch',
               position: 'relative',
-              padding: '16px 8px 16px 16px' // Reduced right padding: top right bottom left
+              padding: '16px 8px 16px 16px', // Reduced right padding: top right bottom left
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
             }}
           >
             {messages.length === 0 && (
