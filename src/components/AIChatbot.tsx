@@ -428,14 +428,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                     }}
                   >
                     <div
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        isUser
-                          ? "bg-green-600 text-white"
-                          : "bg-white text-gray-800 border border-gray-200"
-                      }`}
+                      className={`max-w-[80%] rounded-lg ${isUser ? "pr-2 pl-3 py-3" : "p-3 bg-white border border-gray-200"}`}
                       style={{
-                        backgroundColor: isUser ? '#00A878' : undefined,
-                        color: isUser ? '#ffffff' : undefined,
+                        backgroundColor: isUser ? 'transparent' : undefined,
+                        color: isUser ? '#000000' : undefined,
                         display: 'block',
                         minWidth: '50px',
                         maxWidth: '80%'
@@ -444,7 +440,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                       <p 
                         className="text-sm whitespace-pre-wrap break-words"
                         style={{
-                          color: isUser ? '#ffffff' : undefined,
+                          color: isUser ? '#000000' : undefined,
                           margin: 0,
                           padding: 0
                         }}
