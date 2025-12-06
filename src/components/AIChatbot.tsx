@@ -417,23 +417,38 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {messages.map((message) => {
                 console.log('Rendering message:', message.id, message.role, message.content.substring(0, 50));
+                const isUser = message.role === "user";
                 return (
                   <div
                     key={message.id}
-                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                    className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}
                     style={{ 
-                      width: '100%',
-                      flexShrink: 0
+                      marginBottom: '16px',
+                      minHeight: '40px'
                     }}
                   >
                     <div
                       className={`max-w-[80%] rounded-lg p-3 ${
-                        message.role === "user"
-                          ? "bg-[#00A878] text-white"
+                        isUser
+                          ? "bg-green-600 text-white"
                           : "bg-white text-gray-800 border border-gray-200"
                       }`}
+                      style={{
+                        backgroundColor: isUser ? '#00A878' : undefined,
+                        color: isUser ? '#ffffff' : undefined,
+                        display: 'block',
+                        minWidth: '50px',
+                        maxWidth: '80%'
+                      }}
                     >
-                      <p className="text-sm whitespace-pre-wrap break-words">
+                      <p 
+                        className="text-sm whitespace-pre-wrap break-words"
+                        style={{
+                          color: isUser ? '#ffffff' : undefined,
+                          margin: 0,
+                          padding: 0
+                        }}
+                      >
                         {message.content || '(empty message)'}
                       </p>
                     </div>
