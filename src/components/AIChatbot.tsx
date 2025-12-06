@@ -144,36 +144,23 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
     return () => clearInterval(interval);
   }, [isProcessing]);
 
-  // Update data when initialData changes (but only if it's a new file, not just a remount)
+  // Update data when initialData changes - always sync with parent's latest data
   useEffect(() => {
-    if (isHistoryLoaded) {
-      // Check if this is a completely new dataset (different number of rows/columns)
-      // If it's the same dataset, keep the current data (which might have been modified)
-      const savedData = sessionStorage.getItem(CHAT_DATA_KEY);
-      if (savedData) {
-        try {
-          const parsed = JSON.parse(savedData);
-          // Only update if it's clearly a different file (different structure)
-          const isNewFile = 
-            parsed.data.length !== initialData.length ||
-            parsed.columns.length !== initialColumns.length ||
-            JSON.stringify(parsed.columns) !== JSON.stringify(initialColumns);
-          
-          if (isNewFile) {
-            // New file uploaded - update data and optionally clear history
-            setCurrentData(initialData);
-            setCurrentColumns(initialColumns);
-          }
-          // Otherwise, keep the saved data (which includes any modifications from chat)
-        } catch (error) {
-          // If parsing fails, use initial data
-          setCurrentData(initialData);
-          setCurrentColumns(initialColumns);
-        }
-      } else {
-        // No saved data, use initial data
-        setCurrentData(initialData);
-        setCurrentColumns(initialColumns);
+    if (isHistoryLoaded && initialData && initialData.length > 0) {
+      // Always sync with initialData to ensure we have the latest data from preview
+      // This ensures that if preview data is updated (e.g., after backend processing),
+      // the chatbot always has the most recent data to send to the backend
+      setCurrentData(initialData);
+      setCurrentColumns(initialColumns);
+      
+      // Also update sessionStorage to keep it in sync
+      try {
+        sessionStorage.setItem(CHAT_DATA_KEY, JSON.stringify({
+          data: initialData,
+          columns: initialColumns,
+        }));
+      } catch (error) {
+        console.error('Error saving chat data:', error);
       }
     }
   }, [initialData, initialColumns, isHistoryLoaded]);
@@ -194,7 +181,20 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
     setIsProcessing(true);
 
     try {
-      const response = await processData(currentData, currentColumns, promptText);
+      // Always use the latest initialData to ensure we send complete data to backend
+      // This prevents sending stale data that might be missing columns/values
+      const dataToSend = initialData.length > 0 ? initialData : currentData;
+      const columnsToSend = initialColumns.length > 0 ? initialColumns : currentColumns;
+      
+      console.log('Sending data to backend:', {
+        dataLength: dataToSend.length,
+        columns: columnsToSend,
+        sampleRow: dataToSend[0],
+        hasScoreColumn: columnsToSend.includes('Score'),
+        scoreValueInFirstRow: dataToSend[0]?.['Score'] || dataToSend[0]?.['score'] || 'NOT FOUND'
+      });
+      
+      const response = await processData(dataToSend, columnsToSend, promptText);
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
