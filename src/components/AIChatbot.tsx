@@ -422,10 +422,11 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                 return (
                   <div
                     key={message.id}
-                    className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}
+                    className={`flex w-full`}
                     style={{ 
                       marginBottom: '16px',
                       minHeight: '40px',
+                      justifyContent: isUser ? 'flex-end' : 'flex-start',
                       paddingRight: isUser ? '0px' : undefined // Remove right padding for user messages
                     }}
                   >
