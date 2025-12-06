@@ -119,7 +119,13 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
 
   const scrollToBottom = () => {
     setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
+      // Also try scrolling the container directly
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      }
     }, 100);
   };
 
@@ -394,45 +400,55 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               minHeight: 0, // Ensure proper scrolling
               maxHeight: '100%',
               overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch' // Smooth scrolling on mobile
+              WebkitOverflowScrolling: 'touch', // Smooth scrolling on mobile
+              position: 'relative',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column'
             }}
           >
-            {messages.length === 0 && (
-              <div className="text-center text-gray-500 text-sm py-4">
-                No messages yet. Start a conversation!
-              </div>
-            )}
-            {messages.map((message) => {
-              console.log('Rendering message:', message.id, message.role, message.content.substring(0, 50));
-              return (
-                <div
-                  key={message.id}
-                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                  style={{ 
-                    opacity: 1, 
-                    visibility: 'visible',
-                    display: 'flex'
-                  }}
-                >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+              {messages.length === 0 && (
+                <div className="text-center text-gray-500 text-sm py-4">
+                  No messages yet. Start a conversation!
+                </div>
+              )}
+              {messages.map((message) => {
+                console.log('Rendering message:', message.id, message.role, message.content.substring(0, 50));
+                return (
                   <div
-                    className={`max-w-[80%] rounded-lg p-3 ${
-                      message.role === "user"
-                        ? "bg-[#00A878] text-white"
-                        : "bg-white text-gray-800 border border-gray-200"
-                    }`}
-                    style={{
-                      opacity: 1,
+                    key={message.id}
+                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                    style={{ 
+                      opacity: 1, 
                       visibility: 'visible',
-                      display: 'block'
+                      display: 'flex',
+                      width: '100%',
+                      flexShrink: 0
                     }}
                   >
-                    <p className="text-sm whitespace-pre-wrap break-words" style={{ opacity: 1, visibility: 'visible' }}>
-                      {message.content || '(empty message)'}
-                    </p>
+                    <div
+                      className={`max-w-[80%] rounded-lg p-3 ${
+                        message.role === "user"
+                          ? "bg-[#00A878] text-white"
+                          : "bg-white text-gray-800 border border-gray-200"
+                      }`}
+                      style={{
+                        opacity: 1,
+                        visibility: 'visible',
+                        display: 'block',
+                        position: 'relative',
+                        zIndex: 1
+                      }}
+                    >
+                      <p className="text-sm whitespace-pre-wrap break-words" style={{ opacity: 1, visibility: 'visible', margin: 0 }}>
+                        {message.content || '(empty message)'}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
             {isProcessing && (
               <div className="flex justify-start">
                 <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-2">
