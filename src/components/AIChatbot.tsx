@@ -399,14 +399,15 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
           {/* Messages - Fully Scrollable */}
           <div 
             ref={messagesContainerRef}
-            className="flex-1 overflow-y-auto p-4 bg-gray-50"
+            className="flex-1 overflow-y-auto bg-gray-50"
             style={{ 
               minHeight: 0,
               maxHeight: '100%',
               overflowY: 'auto',
               overflowX: 'hidden',
               WebkitOverflowScrolling: 'touch',
-              position: 'relative'
+              position: 'relative',
+              padding: '16px 8px 16px 16px' // Reduced right padding: top right bottom left
             }}
           >
             {messages.length === 0 && (
@@ -424,7 +425,8 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                     className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}
                     style={{ 
                       marginBottom: '16px',
-                      minHeight: '40px'
+                      minHeight: '40px',
+                      paddingRight: isUser ? '0px' : undefined // Remove right padding for user messages
                     }}
                   >
                     <div
