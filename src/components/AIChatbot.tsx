@@ -87,6 +87,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   useEffect(() => {
     if (isHistoryLoaded && messages.length > 0) {
       try {
+        console.log('Saving messages to sessionStorage:', messages.length, 'messages');
         sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages));
       } catch (error) {
         console.error('Error saving chat history:', error);
@@ -123,8 +124,18 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   };
 
   useEffect(() => {
+    console.log('Messages changed, scrolling to bottom. Total messages:', messages.length);
+    console.log('Current messages:', messages.map(m => ({ id: m.id, role: m.role, content: m.content.substring(0, 30) })));
     scrollToBottom();
   }, [messages, isProcessing]);
+  
+  // Debug: Log messages array whenever it changes
+  useEffect(() => {
+    console.log('Messages state updated:', {
+      count: messages.length,
+      messages: messages.map(m => ({ id: m.id, role: m.role, preview: m.content.substring(0, 50) }))
+    });
+  }, [messages]);
 
   // Rotate loading messages while processing
   useEffect(() => {
@@ -175,7 +186,12 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    console.log('Adding user message:', userMessage);
+    setMessages((prev) => {
+      const updated = [...prev, userMessage];
+      console.log('Updated messages array:', updated);
+      return updated;
+    });
     const promptText = input;
     setInput("");
     setIsProcessing(true);
@@ -330,7 +346,9 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             height: 'calc(100vh - 112px)', // Use full viewport height minus button space
             maxHeight: 'calc(100vh - 112px)', // Ensure it doesn't go above viewport
             zIndex: 9999, // Very high z-index to ensure it's always on top
-            isolation: 'isolate' // Create new stacking context
+            isolation: 'isolate', // Create new stacking context
+            display: 'flex', // Ensure flex layout
+            flexDirection: 'column' // Column layout
           }}>
           {/* Header */}
           <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between">
@@ -379,22 +397,30 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               WebkitOverflowScrolling: 'touch' // Smooth scrolling on mobile
             }}
           >
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.role === "user"
-                      ? "bg-[#00A878] text-white"
-                      : "bg-white text-gray-800 border border-gray-200"
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                </div>
+            {messages.length === 0 && (
+              <div className="text-center text-gray-500 text-sm py-4">
+                No messages yet. Start a conversation!
               </div>
-            ))}
+            )}
+            {messages.map((message) => {
+              console.log('Rendering message:', message.id, message.role, message.content.substring(0, 50));
+              return (
+                <div
+                  key={message.id}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-lg p-3 ${
+                      message.role === "user"
+                        ? "bg-[#00A878] text-white"
+                        : "bg-white text-gray-800 border border-gray-200"
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                  </div>
+                </div>
+              );
+            })}
             {isProcessing && (
               <div className="flex justify-start">
                 <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-2">
