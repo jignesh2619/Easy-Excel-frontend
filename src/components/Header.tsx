@@ -54,7 +54,7 @@ export function Header() {
               onClick={() => scrollToSection("home")}
               className="text-2xl bg-gradient-to-r from-[#00A878] to-[#00c98c] bg-clip-text text-transparent hover:scale-110 transition-transform duration-300"
             >
-              EasyExcel
+              LazyExcel
             </button>
 
             {/* Navigation */}

@@ -1,28 +1,11 @@
 /**
- * API Service for EasyExcel Backend
+ * API Service for LazyExcel Backend
  * Handles all communication with the backend API
  */
 
 // Normalize API base URL (remove trailing slash to prevent double slashes)
 const rawUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 export const API_BASE_URL = rawUrl.toString().replace(/\/+$/, '');
-
-/**
- * Fetch with timeout wrapper
- * Prevents indefinite waiting for requests
- */
-function fetchWithTimeout(
-  url: string, 
-  options: RequestInit, 
-  timeoutMs: number = 300000
-): Promise<Response> {
-  return Promise.race([
-    fetch(url, options),
-    new Promise<Response>((_, reject) =>
-      setTimeout(() => reject(new Error('Request timeout')), timeoutMs)
-    )
-  ]) as Promise<Response>;
-}
 
 export interface ProcessFileResponse {
   status: string;
@@ -98,20 +81,16 @@ export async function processData(
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/process-data`,
-      {
-        method: 'POST',
-        headers,
-        credentials: 'include',
-        body: JSON.stringify({
-          data,
-          columns,
-          prompt,
-        }),
-      },
-      300000 // 5 minutes timeout
-    );
+    const response = await fetch(`${API_BASE_URL}/process-data`, {
+      method: 'POST',
+      headers,
+      credentials: 'include',
+      body: JSON.stringify({
+        data,
+        columns,
+        prompt,
+      }),
+    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
@@ -121,14 +100,6 @@ export async function processData(
     const result = await response.json();
     return result;
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message === 'Request timeout') {
-        throw new Error('Request timed out. The data processing might be taking longer than expected. Please try again.');
-      }
-      if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        throw new Error('Connection failed. The server may be temporarily unavailable. Please try again.');
-      }
-    }
     console.error('Data processing failed:', error);
     throw error;
   }
@@ -174,11 +145,7 @@ export async function processFile(
       };
     }
 
-    const response = await fetchWithTimeout(
-      `${API_BASE_URL}/process-file`, 
-      fetchOptions,
-      300000 // 5 minutes timeout
-    );
+    const response = await fetch(`${API_BASE_URL}/process-file`, fetchOptions);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
@@ -188,14 +155,6 @@ export async function processFile(
     const result = await response.json();
     return result;
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message === 'Request timeout') {
-        throw new Error('Request timed out. The file might be too large or the server is busy. Please try again.');
-      }
-      if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        throw new Error('Connection failed. The server may be processing a large file or temporarily unavailable. Please wait a moment and try again.');
-      }
-    }
     console.error('File processing failed:', error);
     throw error;
   }

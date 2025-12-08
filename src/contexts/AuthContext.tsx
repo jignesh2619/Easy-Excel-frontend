@@ -121,14 +121,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         await syncBackendUser(session);
-        // Mark that user just signed in (for Google OAuth redirect)
-        sessionStorage.setItem('justSignedIn', 'true');
-        
-        // Restore preview data backup if needed
-        const previewBackup = sessionStorage.getItem('previewDataBackup');
-        if (previewBackup && !sessionStorage.getItem('previewData')) {
-          sessionStorage.setItem('previewData', previewBackup);
-        }
       } else {
         setBackendUser(null);
       }
@@ -194,13 +186,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
-    // Get saved redirect path or default to /preview
-    const redirectPath = sessionStorage.getItem('authRedirectPath') || '/preview';
-    
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}${redirectPath}`,
+        redirectTo: `${window.location.origin}`,
       },
     });
   };

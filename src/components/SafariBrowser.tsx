@@ -59,7 +59,7 @@ export function SafariBrowser({ children, className = "" }: SafariBrowserProps) 
         </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="bg-white rounded-md px-4 py-1.5 text-gray-500 text-sm max-w-md w-full text-center">
-            easyexcel.com
+            lazyexcel.pro
           </div>
         </div>
       </div>

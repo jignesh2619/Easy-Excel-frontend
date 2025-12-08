@@ -67,7 +67,7 @@ export function WelcomePopup({ open, onClose, onGoToDashboard }: WelcomePopupPro
               <Sparkles className="h-6 w-6 text-white animate-spin" style={{ animationDuration: '3s' }} />
             </div>
             <DialogTitle className="text-3xl font-bold text-white text-center drop-shadow-lg">
-              Welcome to EasyExcel!
+              Welcome to LazyExcel!
             </DialogTitle>
             <DialogDescription className="text-green-50/95 mt-3 text-center text-lg">
               Your Free Plan is now active

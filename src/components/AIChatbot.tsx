@@ -87,7 +87,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   useEffect(() => {
     if (isHistoryLoaded && messages.length > 0) {
       try {
-        console.log('Saving messages to sessionStorage:', messages.length, 'messages');
         sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages));
       } catch (error) {
         console.error('Error saving chat history:', error);
@@ -119,29 +118,13 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
 
   const scrollToBottom = () => {
     setTimeout(() => {
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-      }
-      // Also try scrolling the container directly
-      if (messagesContainerRef.current) {
-        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
-      }
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
 
   useEffect(() => {
-    console.log('Messages changed, scrolling to bottom. Total messages:', messages.length);
-    console.log('Current messages:', messages.map(m => ({ id: m.id, role: m.role, content: m.content.substring(0, 30) })));
     scrollToBottom();
   }, [messages, isProcessing]);
-  
-  // Debug: Log messages array whenever it changes
-  useEffect(() => {
-    console.log('Messages state updated:', {
-      count: messages.length,
-      messages: messages.map(m => ({ id: m.id, role: m.role, preview: m.content.substring(0, 50) }))
-    });
-  }, [messages]);
 
   // Rotate loading messages while processing
   useEffect(() => {
@@ -161,23 +144,36 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
     return () => clearInterval(interval);
   }, [isProcessing]);
 
-  // Update data when initialData changes - always sync with parent's latest data
+  // Update data when initialData changes (but only if it's a new file, not just a remount)
   useEffect(() => {
-    if (isHistoryLoaded && initialData && initialData.length > 0) {
-      // Always sync with initialData to ensure we have the latest data from preview
-      // This ensures that if preview data is updated (e.g., after backend processing),
-      // the chatbot always has the most recent data to send to the backend
-      setCurrentData(initialData);
-      setCurrentColumns(initialColumns);
-      
-      // Also update sessionStorage to keep it in sync
-      try {
-        sessionStorage.setItem(CHAT_DATA_KEY, JSON.stringify({
-          data: initialData,
-          columns: initialColumns,
-        }));
-      } catch (error) {
-        console.error('Error saving chat data:', error);
+    if (isHistoryLoaded) {
+      // Check if this is a completely new dataset (different number of rows/columns)
+      // If it's the same dataset, keep the current data (which might have been modified)
+      const savedData = sessionStorage.getItem(CHAT_DATA_KEY);
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          // Only update if it's clearly a different file (different structure)
+          const isNewFile = 
+            parsed.data.length !== initialData.length ||
+            parsed.columns.length !== initialColumns.length ||
+            JSON.stringify(parsed.columns) !== JSON.stringify(initialColumns);
+          
+          if (isNewFile) {
+            // New file uploaded - update data and optionally clear history
+            setCurrentData(initialData);
+            setCurrentColumns(initialColumns);
+          }
+          // Otherwise, keep the saved data (which includes any modifications from chat)
+        } catch (error) {
+          // If parsing fails, use initial data
+          setCurrentData(initialData);
+          setCurrentColumns(initialColumns);
+        }
+      } else {
+        // No saved data, use initial data
+        setCurrentData(initialData);
+        setCurrentColumns(initialColumns);
       }
     }
   }, [initialData, initialColumns, isHistoryLoaded]);
@@ -192,31 +188,13 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       timestamp: new Date(),
     };
 
-    console.log('Adding user message:', userMessage);
-    setMessages((prev) => {
-      const updated = [...prev, userMessage];
-      console.log('Updated messages array:', updated);
-      return updated;
-    });
+    setMessages((prev) => [...prev, userMessage]);
     const promptText = input;
     setInput("");
     setIsProcessing(true);
 
     try {
-      // Always use the latest initialData to ensure we send complete data to backend
-      // This prevents sending stale data that might be missing columns/values
-      const dataToSend = initialData.length > 0 ? initialData : currentData;
-      const columnsToSend = initialColumns.length > 0 ? initialColumns : currentColumns;
-      
-      console.log('Sending data to backend:', {
-        dataLength: dataToSend.length,
-        columns: columnsToSend,
-        sampleRow: dataToSend[0],
-        hasScoreColumn: columnsToSend.includes('Score'),
-        scoreValueInFirstRow: dataToSend[0]?.['Score'] || dataToSend[0]?.['score'] || 'NOT FOUND'
-      });
-      
-      const response = await processData(dataToSend, columnsToSend, promptText);
+      const response = await processData(currentData, currentColumns, promptText);
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -343,7 +321,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       {/* Chatbot Sidebar - Opens upwards from bottom right - Always Visible */}
       {isOpen && (
         <div 
-          className="fixed w-96 bg-white border border-gray-200 shadow-2xl flex flex-col rounded-t-lg"
+          className="fixed w-96 bg-white border border-gray-200 shadow-2xl flex flex-col rounded-t-lg overflow-hidden"
           style={{ 
             right: '24px', 
             bottom: '88px',
@@ -352,13 +330,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             height: 'calc(100vh - 112px)', // Use full viewport height minus button space
             maxHeight: 'calc(100vh - 112px)', // Ensure it doesn't go above viewport
             zIndex: 9999, // Very high z-index to ensure it's always on top
-            isolation: 'isolate', // Create new stacking context
-            display: 'flex', // Ensure flex layout
-            flexDirection: 'column', // Column layout
-            width: '384px', // w-96 = 384px
-            minWidth: '384px',
-            maxWidth: '384px',
-            overflow: 'hidden' // Only hide overflow on the container, not on inner scrollable areas
+            isolation: 'isolate' // Create new stacking context
           }}>
           {/* Header */}
           <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between">
@@ -399,64 +371,30 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
           {/* Messages - Fully Scrollable */}
           <div 
             ref={messagesContainerRef}
-            className="flex-1 overflow-y-auto bg-gray-50"
+            className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
             style={{ 
-              minHeight: 0,
+              minHeight: 0, // Ensure proper scrolling
               maxHeight: '100%',
               overflowY: 'auto',
-              overflowX: 'hidden',
-              WebkitOverflowScrolling: 'touch',
-              position: 'relative',
-              padding: '16px 8px 16px 16px', // Reduced right padding: top right bottom left
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+              WebkitOverflowScrolling: 'touch' // Smooth scrolling on mobile
             }}
           >
-            {messages.length === 0 && (
-              <div className="text-center text-gray-500 text-sm py-4">
-                No messages yet. Start a conversation!
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[80%] rounded-lg p-3 ${
+                    message.role === "user"
+                      ? "bg-[#00A878] text-white"
+                      : "bg-white text-gray-800 border border-gray-200"
+                  }`}
+                >
+                  <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                </div>
               </div>
-            )}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {messages.map((message) => {
-                console.log('Rendering message:', message.id, message.role, message.content.substring(0, 50));
-                const isUser = message.role === "user";
-                return (
-                  <div
-                    key={message.id}
-                    className={`flex w-full`}
-                    style={{ 
-                      marginBottom: '16px',
-                      minHeight: '40px',
-                      justifyContent: isUser ? 'flex-end' : 'flex-start',
-                      paddingRight: isUser ? '0px' : undefined // Remove right padding for user messages
-                    }}
-                  >
-                    <div
-                      className={`max-w-[80%] rounded-lg ${isUser ? "pr-0 pl-3 py-3" : "p-3 bg-white border border-gray-200"}`}
-                      style={{
-                        backgroundColor: isUser ? 'transparent' : undefined,
-                        color: isUser ? '#000000' : undefined,
-                        display: 'block',
-                        minWidth: '50px',
-                        maxWidth: '80%'
-                      }}
-                    >
-                      <p 
-                        className="text-sm whitespace-pre-wrap break-words"
-                        style={{
-                          color: isUser ? '#000000' : undefined,
-                          margin: 0,
-                          padding: 0,
-                          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-                        }}
-                      >
-                        {message.content || '(empty message)'}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            ))}
             {isProcessing && (
               <div className="flex justify-start">
                 <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-2">
