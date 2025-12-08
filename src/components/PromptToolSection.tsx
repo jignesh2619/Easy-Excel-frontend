@@ -308,18 +308,6 @@ export function PromptToolSection() {
                   )}
                 </div>
               
-                <div className="mb-6">
-                  <div className="mb-3">
-                    <label className="text-gray-700 text-sm font-medium">Enter Your Prompt</label>
-                  </div>
-                  <textarea 
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    className="w-full bg-gradient-to-br from-gray-50 to-white border border-gray-300 rounded-xl p-4 resize-none focus:outline-none focus:border-[#00A878] focus:ring-2 focus:ring-[#00A878]/20 transition-all hover:border-[#00A878]/50 hover:shadow-md duration-300"
-                    rows={6}
-                    placeholder="e.g., Clean this data, remove duplicates, and create a sales dashboard"
-                  />
-                </div>
 
                 <div className="space-y-4">
                   {error && (
