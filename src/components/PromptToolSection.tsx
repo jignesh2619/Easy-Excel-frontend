@@ -42,36 +42,6 @@ export function PromptToolSection() {
     }
   }, [result]);
 
-  const promptTemplates = [
-    "Clean this column",
-    "Remove duplicates",
-    "Fix formatting issues",
-    "Generate dashboard with KPIs",
-    "Split full names into first/last name",
-    "Summarize the sheet"
-  ];
-
-  const handleTemplateClick = (template: string) => {
-    const currentPrompt = prompt.trim();
-    if (!currentPrompt) {
-      // If prompt is empty, set it to the template
-      setPrompt(template);
-    } else {
-      // Append template to existing prompt with better formatting
-      const separator = currentPrompt.endsWith('.') || currentPrompt.endsWith('!') ? ' ' : '. ';
-      setPrompt(currentPrompt + separator + template);
-    }
-    
-    // Focus back to textarea
-    setTimeout(() => {
-      const textarea = document.querySelector('textarea');
-      if (textarea) {
-        textarea.focus();
-        // Move cursor to end
-        textarea.setSelectionRange(textarea.value.length, textarea.value.length);
-      }
-    }, 100);
-  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
