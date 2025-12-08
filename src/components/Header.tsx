@@ -65,7 +65,7 @@ export function Header() {
             <div className="flex-1"></div>
 
             {/* Navigation and CTA grouped together */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               {/* Navigation */}
               <nav className="hidden md:flex items-center gap-8">
                 <button 
