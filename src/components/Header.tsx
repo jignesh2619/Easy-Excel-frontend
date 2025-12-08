@@ -48,7 +48,7 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
+          <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <button 
               onClick={() => scrollToSection("home")}
@@ -62,7 +62,7 @@ export function Header() {
             </button>
 
             {/* Navigation */}
-            <nav className="hidden md:flex items-center gap-8 ml-8">
+            <nav className="hidden md:flex items-center gap-8 -mr-16">
               <button 
                 onClick={() => scrollToSection("home")}
                 className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
