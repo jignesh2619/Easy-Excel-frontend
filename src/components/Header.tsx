@@ -62,7 +62,7 @@ export function Header() {
             </button>
 
             {/* Navigation */}
-            <nav className="hidden md:flex items-center gap-8 -mr-16">
+            <nav className="hidden md:flex items-center gap-8 -mr-32">
               <button 
                 onClick={() => scrollToSection("home")}
                 className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
