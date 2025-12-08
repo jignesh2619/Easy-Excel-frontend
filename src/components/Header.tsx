@@ -101,7 +101,7 @@ export function Header() {
               </nav>
 
               {/* CTA + Auth */}
-            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3">
               {tokens && (
                 <div className="hidden lg:flex flex-col gap-2 px-5 py-3 rounded-2xl border-2 border-[#00A878]/20 shadow-lg bg-gradient-to-br from-white to-[#00A878]/5 backdrop-blur-sm min-w-[200px]">
                   <div className="flex items-center justify-between">
