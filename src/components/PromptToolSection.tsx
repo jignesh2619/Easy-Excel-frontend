@@ -42,8 +42,49 @@ export function PromptToolSection() {
     }
   }, [result]);
 
+  // Helper function to process file and redirect to preview
+  const processAndRedirect = async (file: File) => {
+    // Use prompt if provided, otherwise use default
+    const processingPrompt = prompt.trim() || "Clean this data and create a dashboard";
+    
+    setIsProcessing(true);
+    setError(null);
+    setResult(null);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const response = await processFile(file, processingPrompt);
+      setResult(response);
+      
+      // Save preview data to sessionStorage and navigate to full-screen preview
+      if (response.processed_data && response.columns) {
+        const previewData = {
+          data: response.processed_data,
+          columns: response.columns,
+          formatting_metadata: response.formatting_metadata,
+          processed_file_url: response.processed_file_url,
+        };
+        sessionStorage.setItem('previewData', JSON.stringify(previewData));
+        
+        // Navigate to full-screen preview using history API for SPA behavior
+        window.history.pushState({}, '', '/preview');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
+      
+      // Refresh token usage after processing
+      if (user && refreshBackendUser) {
+        setTimeout(() => {
+          refreshBackendUser();
+        }, 1000); // Wait 1 second for backend to update
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to process file. Please try again.");
+      console.error("Processing error:", err);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const validationError = getFileValidationError(file);
@@ -54,10 +95,13 @@ export function PromptToolSection() {
       }
       setSelectedFile(file);
       setError(null);
+      
+      // Auto-process file immediately
+      await processAndRedirect(file);
     }
   };
 
-  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleFileDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file) {
@@ -69,6 +113,9 @@ export function PromptToolSection() {
       }
       setSelectedFile(file);
       setError(null);
+      
+      // Auto-process file immediately
+      await processAndRedirect(file);
     }
   };
 
@@ -281,20 +328,6 @@ export function PromptToolSection() {
                       {error}
                     </div>
                   )}
-                  <Button 
-                    onClick={handleProcessFile}
-                    disabled={!selectedFile || !prompt.trim() || isProcessing}
-                    className="w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white rounded-full shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isProcessing ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        {processingMessage}
-                      </>
-                    ) : (
-                      "Process File"
-                    )}
-                  </Button>
                 </div>
               
               {result && (
