@@ -52,9 +52,13 @@ export function Header() {
             {/* Logo */}
             <button 
               onClick={() => scrollToSection("home")}
-              className="text-2xl bg-gradient-to-r from-[#00A878] to-[#00c98c] bg-clip-text text-transparent hover:scale-110 transition-transform duration-300"
+              className="hover:scale-110 transition-transform duration-300"
             >
-              LazyExcel
+              <img 
+                src="/logo.jpg" 
+                alt="LazyExcel" 
+                className="h-10 w-auto"
+              />
             </button>
 
             {/* Navigation */}

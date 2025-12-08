@@ -285,6 +285,40 @@ export function PromptToolSection() {
                       <p className="text-gray-700 mb-1 text-sm group-hover:text-[#00A878] transition-colors duration-300">Drop your Excel file here</p>
                       <p className="text-gray-500 text-xs group-hover:text-[#00A878]/80 transition-colors duration-300">or click to browse</p>
                     </div>
+                  ) : isProcessing ? (
+                    <div className="bg-gradient-to-br from-[#00A878]/10 via-white to-[#00c98c]/10 border-2 border-[#00A878]/30 rounded-xl p-8 shadow-lg animate-pulse">
+                      <div className="flex flex-col items-center justify-center gap-5">
+                        <div className="relative">
+                          <Loader2 className="w-16 h-16 text-[#00A878] animate-spin" />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-12 h-12 border-4 border-[#00A878] border-t-transparent rounded-full animate-spin"></div>
+                          </div>
+                        </div>
+                        <div className="text-center space-y-2">
+                          <p className="text-gray-900 font-bold text-lg mb-2 animate-pulse">
+                            {processingMessage || "✨ Processing your file..."}
+                          </p>
+                          <p className="text-gray-700 text-sm font-medium">
+                            📄 {selectedFile.name}
+                          </p>
+                          <p className="text-gray-600 text-xs mt-2 italic">
+                            {processingMessage ? "Almost there..." : "Analyzing data, cleaning columns, and creating insights..."}
+                          </p>
+                        </div>
+                        <div className="w-full max-w-md bg-gray-200 rounded-full h-2.5 overflow-hidden shadow-inner">
+                          <div 
+                            className="bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] h-full rounded-full transition-all duration-500 ease-out shadow-lg" 
+                            style={{ 
+                              width: '70%',
+                              animation: 'shimmer 2s ease-in-out infinite'
+                            }}
+                          ></div>
+                        </div>
+                        <p className="text-[#00A878] text-xs font-medium animate-pulse">
+                          ⏳ Please wait, this won't take long...
+                        </p>
+                      </div>
+                    </div>
                   ) : (
                     <div className="bg-green-50 border border-green-200 rounded-xl p-4 hover:bg-green-100 hover:border-green-300 transition-all duration-300 hover:scale-[1.01] hover:shadow-md">
                       <div className="flex items-center justify-between">

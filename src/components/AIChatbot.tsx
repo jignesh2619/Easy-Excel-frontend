@@ -291,9 +291,9 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   };
 
   const suggestedActions = [
-    { text: "Create a report", icon: "📊" },
-    { text: "Extract data from PDFs/CSV", icon: "📄" },
-    { text: "Generate data with AI", icon: "💡" },
+    { text: "Remove duplicates", icon: "🔍" },
+    { text: "Highlight cells with", icon: "✨" },
+    { text: "Sort", icon: "📊" },
   ];
 
   return (

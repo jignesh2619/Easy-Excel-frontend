@@ -286,7 +286,8 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                           borderRight: '2px solid black', 
                           borderBottom: '2px solid black', 
                           borderLeft: idx === 0 ? '2px solid black' : 'none',
-                          borderTop: 'none'
+                          borderTop: 'none',
+                          backgroundColor: '#f9fafb'
                         }}
                       >
                         {col}
@@ -436,7 +437,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                       <th
                         key={idx}
                         className="px-3 py-2 text-left text-xs font-semibold text-gray-700 border border-black"
-                        style={{ width: `${colWidth}px`, minWidth: `${colWidth}px`, maxWidth: `${colWidth}px`, borderRight: '2px solid black', borderBottom: '2px solid black', borderLeft: idx === 0 ? '2px solid black' : 'none' }}
+                        style={{ width: `${colWidth}px`, minWidth: `${colWidth}px`, maxWidth: `${colWidth}px`, borderRight: '2px solid black', borderBottom: '2px solid black', borderLeft: idx === 0 ? '2px solid black' : 'none', backgroundColor: '#f9fafb' }}
                       >
                         {col}
                       </th>

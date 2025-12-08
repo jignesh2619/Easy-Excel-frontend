@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 
 const PROCESSING_MESSAGES = [
-  "Analyzing your data structure...",
-  "Processing your request with advanced AI...",
-  "Generating insights and transformations...",
-  "Optimizing data operations...",
-  "Preparing your results...",
-  "Finalizing output...",
+  "✨ Analyzing your data structure...",
+  "🤖 Processing with advanced AI...",
+  "🔍 Generating insights and transformations...",
+  "⚡ Optimizing data operations...",
+  "📊 Creating beautiful visualizations...",
+  "🎯 Preparing your results...",
+  "🚀 Almost done, finalizing output...",
 ];
 
 export function useProcessingMessages(isProcessing: boolean) {
