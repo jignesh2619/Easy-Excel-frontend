@@ -454,28 +454,6 @@ export function PromptToolSection() {
             }}
           />
 
-          {/* Pre-built Prompt Suggestions - Below the prompt area */}
-          <div className="mt-8 text-center">
-            <h3 className="text-gray-900 text-xl font-bold mb-6">
-              Pre-built Prompt Suggestions
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              {promptTemplates.map((template, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleTemplateClick(template)}
-                  className="bg-white border-2 border-gray-200 hover:border-[#00A878] rounded-lg p-4 text-left transition-all shadow-sm hover:shadow-md hover:bg-[#00A878]/5 duration-200 cursor-pointer"
-                >
-                  <span className="text-gray-700 hover:text-[#00A878] transition-colors text-sm font-medium">
-                    {template}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <p className="text-gray-500 text-sm font-medium">
-              Click a template to add it to your prompt, or type your own custom prompt above.
-            </p>
-          </div>
         </div>
       </div>
 
