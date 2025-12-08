@@ -95,6 +95,9 @@ export function Header() {
               </button>
             </nav>
 
+            {/* Spacer */}
+            <div className="flex-1"></div>
+
             {/* CTA + Auth */}
             <div className="flex items-center gap-3">
               {tokens && (
