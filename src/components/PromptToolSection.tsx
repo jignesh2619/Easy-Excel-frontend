@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Upload, Sparkles, Loader2, CheckCircle2, AlertCircle, X, Download, Eye, BarChart3, LayoutDashboard, FileSpreadsheet } from "lucide-react";
+import { Upload, Sparkles, Loader2, CheckCircle2, AlertCircle, X, Download, Eye, BarChart3, FileSpreadsheet } from "lucide-react";
 import { processFile, getFileDownloadUrl, getChartDownloadUrl, downloadFile, API_BASE_URL } from "../services/api";
 import { getFileValidationError } from "../utils/fileUtils";
 import { SafariBrowser } from "./SafariBrowser";
@@ -262,31 +262,8 @@ export function PromptToolSection() {
                 </div>
               
                 <div className="mb-6">
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="mb-3">
                     <label className="text-gray-700 text-sm font-medium">Enter Your Prompt</label>
-                    <button
-                      onClick={() => {
-                        const currentPrompt = prompt.trim();
-                        const dashboardKeywords = ['dashboard', 'chart', 'graph', 'visualize', 'visualization'];
-                        const hasDashboardKeyword = dashboardKeywords.some(keyword => 
-                          currentPrompt.toLowerCase().includes(keyword)
-                        );
-                        
-                        if (!currentPrompt) {
-                          setPrompt("Create a dashboard with visualizations and charts");
-                        } else if (hasDashboardKeyword) {
-                          // Already has dashboard-related keywords, don't add anything
-                          return;
-                        } else {
-                          // Append dashboard request to existing prompt
-                          setPrompt(currentPrompt + " and create a dashboard with visualizations and charts");
-                        }
-                      }}
-                      className="inline-flex items-center justify-center gap-2 h-8 rounded-md px-3 bg-white border-2 border-[#00A878] hover:bg-[#00A878] hover:border-[#00A878] transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-105 font-medium group"
-                    >
-                      <LayoutDashboard className="w-4 h-4 text-[#00A878] group-hover:text-white transition-colors duration-300" />
-                      <span className="text-[#00A878] group-hover:text-white transition-colors duration-300">Create Dashboard</span>
-                    </button>
                   </div>
                   <textarea 
                     value={prompt}
