@@ -48,7 +48,7 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex items-center h-16">
             {/* Logo */}
             <button 
               onClick={() => scrollToSection("home")}
@@ -61,41 +61,46 @@ export function Header() {
               />
             </button>
 
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center gap-8 -mr-[400px]">
-              <button 
-                onClick={() => scrollToSection("home")}
-                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
-              >
-                Home
-              </button>
-              <button 
-                onClick={() => scrollToSection("features")}
-                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
-              >
-                Features
-              </button>
-              <button 
-                onClick={() => scrollToSection("prompt-tool")}
-                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
-              >
-                Prompt Tool
-              </button>
-              <button 
-                onClick={() => scrollToSection("pricing")}
-                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
-              >
-                Pricing
-              </button>
-              <button 
-                onClick={() => scrollToSection("contact")}
-                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
-              >
-                Contact
-              </button>
-            </nav>
+            {/* Spacer */}
+            <div className="flex-1"></div>
 
-            {/* CTA + Auth */}
+            {/* Navigation and CTA grouped together */}
+            <div className="flex items-center gap-4">
+              {/* Navigation */}
+              <nav className="hidden md:flex items-center gap-8">
+                <button 
+                  onClick={() => scrollToSection("home")}
+                  className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+                >
+                  Home
+                </button>
+                <button 
+                  onClick={() => scrollToSection("features")}
+                  className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+                >
+                  Features
+                </button>
+                <button 
+                  onClick={() => scrollToSection("prompt-tool")}
+                  className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+                >
+                  Prompt Tool
+                </button>
+                <button 
+                  onClick={() => scrollToSection("pricing")}
+                  className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+                >
+                  Pricing
+                </button>
+                <button 
+                  onClick={() => scrollToSection("contact")}
+                  className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+                >
+                  Contact
+                </button>
+              </nav>
+
+              {/* CTA + Auth */}
             <div className="flex items-center gap-3">
               {tokens && (
                 <div className="hidden lg:flex flex-col gap-2 px-5 py-3 rounded-2xl border-2 border-[#00A878]/20 shadow-lg bg-gradient-to-br from-white to-[#00A878]/5 backdrop-blur-sm min-w-[200px]">
