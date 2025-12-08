@@ -186,6 +186,7 @@ export function Header() {
                   Sign in / Login
                 </Button>
               )}
+              </div>
             </div>
           </div>
         </div>
