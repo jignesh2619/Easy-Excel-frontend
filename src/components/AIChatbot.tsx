@@ -422,7 +422,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                   return (
                     <div
                       key={message.id}
-                      className={`flex ${message.role === "user" ? "justify-start" : "justify-end"}`}
+                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                       style={{ 
                         width: '100%',
                         flexShrink: 0,
