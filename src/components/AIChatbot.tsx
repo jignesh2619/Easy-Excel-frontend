@@ -391,59 +391,49 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               flexDirection: 'column'
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
-              {messages.length > 0 ? (
-                messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                    style={{ 
-                      visibility: 'visible', 
-                      opacity: 1, 
-                      display: 'flex',
-                      width: '100%',
-                      flexShrink: 0
-                    }}
-                  >
-                    <div
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        message.role === "user"
-                          ? "bg-[#00A878] text-white"
-                          : "bg-white text-gray-800 border border-gray-200"
-                      }`}
-                      style={{ 
-                        visibility: 'visible', 
-                        opacity: 1,
-                        display: 'block'
-                      }}
-                    >
-                      <p 
-                        className="text-sm whitespace-pre-wrap break-words" 
-                        style={{ 
-                          visibility: 'visible', 
-                          opacity: 1, 
-                          color: message.role === "user" ? "white" : "#1f2937",
-                          margin: 0,
-                          padding: 0
-                        }}
-                      >
-                        {message.content}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div 
-                  className="text-center text-gray-500 text-sm py-8" 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', minHeight: '200px' }}>
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   style={{ 
                     visibility: 'visible', 
-                    opacity: 1,
-                    width: '100%'
+                    opacity: 1, 
+                    display: 'flex',
+                    width: '100%',
+                    flexShrink: 0,
+                    marginBottom: '16px'
                   }}
                 >
-                  No messages yet. Start a conversation!
+                  <div
+                    className={`max-w-[80%] rounded-lg p-3 ${
+                      message.role === "user"
+                        ? "bg-[#00A878] text-white"
+                        : "bg-white text-gray-800 border border-gray-200 shadow-sm"
+                    }`}
+                    style={{ 
+                      visibility: 'visible', 
+                      opacity: 1,
+                      display: 'block',
+                      wordWrap: 'break-word'
+                    }}
+                  >
+                    <p 
+                      className="text-sm whitespace-pre-wrap break-words" 
+                      style={{ 
+                        visibility: 'visible', 
+                        opacity: 1, 
+                        color: message.role === "user" ? "white" : "#1f2937",
+                        margin: 0,
+                        padding: 0,
+                        lineHeight: '1.5'
+                      }}
+                    >
+                      {message.content}
+                    </p>
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
             {isProcessing && (
               <div className="flex justify-start">
