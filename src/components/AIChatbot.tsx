@@ -392,14 +392,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} mb-4`}
                   style={{ 
-                    visibility: 'visible', 
-                    opacity: 1, 
-                    display: 'flex',
                     width: '100%',
-                    flexShrink: 0,
-                    marginBottom: '16px'
+                    flexShrink: 0
                   }}
                 >
                   <div
@@ -408,27 +404,11 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                         ? "bg-[#00A878] text-white"
                         : "bg-white text-gray-800 border border-gray-200 shadow-sm"
                     }`}
-                    style={{ 
-                      visibility: 'visible', 
-                      opacity: 1,
-                      display: 'block',
-                      wordWrap: 'break-word'
-                    }}
                   >
-                    <p 
-                      className="text-sm whitespace-pre-wrap break-words" 
-                      style={{ 
-                        visibility: 'visible', 
-                        opacity: 1, 
-                        color: message.role === "user" ? "white" : "#1f2937",
-                        margin: 0,
-                        padding: 0,
-                        lineHeight: '1.5'
-                      }}
-                    >
-                    {message.content}
-                  </p>
-                </div>
+                    <p className="text-sm whitespace-pre-wrap break-words m-0">
+                      {message.content}
+                    </p>
+                  </div>
               </div>
               ))
             ) : (
