@@ -316,7 +316,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       {/* Chatbot Sidebar - Opens upwards from bottom right - Always Visible */}
       {isOpen && (
         <div 
-          className="fixed w-96 bg-white border border-gray-200 shadow-2xl flex flex-col rounded-t-lg overflow-hidden"
+          className="fixed w-96 bg-white border border-gray-200 shadow-2xl flex flex-col rounded-t-lg"
           style={{ 
             right: '24px', 
             bottom: '88px',
@@ -327,7 +327,9 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             zIndex: 99999, // Very high z-index to ensure it's always on top
             isolation: 'isolate', // Create new stacking context
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            visibility: 'visible',
+            opacity: 1
           }}>
           {/* Header */}
           <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between">
@@ -370,30 +372,40 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             ref={messagesContainerRef}
             className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
             style={{ 
-              flex: '1 1 auto',
+              flex: '1 1 0',
               minHeight: '200px', // Ensure minimum height for visibility
-              maxHeight: '100%',
+              height: '100%',
               overflowY: 'auto',
               overflowX: 'hidden',
-              WebkitOverflowScrolling: 'touch' // Smooth scrolling on mobile
+              WebkitOverflowScrolling: 'touch', // Smooth scrolling on mobile
+              visibility: 'visible',
+              opacity: 1
             }}
           >
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-              >
+            {messages.length > 0 ? (
+              messages.map((message) => (
                 <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.role === "user"
-                      ? "bg-[#00A878] text-white"
-                      : "bg-white text-gray-800 border border-gray-200"
-                  }`}
+                  key={message.id}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                  style={{ visibility: 'visible', opacity: 1, display: 'flex' }}
                 >
-                  <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                  <div
+                    className={`max-w-[80%] rounded-lg p-3 ${
+                      message.role === "user"
+                        ? "bg-[#00A878] text-white"
+                        : "bg-white text-gray-800 border border-gray-200"
+                    }`}
+                    style={{ visibility: 'visible', opacity: 1 }}
+                  >
+                    <p className="text-sm whitespace-pre-wrap break-words" style={{ visibility: 'visible', opacity: 1, color: message.role === "user" ? "white" : "#1f2937" }}>{message.content}</p>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div className="text-center text-gray-500 text-sm py-8" style={{ visibility: 'visible', opacity: 1 }}>
+                No messages yet. Start a conversation!
               </div>
-            ))}
+            )}
             {isProcessing && (
               <div className="flex justify-start">
                 <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-2">
