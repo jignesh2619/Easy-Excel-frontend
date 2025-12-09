@@ -379,17 +379,19 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             ref={messagesContainerRef}
             className="flex-1 overflow-y-auto p-4 bg-gray-50"
             style={{ 
-              flex: '1 1 auto',
-              minHeight: '0',
+              flex: '1 1 0%',
+              minHeight: '400px',
+              height: '100%',
               overflowY: 'auto',
               overflowX: 'hidden',
               WebkitOverflowScrolling: 'touch', // Smooth scrolling on mobile
               visibility: 'visible',
-              opacity: 1
+              opacity: 1,
+              position: 'relative'
             }}
           >
             {messages.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', paddingBottom: '20px' }}>
                 {messages.map((message) => (
                 <div
                   key={message.id}
