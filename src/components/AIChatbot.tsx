@@ -373,39 +373,71 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
             style={{ 
               flex: '1 1 0',
-              minHeight: '200px', // Ensure minimum height for visibility
-              height: '100%',
+              minHeight: '300px', // Ensure minimum height for visibility
+              maxHeight: 'none',
               overflowY: 'auto',
               overflowX: 'hidden',
               WebkitOverflowScrolling: 'touch', // Smooth scrolling on mobile
               visibility: 'visible',
-              opacity: 1
+              opacity: 1,
+              display: 'flex',
+              flexDirection: 'column'
             }}
           >
-            {messages.length > 0 ? (
-              messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                  style={{ visibility: 'visible', opacity: 1, display: 'flex' }}
-                >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+              {messages.length > 0 ? (
+                messages.map((message) => (
                   <div
-                    className={`max-w-[80%] rounded-lg p-3 ${
-                      message.role === "user"
-                        ? "bg-[#00A878] text-white"
-                        : "bg-white text-gray-800 border border-gray-200"
-                    }`}
-                    style={{ visibility: 'visible', opacity: 1 }}
+                    key={message.id}
+                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                    style={{ 
+                      visibility: 'visible', 
+                      opacity: 1, 
+                      display: 'flex',
+                      width: '100%',
+                      flexShrink: 0
+                    }}
                   >
-                    <p className="text-sm whitespace-pre-wrap break-words" style={{ visibility: 'visible', opacity: 1, color: message.role === "user" ? "white" : "#1f2937" }}>{message.content}</p>
+                    <div
+                      className={`max-w-[80%] rounded-lg p-3 ${
+                        message.role === "user"
+                          ? "bg-[#00A878] text-white"
+                          : "bg-white text-gray-800 border border-gray-200"
+                      }`}
+                      style={{ 
+                        visibility: 'visible', 
+                        opacity: 1,
+                        display: 'block'
+                      }}
+                    >
+                      <p 
+                        className="text-sm whitespace-pre-wrap break-words" 
+                        style={{ 
+                          visibility: 'visible', 
+                          opacity: 1, 
+                          color: message.role === "user" ? "white" : "#1f2937",
+                          margin: 0,
+                          padding: 0
+                        }}
+                      >
+                        {message.content}
+                      </p>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div 
+                  className="text-center text-gray-500 text-sm py-8" 
+                  style={{ 
+                    visibility: 'visible', 
+                    opacity: 1,
+                    width: '100%'
+                  }}
+                >
+                  No messages yet. Start a conversation!
                 </div>
-              ))
-            ) : (
-              <div className="text-center text-gray-500 text-sm py-8" style={{ visibility: 'visible', opacity: 1 }}>
-                No messages yet. Start a conversation!
-              </div>
-            )}
+              )}
+            </div>
             {isProcessing && (
               <div className="flex justify-start">
                 <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-2">
