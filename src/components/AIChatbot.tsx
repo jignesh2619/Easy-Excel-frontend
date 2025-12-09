@@ -439,7 +439,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                       <div
                         className={`max-w-[80%] rounded-lg p-3 ${
                           message.role === "user"
-                            ? "bg-[#00A878] text-white"
+                            ? "bg-white"
                             : "bg-white text-gray-800 border border-gray-200 shadow-sm"
                         }`}
                         style={{
@@ -451,9 +451,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                           position: 'relative',
                           zIndex: 1,
                           boxSizing: 'border-box',
-                          backgroundColor: message.role === "user" ? "#00A878" : "#ffffff",
-                          color: message.role === "user" ? "#ffffff" : "#1f2937",
-                          border: message.role === "user" ? "none" : "1px solid #e5e7eb"
+                          backgroundColor: message.role === "user" ? "#ffffff" : "#ffffff",
+                          color: message.role === "user" ? "#000000" : "#1f2937",
+                          border: message.role === "user" ? "1px solid #e5e7eb" : "1px solid #e5e7eb",
+                          boxShadow: message.role === "user" ? "0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)" : "0 1px 2px rgba(0, 0, 0, 0.05)"
                         }}
                       >
                         <p 
@@ -461,7 +462,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                           style={{ 
                             visibility: 'visible', 
                             opacity: 1, 
-                            color: message.role === "user" ? "#ffffff" : "#1f2937",
+                            color: message.role === "user" ? "#000000" : "#1f2937",
                             margin: 0,
                             padding: 0,
                             lineHeight: '1.5',
