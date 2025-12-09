@@ -167,9 +167,9 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     );
   }
 
-  const [isMobile, setIsMobile] = React.useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const checkMobile = () => {
       if (typeof window !== 'undefined') {
         setIsMobile(window.innerWidth < 768);
