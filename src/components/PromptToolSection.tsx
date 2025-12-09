@@ -43,7 +43,7 @@ export function PromptToolSection() {
   }, [result]);
 
   const processAndRedirect = async (file: File) => {
-    const processingPrompt = prompt.trim() || "Clean this data and create a dashboard";
+    const processingPrompt = prompt.trim() || "Clean this data";
     setIsProcessing(true);
     setError(null);
     setResult(null);

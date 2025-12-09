@@ -323,8 +323,8 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
           onClick={() => setIsOpen(true)}
           className="fixed w-14 h-14 bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center group"
           style={{ 
-            right: '24px', 
-            bottom: '24px',
+            right: '16px',
+            bottom: '16px',
             position: 'fixed',
             left: 'auto',
             zIndex: 99999, // Very high z-index to ensure it's always on top
@@ -340,12 +340,14 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       {/* Chatbot Sidebar - Opens upwards from bottom right - Always Visible */}
       {isOpen && (
         <div 
-          className="fixed w-96 bg-white border border-gray-200 shadow-2xl flex flex-col rounded-t-lg"
+          className="fixed bg-white border border-gray-200 shadow-2xl flex flex-col rounded-t-lg"
           style={{ 
-            right: '24px', 
+            right: '12px',
+            left: '12px',
             bottom: '88px',
             position: 'fixed',
-            left: 'auto',
+            width: 'calc(100% - 24px)',
+            maxWidth: '384px',
             height: 'calc(100vh - 112px)', // Use full viewport height minus button space
             maxHeight: 'calc(100vh - 112px)', // Ensure it doesn't go above viewport
             zIndex: 99999, // Very high z-index to ensure it's always on top
