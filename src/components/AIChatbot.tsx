@@ -42,11 +42,15 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   // Check if mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < 768);
+      }
     };
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', checkMobile);
+      return () => window.removeEventListener('resize', checkMobile);
+    }
   }, []);
 
   // Load chat history from sessionStorage on mount
@@ -356,7 +360,8 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             left: isMobile ? '8px' : 'auto',
             bottom: isMobile ? '80px' : '88px',
             position: 'fixed',
-            width: isMobile ? 'calc(100% - 16px)' : '384px',
+            width: isMobile ? 'calc(100vw - 16px)' : '384px',
+            maxWidth: isMobile ? 'calc(100vw - 16px)' : '384px',
             height: isMobile ? 'calc(100vh - 96px)' : 'calc(100vh - 112px)',
             maxHeight: isMobile ? 'calc(100vh - 96px)' : 'calc(100vh - 112px)',
             zIndex: 99999,

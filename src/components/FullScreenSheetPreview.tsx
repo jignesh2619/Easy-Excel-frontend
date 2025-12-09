@@ -167,10 +167,25 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
     );
   }
 
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < 768);
+      }
+    };
+    checkMobile();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', checkMobile);
+      return () => window.removeEventListener('resize', checkMobile);
+    }
+  }, []);
+
   return (
     <div className="h-screen bg-gray-50 flex">
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col" style={{ marginRight: '420px', minWidth: 0 }}>
+      <div className="flex-1 flex flex-col" style={{ marginRight: isMobile ? '0' : '420px', minWidth: 0 }}>
         {/* Top Bar */}
         <div className="bg-white border-b border-gray-200 shadow-sm flex-shrink-0">
           <div className="px-4 py-2 flex items-center justify-between">
