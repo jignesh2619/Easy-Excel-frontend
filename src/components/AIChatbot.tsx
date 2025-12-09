@@ -22,6 +22,7 @@ const CHAT_DATA_KEY = 'ai-chatbot-data';
 
 export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatbotProps) {
   const [isOpen, setIsOpen] = useState(true); // Default to open
+  const [isMobile, setIsMobile] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",

@@ -28,7 +28,22 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
   const historyRef = useRef<Array<typeof previewData>>([]);
   const historyIndexRef = useRef<number>(-1);
   const isUndoingRef = useRef<boolean>(false);
+  const [isMobile, setIsMobile] = useState(false);
   const { user, session } = useAuth();
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < 768);
+      }
+    };
+    checkMobile();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', checkMobile);
+      return () => window.removeEventListener('resize', checkMobile);
+    }
+  }, []);
 
   const addToHistory = (newState: typeof previewData) => {
     if (!newState || isUndoingRef.current) return;
@@ -166,21 +181,6 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
       </div>
     );
   }
-
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      if (typeof window !== 'undefined') {
-        setIsMobile(window.innerWidth < 768);
-      }
-    };
-    checkMobile();
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', checkMobile);
-      return () => window.removeEventListener('resize', checkMobile);
-    }
-  }, []);
 
   return (
     <div className="h-screen bg-gray-50 flex">
