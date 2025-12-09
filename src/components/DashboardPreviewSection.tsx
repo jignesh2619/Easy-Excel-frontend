@@ -9,7 +9,7 @@ export function DashboardPreviewSection() {
         <div className="text-center mb-12">
           <h2 className="text-gray-900 mb-4 bg-gradient-to-r from-gray-900 via-[#00A878] to-gray-900 bg-clip-text text-transparent">From Messy Data to Clear Insights—Automatically</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            See how LazyExcel transforms your raw data into professional, interactive dashboards.
+            See how EasyExcel transforms your raw data into professional, interactive dashboards.
           </p>
         </div>
 

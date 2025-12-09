@@ -20,7 +20,7 @@ export function FeedbackSection() {
 
     try {
       // Create mailto link with feedback
-      const subject = encodeURIComponent('LazyExcel Feedback');
+      const subject = encodeURIComponent('EasyExcel Feedback');
       const body = encodeURIComponent(
         `User Feedback:\n\n${feedback}\n\n` +
         (user ? `User Email: ${user.email}\n` : 'User: Anonymous\n') +

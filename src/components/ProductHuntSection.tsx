@@ -10,7 +10,7 @@ export function ProductHuntSection() {
       >
         <img 
           src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1132852&theme=light" 
-          alt="LazyExcel - Clean sheets and build dashboards with one click | Product Hunt" 
+          alt="EasyExcel - Clean sheets and build dashboards with one click | Product Hunt" 
           style={{ width: '250px', height: '54px' }} 
           width="250" 
           height="54" 

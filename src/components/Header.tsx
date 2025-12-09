@@ -60,45 +60,43 @@ export function Header() {
                 className="h-10 w-auto"
               />
             </button>
-
             {/* Spacer */}
             <div className="flex-1"></div>
-
             {/* Navigation and CTA grouped together */}
             <div className="flex items-center gap-2">
               {/* Navigation */}
               <nav className="hidden md:flex items-center gap-8">
-                <button 
-                  onClick={() => scrollToSection("home")}
-                  className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
-                >
-                  Home
-                </button>
-                <button 
-                  onClick={() => scrollToSection("features")}
-                  className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
-                >
-                  Features
-                </button>
-                <button 
-                  onClick={() => scrollToSection("prompt-tool")}
-                  className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
-                >
-                  Prompt Tool
-                </button>
-                <button 
-                  onClick={() => scrollToSection("pricing")}
-                  className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
-                >
-                  Pricing
-                </button>
-                <button 
-                  onClick={() => scrollToSection("contact")}
-                  className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
-                >
-                  Contact
-                </button>
-              </nav>
+              <button 
+                onClick={() => scrollToSection("home")}
+                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+              >
+                Home
+              </button>
+              <button 
+                onClick={() => scrollToSection("features")}
+                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+              >
+                Features
+              </button>
+              <button 
+                onClick={() => scrollToSection("prompt-tool")}
+                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+              >
+                Prompt Tool
+              </button>
+              <button 
+                onClick={() => scrollToSection("pricing")}
+                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+              >
+                Pricing
+              </button>
+              <button 
+                onClick={() => scrollToSection("contact")}
+                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+              >
+                Contact
+              </button>
+            </nav>
 
               {/* CTA + Auth */}
               <div className="flex items-center gap-3">

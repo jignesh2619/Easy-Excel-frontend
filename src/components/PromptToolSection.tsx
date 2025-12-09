@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Upload, Sparkles, Loader2, CheckCircle2, AlertCircle, X, Download, Eye, BarChart3, FileSpreadsheet } from "lucide-react";
+import { Upload, Sparkles, Loader2, CheckCircle2, AlertCircle, X, Download, Eye, BarChart3, LayoutDashboard, FileSpreadsheet } from "lucide-react";
 import { processFile, getFileDownloadUrl, getChartDownloadUrl, downloadFile, API_BASE_URL } from "../services/api";
 import { getFileValidationError } from "../utils/fileUtils";
 import { SafariBrowser } from "./SafariBrowser";
@@ -42,49 +42,38 @@ export function PromptToolSection() {
     }
   }, [result]);
 
-  // Helper function to process file and redirect to preview
-  const processAndRedirect = async (file: File) => {
-    // Use prompt if provided, otherwise use default
-    const processingPrompt = prompt.trim() || "Clean this data and create a dashboard";
-    
-    setIsProcessing(true);
-    setError(null);
-    setResult(null);
+  const promptTemplates = [
+    "Clean this column",
+    "Remove duplicates",
+    "Fix formatting issues",
+    "Generate dashboard with KPIs",
+    "Split full names into first/last name",
+    "Summarize the sheet"
+  ];
 
-    try {
-      const response = await processFile(file, processingPrompt);
-      setResult(response);
-      
-      // Save preview data to sessionStorage and navigate to full-screen preview
-      if (response.processed_data && response.columns) {
-        const previewData = {
-          data: response.processed_data,
-          columns: response.columns,
-          formatting_metadata: response.formatting_metadata,
-          processed_file_url: response.processed_file_url,
-        };
-        sessionStorage.setItem('previewData', JSON.stringify(previewData));
-        
-        // Navigate to full-screen preview using history API for SPA behavior
-        window.history.pushState({}, '', '/preview');
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      }
-      
-      // Refresh token usage after processing
-      if (user && refreshBackendUser) {
-        setTimeout(() => {
-          refreshBackendUser();
-        }, 1000); // Wait 1 second for backend to update
-      }
-    } catch (err: any) {
-      setError(err.message || "Failed to process file. Please try again.");
-      console.error("Processing error:", err);
-    } finally {
-      setIsProcessing(false);
+  const handleTemplateClick = (template: string) => {
+    const currentPrompt = prompt.trim();
+    if (!currentPrompt) {
+      // If prompt is empty, set it to the template
+      setPrompt(template);
+    } else {
+      // Append template to existing prompt with better formatting
+      const separator = currentPrompt.endsWith('.') || currentPrompt.endsWith('!') ? ' ' : '. ';
+      setPrompt(currentPrompt + separator + template);
     }
+    
+    // Focus back to textarea
+    setTimeout(() => {
+      const textarea = document.querySelector('textarea');
+      if (textarea) {
+        textarea.focus();
+        // Move cursor to end
+        textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+      }
+    }, 100);
   };
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const validationError = getFileValidationError(file);
@@ -95,13 +84,10 @@ export function PromptToolSection() {
       }
       setSelectedFile(file);
       setError(null);
-      
-      // Auto-process file immediately
-      await processAndRedirect(file);
     }
   };
 
-  const handleFileDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file) {
@@ -113,9 +99,6 @@ export function PromptToolSection() {
       }
       setSelectedFile(file);
       setError(null);
-      
-      // Auto-process file immediately
-      await processAndRedirect(file);
     }
   };
 
@@ -265,6 +248,8 @@ export function PromptToolSection() {
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-[#00c98c]/10 to-transparent rounded-full blur-2xl"></div>
               
               <div className="relative z-10">
+                <h3 className="text-gray-900 mb-6 font-semibold">Enter Your Prompt</h3>
+
                 {/* File Upload Area */}
                 <div className="mb-6">
                   <input
@@ -284,22 +269,6 @@ export function PromptToolSection() {
                       <Upload className="w-10 h-10 text-gray-400 mx-auto mb-2 group-hover:text-[#00A878] group-hover:scale-110 transition-all duration-300" />
                       <p className="text-gray-700 mb-1 text-sm group-hover:text-[#00A878] transition-colors duration-300">Drop your Excel file here</p>
                       <p className="text-gray-500 text-xs group-hover:text-[#00A878]/80 transition-colors duration-300">or click to browse</p>
-                    </div>
-                  ) : isProcessing ? (
-                    <div className="bg-gradient-to-br from-[#00A878]/10 via-white to-[#00c98c]/10 border-2 border-[#00A878]/30 rounded-xl p-8 shadow-lg">
-                      <div className="flex flex-col items-center justify-center gap-4">
-                        <div className="relative">
-                          <Loader2 className="w-12 h-12 text-[#00A878] animate-spin" />
-                        </div>
-                        <div className="text-center">
-                          <p className="text-gray-900 font-semibold text-base mb-2">
-                            Loading...
-                          </p>
-                          <p className="text-gray-600 text-sm">
-                            {processingMessage || "Processing your file..."}
-                          </p>
-                        </div>
-                      </div>
                     </div>
                   ) : (
                     <div className="bg-green-50 border border-green-200 rounded-xl p-4 hover:bg-green-100 hover:border-green-300 transition-all duration-300 hover:scale-[1.01] hover:shadow-md">
@@ -322,6 +291,41 @@ export function PromptToolSection() {
                   )}
                 </div>
               
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-700 text-sm font-medium">Enter Your Prompt</label>
+                    <button
+                      onClick={() => {
+                        const currentPrompt = prompt.trim();
+                        const dashboardKeywords = ['dashboard', 'chart', 'graph', 'visualize', 'visualization'];
+                        const hasDashboardKeyword = dashboardKeywords.some(keyword => 
+                          currentPrompt.toLowerCase().includes(keyword)
+                        );
+                        
+                        if (!currentPrompt) {
+                          setPrompt("Create a dashboard with visualizations and charts");
+                        } else if (hasDashboardKeyword) {
+                          // Already has dashboard-related keywords, don't add anything
+                          return;
+                        } else {
+                          // Append dashboard request to existing prompt
+                          setPrompt(currentPrompt + " and create a dashboard with visualizations and charts");
+                        }
+                      }}
+                      className="inline-flex items-center justify-center gap-2 h-8 rounded-md px-3 bg-white border-2 border-[#00A878] hover:bg-[#00A878] hover:border-[#00A878] transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-105 font-medium group"
+                    >
+                      <LayoutDashboard className="w-4 h-4 text-[#00A878] group-hover:text-white transition-colors duration-300" />
+                      <span className="text-[#00A878] group-hover:text-white transition-colors duration-300">Create Dashboard</span>
+                    </button>
+                  </div>
+                  <textarea 
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    className="w-full bg-gradient-to-br from-gray-50 to-white border border-gray-300 rounded-xl p-4 resize-none focus:outline-none focus:border-[#00A878] focus:ring-2 focus:ring-[#00A878]/20 transition-all hover:border-[#00A878]/50 hover:shadow-md duration-300"
+                    rows={6}
+                    placeholder="e.g., Clean this data, remove duplicates, and create a sales dashboard"
+                  />
+                </div>
 
                 <div className="space-y-4">
                   {error && (
@@ -330,6 +334,20 @@ export function PromptToolSection() {
                       {error}
                     </div>
                   )}
+                  <Button 
+                    onClick={handleProcessFile}
+                    disabled={!selectedFile || !prompt.trim() || isProcessing}
+                    className="w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white rounded-full shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        {processingMessage}
+                      </>
+                    ) : (
+                      "Process File"
+                    )}
+                  </Button>
                 </div>
               
               {result && (
@@ -436,6 +454,28 @@ export function PromptToolSection() {
             }}
           />
 
+          {/* Pre-built Prompt Suggestions - Below the prompt area */}
+          <div className="mt-8 text-center">
+            <h3 className="text-gray-900 text-xl font-bold mb-6">
+              Pre-built Prompt Suggestions
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {promptTemplates.map((template, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleTemplateClick(template)}
+                  className="bg-white border-2 border-gray-200 hover:border-[#00A878] rounded-lg p-4 text-left transition-all shadow-sm hover:shadow-md hover:bg-[#00A878]/5 duration-200 cursor-pointer"
+                >
+                  <span className="text-gray-700 hover:text-[#00A878] transition-colors text-sm font-medium">
+                    {template}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <p className="text-gray-500 text-sm font-medium">
+              Click a template to add it to your prompt, or type your own custom prompt above.
+            </p>
+          </div>
         </div>
       </div>
 

@@ -291,9 +291,9 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   };
 
   const suggestedActions = [
-    { text: "Remove duplicates", icon: "🔍" },
-    { text: "Highlight cells with", icon: "✨" },
-    { text: "Sort", icon: "📊" },
+    { text: "Create a report", icon: "📊" },
+    { text: "Extract data from PDFs/CSV", icon: "📄" },
+    { text: "Generate data with AI", icon: "💡" },
   ];
 
   return (
@@ -308,7 +308,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             bottom: '24px',
             position: 'fixed',
             left: 'auto',
-            zIndex: 9999, // Very high z-index to ensure it's always on top
+            zIndex: 99999, // Very high z-index to ensure it's always on top
             isolation: 'isolate' // Create new stacking context
           }}
           aria-label="Open AI Chatbot"
@@ -329,8 +329,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             left: 'auto',
             height: 'calc(100vh - 112px)', // Use full viewport height minus button space
             maxHeight: 'calc(100vh - 112px)', // Ensure it doesn't go above viewport
-            zIndex: 9999, // Very high z-index to ensure it's always on top
-            isolation: 'isolate' // Create new stacking context
+            zIndex: 99999, // Very high z-index to ensure it's always on top
+            isolation: 'isolate', // Create new stacking context
+            display: 'flex',
+            flexDirection: 'column'
           }}>
           {/* Header */}
           <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between">
@@ -373,9 +375,11 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             ref={messagesContainerRef}
             className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
             style={{ 
-              minHeight: 0, // Ensure proper scrolling
+              flex: '1 1 auto',
+              minHeight: '200px', // Ensure minimum height for visibility
               maxHeight: '100%',
               overflowY: 'auto',
+              overflowX: 'hidden',
               WebkitOverflowScrolling: 'touch' // Smooth scrolling on mobile
             }}
           >
