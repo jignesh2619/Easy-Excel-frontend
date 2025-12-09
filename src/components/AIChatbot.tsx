@@ -370,7 +370,7 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
           {/* Messages - Fully Scrollable */}
           <div 
             ref={messagesContainerRef}
-            className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+            className="flex-1 overflow-y-auto p-4 bg-gray-50"
             style={{ 
               flex: '1 1 0',
               minHeight: '300px', // Ensure minimum height for visibility
