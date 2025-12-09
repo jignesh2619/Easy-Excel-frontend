@@ -12,7 +12,7 @@ export function Footer() {
           </h3>
           <p className="text-gray-400 mb-6">Have questions? We're here to help!</p>
           <a
-            href="mailto:jigneshmandana19@gmail.com?subject=EasyExcel Support Request"
+            href="mailto:jigneshmandana19@gmail.com?subject=LazyExcel Support Request"
             className="inline-flex items-center gap-3 bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
           >
             <Mail className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
@@ -24,7 +24,7 @@ export function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             {/* Logo/Brand */}
             <div className="text-2xl font-bold text-[#00A878] hover:scale-110 transition-transform duration-300 cursor-pointer">
-              EasyExcel
+              LazyExcel
             </div>
 
             {/* Links */}
@@ -42,7 +42,7 @@ export function Footer() {
 
             {/* Copyright */}
             <div className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} EasyExcel
+              © {new Date().getFullYear()} LazyExcel
             </div>
           </div>
         </div>

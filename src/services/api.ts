@@ -1,5 +1,5 @@
 /**
- * API Service for EasyExcel Backend
+ * API Service for LazyExcel Backend
  * Handles all communication with the backend API
  */
 

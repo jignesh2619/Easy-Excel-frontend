@@ -16,7 +16,7 @@ export function HeroSection() {
             Clean Your Sheets & Build Dashboards Instantly.
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Upload your Excel file, enter a prompt, and let EasyExcel clean, format, and visualize your data automatically.
+            Upload your Excel file, enter a prompt, and let LazyExcel clean, format, and visualize your data automatically.
           </p>
         </div>
 
