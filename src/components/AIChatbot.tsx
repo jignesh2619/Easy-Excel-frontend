@@ -399,12 +399,14 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
               flex: '1 1 0%',
               minHeight: '400px',
               height: '100%',
+              maxHeight: 'calc(100vh - 200px)',
               overflowY: 'auto',
               overflowX: 'hidden',
               WebkitOverflowScrolling: 'touch',
               visibility: 'visible',
               opacity: 1,
-              position: 'relative'
+              position: 'relative',
+              zIndex: 1
             }}
           >
             {messages && messages.length > 0 ? (
@@ -417,8 +419,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                 minHeight: '100%'
               }}>
                 {messages.map((message) => {
-                  // Debug: Log each message to ensure they're being rendered
-                  console.log('Rendering message:', message.id, message.role, message.content.substring(0, 50));
                   return (
                     <div
                       key={message.id}
@@ -430,7 +430,9 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                         visibility: 'visible',
                         opacity: 1,
                         display: 'flex',
-                        minHeight: 'auto'
+                        minHeight: 'auto',
+                        position: 'relative',
+                        zIndex: 1
                       }}
                     >
                       <div
@@ -444,7 +446,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                           opacity: 1,
                           display: 'block',
                           wordWrap: 'break-word',
-                          minHeight: 'auto'
+                          minHeight: 'auto',
+                          position: 'relative',
+                          zIndex: 1,
+                          boxSizing: 'border-box'
                         }}
                       >
                         <p 
@@ -455,7 +460,9 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                             color: message.role === "user" ? "white" : "#1f2937",
                             margin: 0,
                             padding: 0,
-                            lineHeight: '1.5'
+                            lineHeight: '1.5',
+                            position: 'relative',
+                            zIndex: 1
                           }}
                         >
                           {message.content}
