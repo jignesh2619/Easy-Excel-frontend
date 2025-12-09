@@ -39,6 +39,16 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
 
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // Load chat history from sessionStorage on mount
   useEffect(() => {
     try {
@@ -321,10 +331,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed w-14 h-14 bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center group"
+          className="fixed w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center group"
           style={{ 
-            right: '16px',
-            bottom: '16px',
+            right: isMobile ? '12px' : '24px',
+            bottom: isMobile ? '12px' : '24px',
             position: 'fixed',
             left: 'auto',
             zIndex: 99999, // Very high z-index to ensure it's always on top
@@ -342,16 +352,15 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
         <div 
           className="fixed bg-white border border-gray-200 shadow-2xl flex flex-col rounded-t-lg"
           style={{ 
-            right: '12px',
-            left: '12px',
-            bottom: '88px',
+            right: isMobile ? '8px' : '24px',
+            left: isMobile ? '8px' : 'auto',
+            bottom: isMobile ? '80px' : '88px',
             position: 'fixed',
-            width: 'calc(100% - 24px)',
-            maxWidth: '384px',
-            height: 'calc(100vh - 112px)', // Use full viewport height minus button space
-            maxHeight: 'calc(100vh - 112px)', // Ensure it doesn't go above viewport
-            zIndex: 99999, // Very high z-index to ensure it's always on top
-            isolation: 'isolate', // Create new stacking context
+            width: isMobile ? 'calc(100% - 16px)' : '384px',
+            height: isMobile ? 'calc(100vh - 96px)' : 'calc(100vh - 112px)',
+            maxHeight: isMobile ? 'calc(100vh - 96px)' : 'calc(100vh - 112px)',
+            zIndex: 99999,
+            isolation: 'isolate',
             display: 'flex',
             flexDirection: 'column',
             visibility: 'visible',
