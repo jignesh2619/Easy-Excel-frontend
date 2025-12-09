@@ -379,20 +379,17 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             ref={messagesContainerRef}
             className="flex-1 overflow-y-auto p-4 bg-gray-50"
             style={{ 
-              flex: '1 1 0%',
+              flex: '1 1 auto',
               minHeight: '400px',
-              height: '100%',
               overflowY: 'auto',
               overflowX: 'hidden',
-              WebkitOverflowScrolling: 'touch', // Smooth scrolling on mobile
+              WebkitOverflowScrolling: 'touch',
               visibility: 'visible',
-              opacity: 1,
-              position: 'relative'
+              opacity: 1
             }}
           >
-            {messages.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', paddingBottom: '20px' }}>
-                {messages.map((message) => (
+            {messages && messages.length > 0 ? (
+              messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
@@ -429,12 +426,11 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                         lineHeight: '1.5'
                       }}
                     >
-                      {message.content}
-                    </p>
-                  </div>
+                    {message.content}
+                  </p>
                 </div>
-              ))}
               </div>
+              ))
             ) : (
               <div className="text-center text-gray-500 text-sm py-8">
                 No messages yet. Start a conversation!
@@ -482,4 +478,5 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
     </>
   );
 }
+
 
