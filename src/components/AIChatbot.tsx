@@ -450,8 +450,9 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                           position: 'relative',
                           zIndex: 1,
                           boxSizing: 'border-box',
-                          backgroundColor: message.role === "user" ? "#00A878" : undefined,
-                          color: message.role === "user" ? "white" : undefined
+                          backgroundColor: message.role === "user" ? "#00A878" : "#ffffff",
+                          color: message.role === "user" ? "#ffffff" : "#1f2937",
+                          border: message.role === "user" ? "none" : "1px solid #e5e7eb"
                         }}
                       >
                         <p 
