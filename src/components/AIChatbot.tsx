@@ -449,7 +449,9 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                           minHeight: 'auto',
                           position: 'relative',
                           zIndex: 1,
-                          boxSizing: 'border-box'
+                          boxSizing: 'border-box',
+                          backgroundColor: message.role === "user" ? "#00A878" : undefined,
+                          color: message.role === "user" ? "white" : undefined
                         }}
                       >
                         <p 
@@ -457,12 +459,13 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                           style={{ 
                             visibility: 'visible', 
                             opacity: 1, 
-                            color: message.role === "user" ? "white" : "#1f2937",
+                            color: message.role === "user" ? "#ffffff" : "#1f2937",
                             margin: 0,
                             padding: 0,
                             lineHeight: '1.5',
                             position: 'relative',
-                            zIndex: 1
+                            zIndex: 1,
+                            fontWeight: 'normal'
                           }}
                         >
                           {message.content}
