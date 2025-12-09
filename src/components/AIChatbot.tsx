@@ -22,7 +22,14 @@ const CHAT_DATA_KEY = 'ai-chatbot-data';
 
 export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatbotProps) {
   const [isOpen, setIsOpen] = useState(true); // Default to open
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "1",
+      role: "assistant",
+      content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
+      timestamp: new Date(),
+    },
+  ]);
   const [input, setInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
