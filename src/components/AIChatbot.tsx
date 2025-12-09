@@ -437,10 +437,10 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                       }}
                     >
                       <div
-                        className={`max-w-[80%] rounded-lg p-3 ${
+                        className={`rounded-lg ${
                           message.role === "user"
                             ? "bg-white"
-                            : "bg-white text-gray-800 border border-gray-200 shadow-sm"
+                            : "bg-white text-gray-800 border border-gray-200 shadow-sm max-w-[80%]"
                         }`}
                         style={{
                           visibility: 'visible',
@@ -454,7 +454,9 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
                           backgroundColor: message.role === "user" ? "#ffffff" : "#ffffff",
                           color: message.role === "user" ? "#000000" : "#1f2937",
                           border: message.role === "user" ? "1px solid #e5e7eb" : "1px solid #e5e7eb",
-                          boxShadow: message.role === "user" ? "0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)" : "0 1px 2px rgba(0, 0, 0, 0.05)"
+                          boxShadow: message.role === "user" ? "0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)" : "0 1px 2px rgba(0, 0, 0, 0.05)",
+                          maxWidth: message.role === "user" ? "90%" : "80%",
+                          padding: message.role === "user" ? "14px 16px" : "12px"
                         }}
                       >
                         <p 
