@@ -52,7 +52,19 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
           ...msg,
           timestamp: new Date(msg.timestamp),
         }));
-        setMessages(messagesWithDates);
+        // Ensure we have at least one message
+        if (messagesWithDates.length > 0) {
+          setMessages(messagesWithDates);
+        } else {
+          setMessages([
+            {
+              id: "1",
+              role: "assistant",
+              content: "Hi, can I help you get started? I can help you make further changes to your processed sheet.",
+              timestamp: new Date(),
+            },
+          ]);
+        }
       } else {
         // Only show initial greeting if no history exists
         setMessages([
