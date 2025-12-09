@@ -290,11 +290,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
     }
   };
 
-  const suggestedActions = [
-    { text: "Create a report", icon: "📊" },
-    { text: "Extract data from PDFs/CSV", icon: "📄" },
-    { text: "Generate data with AI", icon: "💡" },
-  ];
 
   return (
     <>
@@ -409,24 +404,6 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             )}
             <div ref={messagesEndRef} />
           </div>
-
-          {/* Suggested Actions - Only show when no messages except initial greeting */}
-          {messages.length === 1 && !isProcessing && (
-            <div className="px-4 py-2 border-t border-gray-200 bg-white">
-              <div className="space-y-2">
-                {suggestedActions.map((action, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setInput(action.text)}
-                    className="w-full text-left px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2"
-                  >
-                    <span>{action.icon}</span>
-                    <span>{action.text}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Input Area */}
           <div className="p-4 border-t border-gray-200 bg-white">
