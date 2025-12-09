@@ -379,40 +379,64 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             ref={messagesContainerRef}
             className="flex-1 overflow-y-auto p-4 bg-gray-50"
             style={{ 
-              flex: '1 1 auto',
+              flex: '1 1 0%',
               minHeight: '400px',
+              height: '100%',
               overflowY: 'auto',
               overflowX: 'hidden',
               WebkitOverflowScrolling: 'touch',
               visibility: 'visible',
-              opacity: 1
+              opacity: 1,
+              position: 'relative'
             }}
           >
             {messages && messages.length > 0 ? (
-              messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} mb-4`}
-                  style={{ 
-                    width: '100%',
-                    flexShrink: 0
-                  }}
-                >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', paddingBottom: '20px' }}>
+                {messages.map((message) => (
                   <div
-                    className={`max-w-[80%] rounded-lg p-3 ${
-                      message.role === "user"
-                        ? "bg-[#00A878] text-white"
-                        : "bg-white text-gray-800 border border-gray-200 shadow-sm"
-                    }`}
+                    key={message.id}
+                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                    style={{ 
+                      width: '100%',
+                      flexShrink: 0,
+                      marginBottom: '16px',
+                      visibility: 'visible',
+                      opacity: 1,
+                      display: 'flex'
+                    }}
                   >
-                    <p className="text-sm whitespace-pre-wrap break-words m-0">
-                      {message.content}
-                    </p>
+                    <div
+                      className={`max-w-[80%] rounded-lg p-3 ${
+                        message.role === "user"
+                          ? "bg-[#00A878] text-white"
+                          : "bg-white text-gray-800 border border-gray-200 shadow-sm"
+                      }`}
+                      style={{
+                        visibility: 'visible',
+                        opacity: 1,
+                        display: 'block',
+                        wordWrap: 'break-word'
+                      }}
+                    >
+                      <p 
+                        className="text-sm whitespace-pre-wrap break-words" 
+                        style={{ 
+                          visibility: 'visible', 
+                          opacity: 1, 
+                          color: message.role === "user" ? "white" : "#1f2937",
+                          margin: 0,
+                          padding: 0,
+                          lineHeight: '1.5'
+                        }}
+                      >
+                        {message.content}
+                      </p>
+                    </div>
                   </div>
+                ))}
               </div>
-              ))
             ) : (
-              <div className="text-center text-gray-500 text-sm py-8">
+              <div className="text-center text-gray-500 text-sm py-8" style={{ visibility: 'visible', opacity: 1 }}>
                 No messages yet. Start a conversation!
               </div>
             )}
