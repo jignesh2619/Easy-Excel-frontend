@@ -137,7 +137,12 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
 
   const scrollToBottom = () => {
     setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      }
     }, 100);
   };
 
@@ -403,49 +408,62 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
             }}
           >
             {messages && messages.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', paddingBottom: '20px' }}>
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                    style={{ 
-                      width: '100%',
-                      flexShrink: 0,
-                      marginBottom: '16px',
-                      visibility: 'visible',
-                      opacity: 1,
-                      display: 'flex'
-                    }}
-                  >
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '16px', 
+                width: '100%', 
+                paddingBottom: '20px',
+                minHeight: '100%'
+              }}>
+                {messages.map((message) => {
+                  // Debug: Log each message to ensure they're being rendered
+                  console.log('Rendering message:', message.id, message.role, message.content.substring(0, 50));
+                  return (
                     <div
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        message.role === "user"
-                          ? "bg-[#00A878] text-white"
-                          : "bg-white text-gray-800 border border-gray-200 shadow-sm"
-                      }`}
-                      style={{
+                      key={message.id}
+                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                      style={{ 
+                        width: '100%',
+                        flexShrink: 0,
+                        marginBottom: '16px',
                         visibility: 'visible',
                         opacity: 1,
-                        display: 'block',
-                        wordWrap: 'break-word'
+                        display: 'flex',
+                        minHeight: 'auto'
                       }}
                     >
-                      <p 
-                        className="text-sm whitespace-pre-wrap break-words" 
-                        style={{ 
-                          visibility: 'visible', 
-                          opacity: 1, 
-                          color: message.role === "user" ? "white" : "#1f2937",
-                          margin: 0,
-                          padding: 0,
-                          lineHeight: '1.5'
+                      <div
+                        className={`max-w-[80%] rounded-lg p-3 ${
+                          message.role === "user"
+                            ? "bg-[#00A878] text-white"
+                            : "bg-white text-gray-800 border border-gray-200 shadow-sm"
+                        }`}
+                        style={{
+                          visibility: 'visible',
+                          opacity: 1,
+                          display: 'block',
+                          wordWrap: 'break-word',
+                          minHeight: 'auto'
                         }}
                       >
-                        {message.content}
-                      </p>
+                        <p 
+                          className="text-sm whitespace-pre-wrap break-words" 
+                          style={{ 
+                            visibility: 'visible', 
+                            opacity: 1, 
+                            color: message.role === "user" ? "white" : "#1f2937",
+                            margin: 0,
+                            padding: 0,
+                            lineHeight: '1.5'
+                          }}
+                        >
+                          {message.content}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center text-gray-500 text-sm py-8" style={{ visibility: 'visible', opacity: 1 }}>
