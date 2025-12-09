@@ -44,6 +44,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let mounted = true;
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
     
+    // Suppress browser extension errors in console (non-critical)
+    const originalError = console.error;
+    const filteredConsoleError = (...args: any[]) => {
+      const errorMessage = args[0]?.toString() || '';
+      // Filter out browser extension polyfill errors
+      if (errorMessage.includes('browserPolyfill') || 
+          errorMessage.includes('Failed to fetch latest config') ||
+          errorMessage.includes('queryFn @ browserPolyfill')) {
+        return; // Suppress these non-critical errors
+      }
+      originalError.apply(console, args);
+    };
+    console.error = filteredConsoleError;
+    
     // Set a timeout to prevent infinite loading
     timeoutId = setTimeout(() => {
       if (mounted) {
@@ -131,6 +145,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       mounted = false;
       if (timeoutId) clearTimeout(timeoutId);
       subscription.unsubscribe();
+      // Restore original console.error
+      console.error = originalError;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
