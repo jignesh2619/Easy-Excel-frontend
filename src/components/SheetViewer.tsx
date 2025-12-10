@@ -80,10 +80,40 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
   // Format cell value for display
   const formatCellValue = (value: any): string => {
     if (value === null || value === undefined) return "";
+    
+    // If it's a number, display without commas
     if (typeof value === "number") {
-      // Format numbers with commas
-      return value.toLocaleString();
+      if (Number.isInteger(value)) {
+        return value.toString();
+      } else {
+        // For decimals, show up to 6 decimal places, remove trailing zeros
+        const formatted = value.toFixed(6).replace(/\.?0+$/, '');
+        return formatted;
+      }
     }
+    
+    // If it's a string, check if it's a number with commas and remove them
+    if (typeof value === "string") {
+      // Remove commas and trim whitespace
+      const cleaned = value.replace(/,/g, '').trim();
+      
+      // Try to parse as number
+      const numValue = parseFloat(cleaned);
+      
+      // If it's a valid number (not NaN and the cleaned string is not empty)
+      // and the original string looked like a number (contains digits)
+      if (!isNaN(numValue) && cleaned !== '' && /^-?\d*\.?\d+$/.test(cleaned)) {
+        if (Number.isInteger(numValue)) {
+          return numValue.toString();
+        } else {
+          // For decimals, show up to 6 decimal places, remove trailing zeros
+          const formatted = numValue.toFixed(6).replace(/\.?0+$/, '');
+          return formatted;
+        }
+      }
+    }
+    
+    // For non-numeric strings, return as-is
     return String(value);
   };
 
