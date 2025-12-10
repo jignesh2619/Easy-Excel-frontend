@@ -271,7 +271,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
         <div className="flex-1 overflow-auto relative" style={{ zIndex: 1, minHeight: 0, height: '100%', width: '100%', overflowX: 'auto', overflowY: 'auto' }}>
           <div style={{ display: "inline-block", minWidth: "100%" }}>
             <table className="border-collapse" style={{ width: "max-content", minWidth: "100%", borderSpacing: 0 }}>
-              <thead className="bg-gray-50 sticky top-0" style={{ zIndex: 1 }}>
+              <thead className="bg-gray-50" style={{ zIndex: 1 }}>
                 {/* Excel Column Letters Row */}
                 <tr>
                   <th className="px-2 py-1 text-center text-xs font-semibold text-gray-500 border border-black sticky left-0 z-10" style={{ width: '50px', minWidth: '50px', maxWidth: '50px', borderRight: '2px solid black', borderBottom: '1px solid black', backgroundColor: '#f3f4f6' }}>
