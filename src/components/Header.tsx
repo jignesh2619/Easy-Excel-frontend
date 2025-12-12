@@ -48,8 +48,8 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
-            {/* Logo */}
+          <div className="flex items-center justify-between h-16 w-full">
+            {/* Logo - Left side, fixed */}
             <button 
               onClick={() => scrollToSection("home")}
               className="hover:scale-110 transition-transform duration-300"
@@ -60,12 +60,9 @@ export function Header() {
                 className="h-10 w-auto"
               />
             </button>
-            {/* Spacer */}
-            <div className="flex-1"></div>
-            {/* Navigation and CTA grouped together */}
-            <div className="flex items-center gap-2">
-              {/* Navigation */}
-              <nav className="hidden md:flex items-center gap-8">
+            
+            {/* Navigation - Center, evenly spaced */}
+            <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
               <button 
                 onClick={() => scrollToSection("home")}
                 className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
@@ -98,8 +95,8 @@ export function Header() {
               </button>
             </nav>
 
-              {/* CTA + Auth */}
-              <div className="flex items-center gap-3">
+            {/* CTA + Auth - Right side, fixed */}
+            <div className="flex items-center gap-3">
               {tokens && (
                 <div className="hidden lg:flex flex-col gap-2 px-5 py-3 rounded-2xl border-2 border-[#00A878]/20 shadow-lg bg-gradient-to-br from-white to-[#00A878]/5 backdrop-blur-sm min-w-[200px]">
                   <div className="flex items-center justify-between">
@@ -184,7 +181,6 @@ export function Header() {
                   Sign in / Login
                 </Button>
               )}
-              </div>
             </div>
           </div>
         </div>
