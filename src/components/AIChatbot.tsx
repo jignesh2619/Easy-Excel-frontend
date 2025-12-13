@@ -128,6 +128,14 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
     }
   }, [messages, isHistoryLoaded]);
 
+  // Update currentData when initialData prop changes (e.g., when parent updates previewData)
+  useEffect(() => {
+    if (initialData && initialData.length > 0 && JSON.stringify(initialData) !== JSON.stringify(currentData)) {
+      setCurrentData(initialData);
+      setCurrentColumns(initialColumns);
+    }
+  }, [initialData, initialColumns]);
+
   // Save current data to sessionStorage whenever it changes
   useEffect(() => {
     if (isHistoryLoaded && currentData.length > 0) {

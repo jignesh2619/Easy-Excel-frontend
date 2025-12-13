@@ -123,18 +123,33 @@ export function FullScreenSheetPreview({ onClose }: FullScreenSheetPreviewProps)
 
   const handleDataUpdate = (newResult: any) => {
     // Update preview data when chatbot processes new changes
+    console.log('handleDataUpdate called with:', {
+      has_processed_data: !!newResult.processed_data,
+      processed_data_length: newResult.processed_data?.length,
+      has_columns: !!newResult.columns,
+      row_count: newResult.row_count,
+      full_response: newResult
+    });
+    
     if (newResult.processed_data && newResult.columns) {
       const updatedData = {
         data: newResult.processed_data,
         columns: newResult.columns,
         formatting_metadata: newResult.formatting_metadata,
-        processed_file_url: newResult.processed_file_url,
-        row_count: newResult.row_count,
+        processed_file_url: newResult.processed_file_url || previewData?.processed_file_url,
+        row_count: newResult.row_count || newResult.processed_data.length,
       };
+      console.log('Updating previewData with:', {
+        data_length: updatedData.data.length,
+        columns: updatedData.columns,
+        row_count: updatedData.row_count
+      });
       setPreviewData(updatedData);
       // Update sessionStorage
       sessionStorage.setItem('previewData', JSON.stringify(updatedData));
       // History will be added via useEffect
+    } else {
+      console.warn('handleDataUpdate: Missing processed_data or columns in response:', newResult);
     }
   };
 
