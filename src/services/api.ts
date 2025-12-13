@@ -38,11 +38,27 @@ export interface HealthResponse {
  */
 export async function checkHealth(): Promise<HealthResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/health`);
-    if (!response.ok) {
-      throw new Error('Backend not responding');
+    // Add timeout to prevent hanging (5 seconds)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/health`, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error('Backend not responding');
+      }
+      return await response.json();
+    } catch (fetchError: any) {
+      clearTimeout(timeoutId);
+      if (fetchError.name === 'AbortError') {
+        throw new Error('Health check timeout: Backend did not respond within 5 seconds');
+      }
+      throw fetchError;
     }
-    return await response.json();
   } catch (error) {
     console.error('Health check failed:', error);
     throw error;
