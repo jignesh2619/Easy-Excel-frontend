@@ -133,9 +133,10 @@ export async function processFile(
     if (!file) {
       throw new Error('No file selected');
     }
-    if (!prompt || prompt.trim() === '') {
-      throw new Error('Prompt is required');
-    }
+    // Allow empty/whitespace prompts - backend will skip processing if prompt is empty
+    // if (!prompt || prompt.trim() === '') {
+    //   throw new Error('Prompt is required');
+    // }
 
     // Create form data
     const formData = new FormData();
