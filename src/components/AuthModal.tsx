@@ -207,7 +207,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
           </div>
 
           {/* Glass Effect Email Form */}
-          <form onSubmit={handleEmailAuth} className="space-y-5 bg-white/15 backdrop-blur-md p-5 rounded-xl border border-white/30 shadow-lg" style={{
+          <form onSubmit={handleEmailAuth} className="space-y-5 bg-white/15 backdrop-blur-md p-5 rounded-xl shadow-lg" style={{
             backdropFilter: 'blur(10px)',
             WebkitBackdropFilter: 'blur(10px)',
           }}>
