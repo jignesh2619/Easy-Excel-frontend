@@ -310,7 +310,8 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
               </span>
             </button>
           </div>
-        </div>
+            </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
