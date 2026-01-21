@@ -105,16 +105,8 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
   // Force render with explicit styles
   return (
     <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
-      {/* Glass Effect Background Overlay */}
-      <div 
-        className="fixed inset-0 bg-gradient-to-br from-[#00A878]/20 via-[#00b887]/15 to-[#00c98c]/20 backdrop-blur-md z-[9999]"
-        style={{
-          background: 'linear-gradient(135deg, rgba(0, 168, 120, 0.1) 0%, rgba(0, 184, 135, 0.08) 50%, rgba(0, 201, 140, 0.1) 100%)',
-        }}
-      />
-      
       <DialogContent 
-        className="sm:max-w-md overflow-hidden border-0 p-0" 
+        className="sm:max-w-md overflow-hidden border-0 p-0 bg-transparent" 
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => {
           e.preventDefault();
@@ -141,20 +133,20 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
           width: 'calc(100% - 2rem)',
         }}
       >
-        {/* Glass Effect Container */}
-        <div className="relative">
-          {/* Animated gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#00A878]/30 via-[#00b887]/20 to-[#00c98c]/30 rounded-[24px] opacity-50" />
+        {/* Glass Effect Container - Full Glass Design */}
+        <div className="relative w-full h-full">
+          {/* Subtle gradient overlay for depth */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#00A878]/20 via-[#00b887]/15 to-[#00c98c]/20 rounded-[24px] opacity-60" />
           
-          {/* Glass content */}
-          <div className="relative backdrop-blur-xl bg-white/10 rounded-[24px]">
-            {/* Header Section with Glass Effect */}
-            <div className="relative px-6 pt-8 pb-6 overflow-hidden rounded-t-[24px]">
-              {/* Decorative glass orbs */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full -mr-16 -mt-16 blur-xl"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#00A878]/30 rounded-full -ml-12 -mb-12 blur-xl"></div>
-              <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-[#00c98c]/20 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
-              
+          {/* Decorative glass orbs for visual interest */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full -mr-16 -mt-16 blur-xl"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#00A878]/30 rounded-full -ml-12 -mb-12 blur-xl"></div>
+          <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-[#00c98c]/20 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
+          
+          {/* Glass content wrapper */}
+          <div className="relative backdrop-blur-xl bg-white/10 rounded-[24px] w-full">
+            {/* Header Section - Fully Glass */}
+            <div className="relative px-6 pt-8 pb-6 overflow-hidden rounded-t-[24px] bg-white/5 backdrop-blur-sm">
               <DialogHeader className="relative z-10 text-center">
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-md border border-white/30 shadow-lg">
@@ -185,12 +177,13 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
               </DialogHeader>
             </div>
 
+            {/* Form Section - Fully Glass */}
             <div className="px-6 pb-6 pt-6 space-y-5 bg-white/5 backdrop-blur-sm">
           {/* Glass Effect Google OAuth Button */}
           <Button
             type="button"
             variant="outline"
-            className="w-full h-12 bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 hover:border-white/40 transition-all duration-300 font-semibold text-gray-800 hover:text-gray-900 shadow-lg hover:shadow-xl group"
+            className="w-full h-12 bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 hover:border-white/40 transition-all duration-300 font-semibold text-white shadow-lg hover:shadow-xl group"
             onClick={handleGoogleAuth}
             disabled={loading}
             style={{
@@ -198,7 +191,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
               WebkitBackdropFilter: 'blur(10px)',
             }}
           >
-            <Chrome className="mr-3 h-5 w-5 text-blue-600 group-hover:scale-110 transition-transform drop-shadow-sm" />
+            <Chrome className="mr-3 h-5 w-5 text-white group-hover:scale-110 transition-transform drop-shadow-sm" />
             Continue with Google
           </Button>
 
@@ -207,7 +200,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
               <span className="w-full border-t border-white/20" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-gray-700 font-medium border border-white/20">
+              <span className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-white/90 font-medium border border-white/20">
                 Or continue with email
               </span>
             </div>
@@ -219,8 +212,8 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
             WebkitBackdropFilter: 'blur(10px)',
           }}>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Mail className="h-4 w-4 text-[#00A878]" />
+              <Label htmlFor="email" className="text-sm font-semibold text-white/90 flex items-center gap-2">
+                <Mail className="h-4 w-4 text-white" />
                 Email Address
               </Label>
               <Input
@@ -231,7 +224,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
-                className="h-12 bg-white/30 backdrop-blur-sm border-2 border-white/40 focus:border-white/60 focus:ring-2 focus:ring-white/30 transition-all duration-200 text-base text-gray-800 placeholder:text-gray-600"
+                className="h-12 bg-white/30 backdrop-blur-sm border-2 border-white/40 focus:border-white/60 focus:ring-2 focus:ring-white/30 transition-all duration-200 text-base text-white placeholder:text-white/60"
                 style={{
                   backdropFilter: 'blur(8px)',
                   WebkitBackdropFilter: 'blur(8px)',
@@ -240,8 +233,8 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Shield className="h-4 w-4 text-[#00A878]" />
+              <Label htmlFor="password" className="text-sm font-semibold text-white/90 flex items-center gap-2">
+                <Shield className="h-4 w-4 text-white" />
                 Password
               </Label>
               <Input
@@ -253,19 +246,19 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
                 required
                 disabled={loading}
                 minLength={6}
-                className="h-12 bg-white/30 backdrop-blur-sm border-2 border-white/40 focus:border-white/60 focus:ring-2 focus:ring-white/30 transition-all duration-200 text-base text-gray-800 placeholder:text-gray-600"
+                className="h-12 bg-white/30 backdrop-blur-sm border-2 border-white/40 focus:border-white/60 focus:ring-2 focus:ring-white/30 transition-all duration-200 text-base text-white placeholder:text-white/60"
                 style={{
                   backdropFilter: 'blur(8px)',
                   WebkitBackdropFilter: 'blur(8px)',
                 }}
               />
               {!isLogin && (
-                <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                <p className="text-xs text-white/70 mt-1">Minimum 6 characters</p>
               )}
             </div>
 
             {error && (
-              <Alert variant="destructive" className="bg-red-500/20 backdrop-blur-sm border-red-400/30 text-red-800" style={{
+              <Alert variant="destructive" className="bg-red-500/30 backdrop-blur-sm border-red-400/50 text-white" style={{
                 backdropFilter: 'blur(8px)',
                 WebkitBackdropFilter: 'blur(8px)',
               }}>
@@ -300,7 +293,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
                 setIsLogin(!isLogin);
                 setError(null);
               }}
-              className="text-sm text-gray-700 hover:text-white font-medium transition-colors duration-200 group"
+              className="text-sm text-white/90 hover:text-white font-medium transition-colors duration-200 group"
               disabled={loading}
             >
               {isLogin
