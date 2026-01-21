@@ -268,7 +268,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
 
             <Button 
               type="submit" 
-              className="w-full h-12 bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:via-[#00A878] hover:to-[#00b887] text-white font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] border border-white/20" 
+              className="w-full h-12 bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:via-[#00A878] hover:to-[#00b887] text-white font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]" 
               disabled={loading}
             >
               {loading ? (
