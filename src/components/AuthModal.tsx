@@ -146,7 +146,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
           {/* Glass content wrapper */}
           <div className="relative backdrop-blur-xl bg-white/10 rounded-[24px] w-full">
             {/* Header Section - Fully Glass */}
-            <div className="relative px-6 pt-14 pb-6 overflow-visible rounded-t-[24px] bg-white/5 backdrop-blur-sm">
+            <div className="relative px-6 pt-20 pb-6 overflow-visible rounded-t-[24px] bg-white/5 backdrop-blur-sm">
               <DialogHeader className="relative z-10 text-center">
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-md border border-gray-300/30 shadow-lg">
