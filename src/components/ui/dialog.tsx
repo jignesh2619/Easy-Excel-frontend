@@ -87,9 +87,6 @@ function DialogContent({
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-6 right-6 rounded-lg opacity-80 hover:opacity-100 hover:bg-white/30 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none transition-all duration-200 p-3 backdrop-blur-sm border border-gray-300/30 hover:border-gray-400/50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5 z-50">
-          <XIcon className="text-gray-800" />
-        </DialogPrimitive.Close>
       </DialogPrimitive.Content>
     </DialogPortal>
   );

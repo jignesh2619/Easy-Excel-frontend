@@ -145,6 +145,19 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
           
           {/* Glass content wrapper */}
           <div className="relative backdrop-blur-xl bg-white/10 rounded-[24px] w-full">
+            {/* Close Button - Positioned relative to header */}
+            <button
+              onClick={() => onOpenChange(false)}
+              className="absolute top-6 left-6 z-50 rounded-lg opacity-80 hover:opacity-100 hover:bg-white/30 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none transition-all duration-200 p-3 backdrop-blur-sm border border-gray-300/30 hover:border-gray-400/50"
+              style={{
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+              }}
+            >
+              <svg className="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
             {/* Header Section - Fully Glass */}
             <div className="relative px-6 pt-20 pb-6 overflow-visible rounded-t-[24px] bg-white/5 backdrop-blur-sm">
               <DialogHeader className="relative z-10 text-center">
