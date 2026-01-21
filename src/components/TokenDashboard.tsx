@@ -4,11 +4,31 @@ import { Zap, TrendingUp, Award, BarChart3, Sparkles } from 'lucide-react';
 
 export function TokenDashboard() {
   // ALL HOOKS MUST BE CALLED BEFORE ANY EARLY RETURNS
-  const { user, backendUser } = useAuth();
+  const { user, backendUser, loading } = useAuth();
 
   // Only show for logged-in users - MUST BE AFTER ALL HOOKS
-  if (!user || !backendUser) {
+  // Show loading state if user exists but backendUser is still loading
+  if (!user) {
     return null;
+  }
+
+  // If backendUser is still loading, show a loading state
+  if (loading || !backendUser) {
+    return (
+      <section 
+        id="token-dashboard" 
+        className="py-16 mb-12 bg-gradient-to-br from-gray-50 via-white to-gray-50"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden p-8">
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#00A878] mb-4"></div>
+              <p className="text-gray-600">Loading your dashboard...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   const plan = backendUser.plan ?? 'Free';

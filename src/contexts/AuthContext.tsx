@@ -18,7 +18,7 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   backendUser: BackendUser | null;
-  refreshBackendUser: () => Promise<void>;
+  refreshBackendUser: () => Promise<BackendUser | null>;
 }
 
 interface BackendUser {
@@ -179,10 +179,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const refreshBackendUser = async () => {
+  const refreshBackendUser = async (): Promise<BackendUser | null> => {
     if (session) {
       await syncBackendUser(session);
+      // Return the updated backendUser (it will be set by syncBackendUser)
+      // Since state updates are async, we'll fetch it directly
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/users/supabase-auth`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            access_token: session.access_token,
+            user_id: session.user.id,
+            email: session.user.email || '',
+          }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setBackendUser(data.user);
+          return data.user;
+        }
+      } catch (error) {
+        console.error('Failed to refresh backend user:', error);
+      }
     }
+    return null;
   };
 
   const signInWithEmail = async (email: string, password: string) => {

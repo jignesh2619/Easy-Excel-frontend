@@ -12,9 +12,9 @@ export function PricingSection() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
   const [pendingPlan, setPendingPlan] = useState<string | null>(null);
-  const { user, session, backendUser } = useAuth();
+  const { user, session, backendUser, refreshBackendUser } = useAuth();
 
-  const handleSubscribe = async (planName: string) => {
+  const handleSubscribe = async (planName: string, retryCount = 0) => {
     if (planName === "Free") {
       // Check if user is logged in
       if (user && backendUser) {
@@ -29,10 +29,44 @@ export function PricingSection() {
     }
 
     // Check if user is authenticated
-    if (!user || !session || !backendUser) {
+    // Allow if user and session exist, even if backendUser is still loading
+    if (!user || !session) {
       // Show auth modal
       setPendingPlan(planName);
       setShowAuthModal(true);
+      return;
+    }
+
+    // If backendUser is not loaded yet, try to refresh it first
+    let currentBackendUser = backendUser;
+    if (!currentBackendUser && refreshBackendUser) {
+      setLoading(planName);
+      setError("Loading your account information...");
+      try {
+        // Try to refresh backend user and get the result directly
+        const refreshedUser = await refreshBackendUser();
+        if (refreshedUser) {
+          currentBackendUser = refreshedUser;
+        } else if (retryCount < 2) {
+          // Wait a bit and retry once more
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          return handleSubscribe(planName, retryCount + 1);
+        } else {
+          setError("Unable to load account information. Please refresh the page and try again.");
+          setLoading(null);
+          return;
+        }
+      } catch (err) {
+        setError("Unable to load account information. Please refresh the page and try again.");
+        setLoading(null);
+        return;
+      }
+    }
+
+    // If still no backendUser, show error
+    if (!currentBackendUser) {
+      setError("Unable to load account information. Please refresh the page and try again.");
+      setLoading(null);
       return;
     }
 
@@ -41,8 +75,8 @@ export function PricingSection() {
 
     try {
       // Use authenticated user's email and ID
-      const userEmail = user.email || backendUser.email;
-      const userId = backendUser.user_id;
+      const userEmail = user.email || currentBackendUser.email;
+      const userId = currentBackendUser.user_id;
 
       if (!userEmail || !userId) {
         throw new Error("User information not available. Please sign in again.");
@@ -64,7 +98,7 @@ export function PricingSection() {
   };
 
   // Handle auth success - retry subscription creation or show welcome popup
-  const handleAuthSuccess = () => {
+  const handleAuthSuccess = async () => {
     setShowAuthModal(false);
     if (pendingPlan === "Free") {
       // Show welcome popup after sign-up
@@ -72,10 +106,14 @@ export function PricingSection() {
         setShowWelcomePopup(true);
       }, 500);
     } else if (pendingPlan) {
+      // Wait for backend user to sync before proceeding
+      if (refreshBackendUser) {
+        await refreshBackendUser();
+      }
       // Small delay to ensure backend user is synced
       setTimeout(() => {
         handleSubscribe(pendingPlan);
-      }, 500);
+      }, 1500);
     }
   };
 

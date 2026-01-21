@@ -150,12 +150,15 @@ export function Header() {
                 </div>
               )}
 
-              <Button 
-                className="flex items-center gap-2 bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white rounded-full px-6 py-2 text-sm font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border border-white/30"
-                onClick={() => scrollToSection("prompt-tool")}
-              >
-                <span>Try for Free</span>
-              </Button>
+              {/* Only show "Try for Free" if user is NOT logged in */}
+              {!user && (
+                <Button 
+                  className="flex items-center gap-2 bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white rounded-full px-6 py-2 text-sm font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border border-white/30"
+                  onClick={() => scrollToSection("prompt-tool")}
+                >
+                  <span>Try for Free</span>
+                </Button>
+              )}
 
               {user ? (
                 <div className="flex items-center gap-3">

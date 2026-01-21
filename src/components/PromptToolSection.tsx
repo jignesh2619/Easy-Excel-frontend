@@ -66,7 +66,7 @@ export function PromptToolSection() {
       }
       
       if (user && refreshBackendUser) {
-        setTimeout(() => { refreshBackendUser(); }, 1000);
+        setTimeout(() => { refreshBackendUser().catch(console.error); }, 1000);
       }
     } catch (err: any) {
       setError(err.message || "Failed to process file. Please try again.");
