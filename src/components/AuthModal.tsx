@@ -105,6 +105,19 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
   // Force render with explicit styles
   return (
     <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
+      {/* Custom Glass Overlay - Shows background with blur */}
+      <div 
+        className="fixed inset-0 z-[9999]"
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          backdropFilter: 'blur(8px) saturate(150%)',
+          WebkitBackdropFilter: 'blur(8px) saturate(150%)',
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9999,
+        }}
+        onClick={() => onOpenChange(false)}
+      />
       <DialogContent 
         className="sm:max-w-md overflow-hidden border-0 p-0 bg-transparent" 
         onInteractOutside={(e) => e.preventDefault()}
