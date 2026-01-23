@@ -449,10 +449,13 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                   size="sm"
                   className={`transition-all duration-200 min-w-[80px] ${
                     isActive
-                      ? "bg-[#00A878] text-white hover:bg-[#008c67] shadow-sm"
-                      : "border-gray-300 hover:bg-gray-100 hover:border-gray-400"
+                      ? "!bg-[#00A878] !text-white hover:!bg-[#008c67] shadow-sm border-[#00A878]"
+                      : "border-gray-300 hover:bg-gray-100 hover:border-gray-400 bg-white text-gray-700"
                   }`}
-                  style={{ display: 'inline-flex' }}
+                  style={{ 
+                    display: 'inline-flex',
+                    ...(isActive ? { backgroundColor: '#00A878', color: 'white' } : {})
+                  }}
                 >
                   <span className="flex items-center gap-1.5 flex-nowrap">
                     <span className="whitespace-nowrap">{col}</span>
