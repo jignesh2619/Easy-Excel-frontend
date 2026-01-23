@@ -16,10 +16,47 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
+  summary?: string[]; // Optional summary array for animated display
 }
 
 const CHAT_HISTORY_KEY = 'ai-chatbot-history';
 const CHAT_DATA_KEY = 'ai-chatbot-data';
+
+// Animated Summary Component - Shows operations one by one
+function AnimatedSummary({ items }: { items: string[] }) {
+  const [visibleItems, setVisibleItems] = useState<number[]>([]);
+
+  useEffect(() => {
+    // Reset and animate items one by one
+    setVisibleItems([]);
+    items.forEach((_, index) => {
+      setTimeout(() => {
+        setVisibleItems((prev) => [...prev, index]);
+      }, index * 300); // 300ms delay between each item
+    });
+  }, [items]);
+
+  return (
+    <div className="space-y-2">
+      {items.map((item, index) => (
+        <div
+          key={index}
+          className={`flex items-start gap-2 transition-all duration-500 ${
+            visibleItems.includes(index)
+              ? 'opacity-100 translate-x-0'
+              : 'opacity-0 -translate-x-4'
+          }`}
+          style={{
+            transitionDelay: `${index * 50}ms`,
+          }}
+        >
+          <span className="text-[#00A878] mt-0.5 flex-shrink-0">•</span>
+          <span className="text-sm text-gray-700 flex-1">{item}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function AIChatbot({ initialData, initialColumns, onDataUpdate, isDashboard = false }: AIChatbotProps) {
   const [isOpen, setIsOpen] = useState(true); // Default to open
@@ -245,10 +282,12 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate, isDashboa
       // Pass is_dashboard context to backend
       const response = await processData(currentData, currentColumns, promptText, isDashboard);
       
+      // Create message with summary for animated display
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `✅ Done! I've processed your request. ${response.summary?.join(" ") || "Changes applied successfully."}`,
+        content: `✅ Done! I've processed your request.`,
+        summary: response.summary || [], // Store summary separately for animation
         timestamp: new Date(),
       };
 
@@ -486,22 +525,28 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate, isDashboa
                           padding: message.role === "user" ? "14px 16px" : "12px"
                         }}
                       >
-                        <p 
-                          className="text-sm whitespace-pre-wrap break-words" 
-                          style={{ 
-                            visibility: 'visible', 
-                            opacity: 1, 
-                            color: message.role === "user" ? "#000000" : "#1f2937",
-                            margin: 0,
-                            padding: 0,
-                            lineHeight: '1.5',
-                            position: 'relative',
-                            zIndex: 1,
-                            fontWeight: 'normal'
-                          }}
-                        >
-                          {message.content}
-                        </p>
+                        <div>
+                          <p 
+                            className="text-sm whitespace-pre-wrap break-words" 
+                            style={{ 
+                              visibility: 'visible', 
+                              opacity: 1, 
+                              color: message.role === "user" ? "#000000" : "#1f2937",
+                              margin: 0,
+                              padding: 0,
+                              marginBottom: message.summary && message.summary.length > 0 ? '12px' : 0,
+                              lineHeight: '1.5',
+                              position: 'relative',
+                              zIndex: 1,
+                              fontWeight: 'normal'
+                            }}
+                          >
+                            {message.content}
+                          </p>
+                          {message.summary && message.summary.length > 0 && (
+                            <AnimatedSummary items={message.summary} />
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
