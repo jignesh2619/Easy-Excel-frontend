@@ -71,7 +71,8 @@ export async function checkHealth(): Promise<HealthResponse> {
 export async function processData(
   data: Record<string, any>[],
   columns: string[],
-  prompt: string
+  prompt: string,
+  isDashboard: boolean = false
 ): Promise<ProcessFileResponse> {
   try {
     // Validate inputs
@@ -105,6 +106,7 @@ export async function processData(
         data,
         columns,
         prompt,
+        is_dashboard: isDashboard,
       }),
     });
 

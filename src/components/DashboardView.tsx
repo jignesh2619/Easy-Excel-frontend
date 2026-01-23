@@ -817,6 +817,7 @@ export function DashboardView({ onClose }: DashboardViewProps) {
             initialData={currentData}
             initialColumns={currentColumns}
             onDataUpdate={handleDataUpdate}
+            isDashboard={true}
           />
         )}
       </div>

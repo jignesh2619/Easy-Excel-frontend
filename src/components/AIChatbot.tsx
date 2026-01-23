@@ -8,6 +8,7 @@ interface AIChatbotProps {
   initialData: Record<string, any>[];
   initialColumns: string[];
   onDataUpdate: (newResult: any) => void;
+  isDashboard?: boolean; // True if on dashboard page, false if on preview page
 }
 
 interface Message {
@@ -20,7 +21,7 @@ interface Message {
 const CHAT_HISTORY_KEY = 'ai-chatbot-history';
 const CHAT_DATA_KEY = 'ai-chatbot-data';
 
-export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatbotProps) {
+export function AIChatbot({ initialData, initialColumns, onDataUpdate, isDashboard = false }: AIChatbotProps) {
   const [isOpen, setIsOpen] = useState(true); // Default to open
   const [isMobile, setIsMobile] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -241,7 +242,8 @@ export function AIChatbot({ initialData, initialColumns, onDataUpdate }: AIChatb
     setIsProcessing(true);
 
     try {
-      const response = await processData(currentData, currentColumns, promptText);
+      // Pass is_dashboard context to backend
+      const response = await processData(currentData, currentColumns, promptText, isDashboard);
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
