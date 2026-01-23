@@ -153,10 +153,12 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
       if (sortDirection === 'asc') {
         setSortDirection('desc');
       } else if (sortDirection === 'desc') {
+        // Clear sort - but keep the column reference for visual consistency
         setSortColumn("");
         setSortDirection(null);
       }
     } else {
+      // New column selected - always start with ascending
       setSortColumn(column);
       setSortDirection('asc');
     }
