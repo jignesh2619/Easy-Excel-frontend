@@ -371,9 +371,9 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
       {isExpanded && (
         <div className="bg-gray-50 border-b border-gray-200 p-3 space-y-3">
           {/* Search Bar and Filters Row */}
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap" style={{ width: '100%' }}>
             {/* Search Bar */}
-            <div className="relative" style={{ flex: '0 1 auto', minWidth: '200px', maxWidth: '300px' }}>
+            <div className="relative" style={{ width: '280px', flexShrink: 0 }}>
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10" />
               <input
                 type="text"
@@ -384,12 +384,12 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                   setCurrentPage(1);
                 }}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A878] text-sm bg-white"
-                style={{ width: '100%' }}
+                style={{ width: '100%', boxSizing: 'border-box' }}
               />
             </div>
             
             {/* Column Filter */}
-            <div className="flex items-center gap-2" style={{ flex: '0 0 auto' }}>
+            <div className="flex items-center gap-2" style={{ flexShrink: 0 }}>
               <Filter className="w-4 h-4 text-gray-500 flex-shrink-0" />
               <select
                 value={filterColumn}
@@ -399,7 +399,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                   setCurrentPage(1);
                 }}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A878] text-sm bg-white"
-                style={{ minWidth: '150px', width: '150px' }}
+                style={{ width: '160px', flexShrink: 0, boxSizing: 'border-box' }}
               >
                 <option value="">Filter by column...</option>
                 {columns.map((col) => (
@@ -418,7 +418,7 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                     setCurrentPage(1);
                   }}
                   className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A878] text-sm bg-white"
-                  style={{ width: '160px', flexShrink: 0 }}
+                  style={{ width: '160px', flexShrink: 0, boxSizing: 'border-box' }}
                 />
               )}
             </div>
