@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Download, Eye, EyeOff, AlertTriangle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Eye, EyeOff, AlertTriangle, Filter, ArrowUpDown, Search, X, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "./ui/button";
 
 interface SheetViewerProps {
@@ -32,27 +32,96 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
   const [editingCell, setEditingCell] = useState<{row: number, col: string} | null>(null);
   const [editValue, setEditValue] = useState<string>("");
   const [localData, setLocalData] = useState(data);
+  
+  // Filter and sort states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterColumn, setFilterColumn] = useState<string>("");
+  const [filterValue, setFilterValue] = useState<string>("");
+  const [sortColumn, setSortColumn] = useState<string>("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
+  
   const rowsPerPage = 20;
-  const totalPages = Math.ceil(localData.length / rowsPerPage);
 
   // Update local data when prop changes
   React.useEffect(() => {
     setLocalData(data);
+    // Reset filters when data changes
+    setSearchQuery("");
+    setFilterColumn("");
+    setFilterValue("");
+    setSortColumn("");
+    setSortDirection(null);
+    setCurrentPage(1);
   }, [data]);
+
+  // Apply filters and sorting
+  const filteredAndSortedData = useMemo(() => {
+    let result = [...localData];
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter((row) =>
+        columns.some((col) => {
+          const value = row[col];
+          return value !== null && value !== undefined && String(value).toLowerCase().includes(query);
+        })
+      );
+    }
+
+    // Apply column filter
+    if (filterColumn && filterValue.trim()) {
+      const filterVal = filterValue.toLowerCase();
+      result = result.filter((row) => {
+        const value = row[filterColumn];
+        return value !== null && value !== undefined && String(value).toLowerCase().includes(filterVal);
+      });
+    }
+
+    // Apply sorting
+    if (sortColumn && sortDirection) {
+      result.sort((a, b) => {
+        const aVal = a[sortColumn];
+        const bVal = b[sortColumn];
+        
+        // Handle null/undefined
+        if (aVal === null || aVal === undefined) return 1;
+        if (bVal === null || bVal === undefined) return -1;
+        
+        // Handle numbers
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+        
+        // Handle strings
+        const aStr = String(aVal).toLowerCase();
+        const bStr = String(bVal).toLowerCase();
+        if (sortDirection === 'asc') {
+          return aStr.localeCompare(bStr);
+        } else {
+          return bStr.localeCompare(aStr);
+        }
+      });
+    }
+
+    return result;
+  }, [localData, searchQuery, filterColumn, filterValue, sortColumn, sortDirection, columns]);
+
+  const totalPages = Math.ceil(filteredAndSortedData.length / rowsPerPage);
 
   // Get current page data
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const currentData = localData.slice(startIndex, endIndex);
+  const currentData = filteredAndSortedData.slice(startIndex, endIndex);
 
   // Detect duplicate rows
   const duplicateRowIndices = useMemo(() => {
-    if (!showDuplicates || localData.length === 0) return new Set<number>();
+    if (!showDuplicates || filteredAndSortedData.length === 0) return new Set<number>();
     
     const seen = new Map<string, number[]>();
     const duplicates = new Set<number>();
     
-    localData.forEach((row, index) => {
+    filteredAndSortedData.forEach((row, index) => {
       // Create a key from all column values
       const rowKey = columns.map(col => {
         const val = row[col];
@@ -70,12 +139,41 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
     });
     
     return duplicates;
-  }, [localData, columns, showDuplicates]);
+  }, [filteredAndSortedData, columns, showDuplicates]);
 
   // Count total duplicates
   const duplicateCount = useMemo(() => {
     return duplicateRowIndices.size;
   }, [duplicateRowIndices]);
+
+  // Handle sort toggle
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      // Cycle through: asc -> desc -> none
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        setSortColumn("");
+        setSortDirection(null);
+      }
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+    setCurrentPage(1);
+  };
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchQuery("");
+    setFilterColumn("");
+    setFilterValue("");
+    setSortColumn("");
+    setSortDirection(null);
+    setCurrentPage(1);
+  };
+
+  const hasActiveFilters = searchQuery.trim() || (filterColumn && filterValue.trim()) || sortColumn;
 
   // Format cell value for display
   const formatCellValue = (value: any): string => {
@@ -219,8 +317,9 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
           <div>
             <h3 className="font-bold text-lg">Processed Sheet Preview</h3>
             <p className="text-sm text-white/90">
-              {rowCount.toLocaleString()} {rowCount === 1 ? "row" : "rows"} • {columns.length} {columns.length === 1 ? "column" : "columns"}
-              {localData.length < rowCount && ` (showing first ${localData.length.toLocaleString()})`}
+              {filteredAndSortedData.length.toLocaleString()} {filteredAndSortedData.length === 1 ? "row" : "rows"} 
+              {filteredAndSortedData.length !== localData.length && ` of ${localData.length.toLocaleString()}`}
+              {" • "}{columns.length} {columns.length === 1 ? "column" : "columns"}
               {duplicateCount > 0 && showDuplicates && (
                 <span className="ml-2 inline-flex items-center gap-1 bg-yellow-500/20 px-2 py-0.5 rounded">
                   <AlertTriangle className="w-3 h-3" />
@@ -265,6 +364,106 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
           )}
         </div>
       </div>
+
+      {/* Toolbar with Filters and Sort */}
+      {isExpanded && (
+        <div className="bg-gray-50 border-b border-gray-200 p-3 space-y-3">
+          {/* Search Bar */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex-1 min-w-[200px] relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search all columns..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A878] text-sm"
+              />
+            </div>
+            
+            {/* Column Filter */}
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4 text-gray-500" />
+              <select
+                value={filterColumn}
+                onChange={(e) => {
+                  setFilterColumn(e.target.value);
+                  setFilterValue("");
+                  setCurrentPage(1);
+                }}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A878] text-sm bg-white"
+              >
+                <option value="">Filter by column...</option>
+                {columns.map((col) => (
+                  <option key={col} value={col}>
+                    {col}
+                  </option>
+                ))}
+              </select>
+              {filterColumn && (
+                <input
+                  type="text"
+                  placeholder="Filter value..."
+                  value={filterValue}
+                  onChange={(e) => {
+                    setFilterValue(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A878] text-sm w-40"
+                />
+              )}
+            </div>
+
+            {/* Clear Filters Button */}
+            {hasActiveFilters && (
+              <Button
+                onClick={clearFilters}
+                variant="outline"
+                size="sm"
+                className="border-gray-300 hover:bg-gray-100"
+              >
+                <X className="w-4 h-4 mr-1" />
+                Clear
+              </Button>
+            )}
+          </div>
+
+          {/* Sort Options */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-gray-600 font-medium">Sort by:</span>
+            {columns.map((col) => (
+              <Button
+                key={col}
+                onClick={() => handleSort(col)}
+                variant={sortColumn === col ? "default" : "outline"}
+                size="sm"
+                className={`${
+                  sortColumn === col
+                    ? "bg-[#00A878] text-white hover:bg-[#008c67]"
+                    : "border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                {col}
+                {sortColumn === col && (
+                  <span className="ml-1">
+                    {sortDirection === 'asc' ? (
+                      <ArrowUp className="w-3 h-3" />
+                    ) : (
+                      <ArrowDown className="w-3 h-3" />
+                    )}
+                  </span>
+                )}
+                {sortColumn !== col && (
+                  <ArrowUpDown className="w-3 h-3 ml-1 text-gray-400" />
+                )}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Sheet Content */}
       {isExpanded && (
@@ -335,8 +534,10 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                 ) : (
                   currentData.map((row, rowIdx) => {
                     const actualIndex = startIndex + rowIdx;
+                    // Find original index in localData for duplicate detection
+                    const originalIndex = localData.findIndex((r) => r === row);
                     const rowNumber = actualIndex + 1; // Excel uses 1-based row numbers
-                    const isDuplicate = showDuplicates && duplicateRowIndices.has(actualIndex);
+                    const isDuplicate = showDuplicates && duplicateRowIndices.has(originalIndex >= 0 ? originalIndex : actualIndex);
                     return (
                       <tr
                         key={rowIdx}
@@ -354,9 +555,10 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                         {columns.map((col, colIdx) => {
                           const cellStyle = getCellStyle(row, col);
                           const hasFormatting = Object.keys(cellStyle).length > 0;
-                          const isEditing = editingCell?.row === actualIndex && editingCell?.col === col;
+                          const originalIndex = localData.findIndex((r) => r === row);
+                          const isEditing = editingCell?.row === (originalIndex >= 0 ? originalIndex : actualIndex) && editingCell?.col === col;
                           const colWidth = calculateColumnWidth(col);
-                          const cellValue = localData[actualIndex]?.[col];
+                          const cellValue = row[col];
                           
                           return (
                             <td
@@ -379,18 +581,18 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                                   ? 'text-yellow-900 font-medium bg-yellow-50' 
                                   : hasFormatting ? '' : 'text-gray-700'
                               }`}
-                              onDoubleClick={() => handleCellEditStart(actualIndex, col, cellValue)}
+                                  onDoubleClick={() => handleCellEditStart(originalIndex >= 0 ? originalIndex : actualIndex, col, cellValue)}
                             >
                               {isEditing ? (
                                 <input
                                   type="text"
                                   value={editValue}
                                   onChange={(e) => setEditValue(e.target.value)}
-                                  onBlur={() => handleCellEditSave(actualIndex, col)}
+                                  onBlur={() => handleCellEditSave(originalIndex >= 0 ? originalIndex : actualIndex, col)}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                       e.preventDefault();
-                                      handleCellEditSave(actualIndex, col);
+                                      handleCellEditSave(originalIndex >= 0 ? originalIndex : actualIndex, col);
                                     } else if (e.key === 'Escape') {
                                       handleCellEditCancel();
                                     }
@@ -576,7 +778,8 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
       {isExpanded && totalPages > 1 && (
         <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-black">
           <div className="text-sm text-gray-700">
-            Showing {startIndex + 1} to {Math.min(endIndex, localData.length)} of {localData.length} rows
+            Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedData.length)} of {filteredAndSortedData.length} rows
+            {filteredAndSortedData.length !== localData.length && ` (filtered from ${localData.length} total)`}
           </div>
           <div className="flex items-center gap-2">
             <Button
