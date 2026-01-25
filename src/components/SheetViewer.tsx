@@ -32,6 +32,12 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
   const [editingCell, setEditingCell] = useState<{row: number, col: string} | null>(null);
   const [editValue, setEditValue] = useState<string>("");
   const [localData, setLocalData] = useState(data);
+  const [isVisible, setIsVisible] = useState(false);
+  
+  // Trigger fade-in animation on mount
+  React.useEffect(() => {
+    setIsVisible(true);
+  }, []);
   
   // Filter and sort states
   const [searchQuery, setSearchQuery] = useState("");
@@ -311,9 +317,9 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
   };
 
   return (
-    <div className="h-full w-full bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-[#00A878] flex flex-col" style={{ height: '100%', width: '100%' }}>
+    <div className={`h-full w-full bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg transition-smooth hover-lift flex flex-col ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ height: '100%', width: '100%' }}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-4 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
         <div className="flex items-center gap-3">
           <Eye className="w-5 h-5" />
           <div>
@@ -331,37 +337,38 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {duplicateCount > 0 && (
             <Button
               onClick={() => setShowDuplicates(!showDuplicates)}
               variant="ghost"
               size="sm"
-              className={`text-white hover:bg-white/20 ${showDuplicates ? 'bg-yellow-500/30' : ''}`}
+              className={`text-white hover:bg-white/20 active:scale-95 transition-smooth ${showDuplicates ? 'bg-yellow-500/30' : ''}`}
               title={showDuplicates ? "Hide duplicate highlighting" : "Show duplicate highlighting"}
             >
               <AlertTriangle className="w-4 h-4 mr-1" />
-              {showDuplicates ? "Hide" : "Show"} Duplicates
+              <span className="hidden sm:inline">{showDuplicates ? "Hide" : "Show"} Duplicates</span>
+              <span className="sm:hidden">{showDuplicates ? "Hide" : "Show"}</span>
             </Button>
           )}
           <Button
             onClick={() => setIsExpanded(!isExpanded)}
             variant="ghost"
             size="sm"
-            className="text-white hover:bg-white/20"
+            className="text-white hover:bg-white/20 active:scale-95 transition-smooth"
           >
             {isExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            {isExpanded ? "Collapse" : "Expand"}
+            <span className="hidden sm:inline ml-1">{isExpanded ? "Collapse" : "Expand"}</span>
           </Button>
           {onDownload && (
             <Button
               onClick={onDownload}
               variant="ghost"
               size="sm"
-              className="text-white hover:bg-white/20"
+              className="text-white hover:bg-white/20 active:scale-95 transition-smooth"
             >
-              <Download className="w-4 h-4 mr-2" />
-              Download
+              <Download className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Download</span>
             </Button>
           )}
         </div>
@@ -369,9 +376,9 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
 
       {/* Toolbar with Filters and Sort */}
       {isExpanded && (
-        <div className="bg-gray-50 border-b border-gray-200 p-3 space-y-3">
+        <div className="bg-gray-50 border-b border-gray-200 p-3 space-y-3 animate-fade-in">
           {/* Search Bar and Filters Row */}
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             {/* Search Bar */}
             <div className="flex-1 min-w-[200px] relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10" />
@@ -447,10 +454,10 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                   onClick={() => handleSort(col)}
                   variant={isActive ? "default" : "outline"}
                   size="sm"
-                  className={`transition-all duration-200 min-w-[80px] ${
+                  className={`transition-smooth min-w-[70px] sm:min-w-[80px] active:scale-95 ${
                     isActive
-                      ? "!bg-[#00A878] !text-white hover:!bg-[#008c67] shadow-sm border-[#00A878]"
-                      : "border-gray-300 hover:bg-gray-100 hover:border-gray-400 bg-white text-gray-700"
+                      ? "!bg-[#00A878] !text-white hover:!bg-[#008c67] shadow-sm border-[#00A878] hover-glow"
+                      : "border-gray-300 hover:bg-gray-100 hover:border-gray-400 bg-white text-gray-700 hover-lift"
                   }`}
                   style={{ 
                     display: 'inline-flex',
@@ -552,9 +559,10 @@ export function SheetViewer({ data, columns, rowCount, onDownload, highlightDupl
                     return (
                       <tr
                         key={rowIdx}
-                        className={`hover:bg-[#00A878]/5 hover:shadow-sm transition-all duration-200 ease-in-out ${
+                        className={`hover:bg-[#00A878]/5 hover:shadow-sm transition-smooth animate-fade-in ${
                           isDuplicate ? 'bg-yellow-50 border-l-4 border-yellow-400' : ''
                         }`}
+                        style={{ animationDelay: `${rowIdx * 0.02}s` }}
                       >
                         {/* Row Number Cell */}
                         <td 

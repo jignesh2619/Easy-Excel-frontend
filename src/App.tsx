@@ -155,7 +155,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <main>
+      <main className="animate-fade-in">
         <HeroSection />
         <PromptToolSection />
         <FeaturesSection />

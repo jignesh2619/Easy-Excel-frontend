@@ -41,7 +41,7 @@ function AnimatedSummary({ items }: { items: string[] }) {
       {items.map((item, index) => (
         <div
           key={index}
-          className={`flex items-start gap-2 transition-all duration-500 ${
+          className={`flex items-start gap-2 transition-smooth ${
             visibleItems.includes(index)
               ? 'opacity-100 translate-x-0'
               : 'opacity-0 -translate-x-4'

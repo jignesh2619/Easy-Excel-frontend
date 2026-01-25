@@ -46,59 +46,59 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm animate-fade-in-down">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 w-full">
             {/* Logo - Left side, fixed */}
             <button 
               onClick={() => scrollToSection("home")}
-              className="hover:scale-110 transition-transform duration-300"
+              className="hover:scale-110 active:scale-95 transition-smooth hover-lift"
             >
               <img 
                 src="/logo.jpg" 
                 alt="LazyExcel" 
-                className="h-10 w-auto"
+                className="h-10 w-auto sm:h-12"
               />
             </button>
             
             {/* Navigation - Center, evenly spaced */}
-            <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
+            <nav className="hidden md:flex items-center gap-4 lg:gap-8 flex-1 justify-center animate-stagger">
               <button 
                 onClick={() => scrollToSection("home")}
-                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+                className="text-gray-700 hover:text-[#00A878] hover:scale-110 active:scale-95 transition-smooth px-3 py-2 rounded-lg hover:bg-[#00A878]/5"
               >
                 Home
               </button>
               <button 
                 onClick={() => scrollToSection("features")}
-                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+                className="text-gray-700 hover:text-[#00A878] hover:scale-110 active:scale-95 transition-smooth px-3 py-2 rounded-lg hover:bg-[#00A878]/5"
               >
                 Features
               </button>
               <button 
                 onClick={() => scrollToSection("prompt-tool")}
-                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+                className="text-gray-700 hover:text-[#00A878] hover:scale-110 active:scale-95 transition-smooth px-3 py-2 rounded-lg hover:bg-[#00A878]/5"
               >
                 Prompt Tool
               </button>
               <button 
                 onClick={() => scrollToSection("pricing")}
-                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+                className="text-gray-700 hover:text-[#00A878] hover:scale-110 active:scale-95 transition-smooth px-3 py-2 rounded-lg hover:bg-[#00A878]/5"
               >
                 Pricing
               </button>
               <button 
                 onClick={() => scrollToSection("contact")}
-                className="text-gray-700 hover:text-[#00A878] hover:scale-110 transition-all duration-300"
+                className="text-gray-700 hover:text-[#00A878] hover:scale-110 active:scale-95 transition-smooth px-3 py-2 rounded-lg hover:bg-[#00A878]/5"
               >
                 Contact
               </button>
             </nav>
 
             {/* CTA + Auth - Right side, fixed */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {tokens && (
-                <div className="hidden lg:flex flex-col gap-2 px-5 py-3 rounded-2xl border-2 border-[#00A878]/20 shadow-lg bg-gradient-to-br from-white to-[#00A878]/5 backdrop-blur-sm min-w-[200px]">
+                <div className="hidden lg:flex flex-col gap-2 px-4 lg:px-5 py-3 rounded-2xl border-2 border-[#00A878]/20 shadow-lg bg-gradient-to-br from-white to-[#00A878]/5 backdrop-blur-sm min-w-[180px] lg:min-w-[200px] animate-scale-in hover-lift transition-smooth">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="p-1.5 bg-[#00A878]/10 rounded-lg">
@@ -153,35 +153,38 @@ export function Header() {
               {/* Only show "Try for Free" if user is NOT logged in */}
               {!user && (
                 <Button 
-                  className="flex items-center gap-2 bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white rounded-full px-6 py-2 text-sm font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border border-white/30"
+                  className="flex items-center gap-2 bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white rounded-full px-4 sm:px-6 py-2 text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-smooth hover-glow border border-white/30 animate-scale-in"
                   onClick={() => scrollToSection("prompt-tool")}
                 >
-                  <span>Try for Free</span>
+                  <span className="hidden sm:inline">Try for Free</span>
+                  <span className="sm:hidden">Try</span>
                 </Button>
               )}
 
               {user ? (
-                <div className="flex items-center gap-3">
-                  <span className="hidden sm:block text-sm text-gray-600">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <span className="hidden sm:block text-xs sm:text-sm text-gray-600 animate-fade-in">
                     Hi, {user.email?.split("@")[0] || "there"}
                   </span>
                   <Button
                     variant="outline"
-                    className="border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 rounded-full px-4"
+                    className="border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 rounded-full px-3 sm:px-4 text-xs sm:text-sm hover:scale-105 active:scale-95 transition-smooth hover-lift"
                     onClick={handleAuthClick}
                     disabled={loading}
                   >
-                    Sign out
+                    <span className="hidden sm:inline">Sign out</span>
+                    <span className="sm:hidden">Out</span>
                   </Button>
                 </div>
               ) : (
                 <Button
                   variant="outline"
-                  className="border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 rounded-full px-4"
+                  className="border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 rounded-full px-3 sm:px-4 text-xs sm:text-sm hover:scale-105 active:scale-95 transition-smooth hover-lift"
                   onClick={handleAuthClick}
                   disabled={loading}
                 >
-                  Sign in / Login
+                  <span className="hidden sm:inline">Sign in / Login</span>
+                  <span className="sm:hidden">Login</span>
                 </Button>
               )}
             </div>
