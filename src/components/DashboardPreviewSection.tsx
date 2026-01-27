@@ -28,23 +28,23 @@ export function DashboardPreviewSection() {
             <div className="p-8">
               {/* KPI Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-                <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                  <p className="text-gray-600 mb-2 text-sm">Total Revenue</p>
-                  <p className="text-gray-900 text-2xl font-semibold">$124,583</p>
+                <div className="text-center animate-fade-in-up group cursor-pointer hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.1s' }}>
+                  <p className="text-gray-600 mb-2 text-sm group-hover:text-gray-700 transition-colors">Total Revenue</p>
+                  <p className="text-gray-900 text-2xl font-semibold group-hover:text-[#00A878] transition-colors">$124,583</p>
                   <div className="flex items-center justify-center gap-1 mt-2">
                     <span className="text-[#00A878] text-sm">↑ 12.5%</span>
                   </div>
                 </div>
-                <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                  <p className="text-gray-600 mb-2 text-sm">Active Users</p>
-                  <p className="text-gray-900 text-2xl font-semibold">8,432</p>
+                <div className="text-center animate-fade-in-up group cursor-pointer hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.2s' }}>
+                  <p className="text-gray-600 mb-2 text-sm group-hover:text-gray-700 transition-colors">Active Users</p>
+                  <p className="text-gray-900 text-2xl font-semibold group-hover:text-[#00A878] transition-colors">8,432</p>
                   <div className="flex items-center justify-center gap-1 mt-2">
                     <span className="text-[#00A878] text-sm">↑ 8.2%</span>
                   </div>
                 </div>
-                <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-                  <p className="text-gray-600 mb-2 text-sm">Conversion Rate</p>
-                  <p className="text-gray-900 text-2xl font-semibold">24.8%</p>
+                <div className="text-center animate-fade-in-up group cursor-pointer hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.3s' }}>
+                  <p className="text-gray-600 mb-2 text-sm group-hover:text-gray-700 transition-colors">Conversion Rate</p>
+                  <p className="text-gray-900 text-2xl font-semibold group-hover:text-[#00A878] transition-colors">24.8%</p>
                   <div className="flex items-center justify-center gap-1 mt-2">
                     <span className="text-[#00A878] text-sm">↑ 3.1%</span>
                   </div>
@@ -54,15 +54,15 @@ export function DashboardPreviewSection() {
               {/* Charts Area */}
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Bar Chart Mockup */}
-                <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                  <p className="text-gray-700 mb-4 font-medium">Monthly Revenue</p>
+                <div className="animate-fade-in-up group hover:scale-[1.02] transition-transform duration-300" style={{ animationDelay: '0.4s' }}>
+                  <p className="text-gray-700 mb-4 font-medium group-hover:text-[#00A878] transition-colors">Monthly Revenue</p>
                   <div className="flex items-end justify-between gap-2 h-48">
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "45%" }}></div>
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "60%" }}></div>
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "75%" }}></div>
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "55%" }}></div>
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "85%" }}></div>
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "100%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-110 transition-transform duration-300" style={{ height: "45%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-110 transition-transform duration-300" style={{ height: "60%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-110 transition-transform duration-300" style={{ height: "75%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-110 transition-transform duration-300" style={{ height: "55%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-110 transition-transform duration-300" style={{ height: "85%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-110 transition-transform duration-300" style={{ height: "100%" }}></div>
                   </div>
                   <div className="flex justify-between mt-2 text-gray-500 text-sm">
                     <span>Jun</span>
@@ -75,15 +75,16 @@ export function DashboardPreviewSection() {
                 </div>
 
                 {/* Line Chart Mockup */}
-                <div className="animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-                  <p className="text-gray-700 mb-4 font-medium">User Growth</p>
+                <div className="animate-fade-in-up group hover:scale-[1.02] transition-transform duration-300" style={{ animationDelay: '0.5s' }}>
+                  <p className="text-gray-700 mb-4 font-medium group-hover:text-[#00A878] transition-colors">User Growth</p>
                   <div className="relative h-48">
-                    <svg className="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="none">
+                    <svg className="w-full h-full group-hover:scale-105 transition-transform duration-300" viewBox="0 0 400 200" preserveAspectRatio="none">
                       <polyline
                         fill="none"
                         stroke="#00A878"
                         strokeWidth="3"
                         points="0,150 66,120 132,100 198,110 264,70 330,50 400,30"
+                        className="group-hover:stroke-[#00c98c] transition-colors duration-300"
                       />
                       <polyline
                         fill="url(#gradient)"
