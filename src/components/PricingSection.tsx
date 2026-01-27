@@ -259,9 +259,7 @@ export function PricingSection() {
                   className={`w-full rounded-full transition-smooth hover:scale-105 active:scale-95 ${
                     plan.highlighted
                       ? "bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white shadow-lg hover:shadow-xl hover-glow"
-                      : plan.name === "Free"
-                      ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-lg"
-                      : "bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100 text-gray-900 hover:shadow-md"
+                      : "bg-[#00A878] hover:bg-[#008c67] text-white shadow-md hover:shadow-lg"
                   }`}
                 >
                   {loading === plan.name ? (
