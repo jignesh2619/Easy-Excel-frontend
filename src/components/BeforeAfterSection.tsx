@@ -23,7 +23,7 @@ export function BeforeAfterSection() {
       <div className="max-w-5xl mx-auto relative z-10">
         <div className="text-center mb-3 animate-fade-in-up">
           <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
-            Discover How to Build <span className="text-[#00A878]">Excel Dashboards</span> Like This In Minutes!
+            Clean sheets and build dashboards in seconds
           </h2>
         </div>
 
@@ -32,12 +32,12 @@ export function BeforeAfterSection() {
           <div className="grid md:grid-cols-2 gap-3 items-center">
             {/* BEFORE Section */}
             <div className="animate-slide-in-left">
-              <div className="mb-1">
-                <span className="inline-block px-2.5 py-1 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-700">
+              <div className="mb-0.5">
+                <span className="inline-block px-3 py-1.5 bg-gray-100 border border-gray-300 rounded-full text-xs font-semibold text-gray-700">
                   BEFORE
                 </span>
               </div>
-              <div className="mb-1.5 overflow-hidden rounded-lg shadow-md">
+              <div className="mb-1 overflow-hidden rounded-lg shadow-md">
                 <img 
                   src="/before.png" 
                   alt="Before: Manual Excel dashboard creation"
@@ -64,12 +64,12 @@ export function BeforeAfterSection() {
 
             {/* AFTER Section */}
             <div className="animate-slide-in-right">
-              <div className="mb-1">
-                <span className="inline-block px-2.5 py-1 bg-[#00A878] text-white rounded text-xs font-semibold">
+              <div className="mb-0.5">
+                <span className="inline-block px-3 py-1.5 bg-[#00A878] text-white rounded-full text-xs font-semibold">
                   AFTER
                 </span>
               </div>
-              <div className="mb-1.5 overflow-hidden rounded-lg shadow-md">
+              <div className="mb-1 overflow-hidden rounded-lg shadow-md">
                 <img 
                   src="/after.png" 
                   alt="After: AI-powered Excel dashboard"
