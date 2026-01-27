@@ -21,7 +21,7 @@ export function BeforeAfterSection() {
   return (
     <section className="py-0 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[#00A878]/20 via-[#00A878]/30 to-[#00c98c]/25 relative overflow-hidden">
       <div className="max-w-5xl mx-auto relative z-10">
-        <div className="text-center mb-0 animate-fade-in-up">
+        <div className="text-center mb-8 sm:mb-10 animate-fade-in-up">
           <h2 className="text-sm md:text-base font-bold text-gray-900 leading-tight">
             Clean sheets and build dashboards in seconds
           </h2>
@@ -29,21 +29,32 @@ export function BeforeAfterSection() {
 
         {/* Compact Before/After Comparison - Aligned */}
         <div className="relative">
-          <div className="grid md:grid-cols-2 gap-0 items-center">
+          <div className="grid md:grid-cols-2 gap-0 items-start">
             {/* BEFORE Section */}
-            <div className="animate-slide-in-left">
-              <span className="inline-block px-1.5 py-0.5 bg-white border-2 border-gray-800 rounded-full text-[10px] font-semibold text-gray-900 mb-0 shadow-sm">
+            <div className="animate-slide-in-left flex flex-col items-center">
+              {/* BEFORE Badge */}
+              <span 
+                className="inline-block mb-4 sm:mb-6 rounded-full text-xs font-medium uppercase tracking-wide"
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '1.5px solid #1F2937',
+                  color: '#1F2937',
+                  padding: '7px 15px',
+                  letterSpacing: '0.04em',
+                  fontWeight: 500
+                }}
+              >
                 BEFORE
               </span>
               <img 
                 src="/before.png" 
                 alt="Before: Manual Excel dashboard creation"
-                className="w-full h-auto hover:scale-105 transition-transform duration-300 mt-0"
+                className="w-full h-auto hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}
               />
-              <div>
+              <div className="mt-0">
                 <h3 className="text-[10px] font-semibold text-gray-900 leading-tight mt-0">Manual Dashboard Creation</h3>
                 {beforePoints.map((point, index) => (
                   <div
@@ -58,19 +69,29 @@ export function BeforeAfterSection() {
             </div>
 
             {/* AFTER Section */}
-            <div className="animate-slide-in-right">
-              <span className="inline-block px-1.5 py-0.5 bg-[#008c67] text-white rounded-full text-[10px] font-semibold mb-0 shadow-sm border-2 border-[#006b52]">
+            <div className="animate-slide-in-right flex flex-col items-center">
+              {/* AFTER Badge */}
+              <span 
+                className="inline-block mb-4 sm:mb-6 rounded-full text-xs font-semibold uppercase tracking-wide"
+                style={{
+                  backgroundColor: '#10B981',
+                  color: '#FFFFFF',
+                  padding: '7px 15px',
+                  letterSpacing: '0.04em',
+                  fontWeight: 600
+                }}
+              >
                 AFTER
               </span>
               <img 
                 src="/after.png" 
                 alt="After: AI-powered Excel dashboard"
-                className="w-full h-auto hover:scale-105 transition-transform duration-300 mt-0"
+                className="w-full h-auto hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}
               />
-              <div>
+              <div className="mt-0">
                 <h3 className="text-[10px] font-semibold text-gray-900 leading-tight mt-0">AI-Powered Dashboard Building</h3>
                 {afterPoints.map((point, index) => (
                   <div
