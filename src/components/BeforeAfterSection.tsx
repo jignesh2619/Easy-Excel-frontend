@@ -32,7 +32,7 @@ export function BeforeAfterSection() {
           <div className="grid md:grid-cols-2 gap-0 items-center">
             {/* BEFORE Section */}
             <div className="animate-slide-in-left">
-              <span className="inline-block px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded-full text-[10px] font-semibold text-gray-700 mb-0">
+              <span className="inline-block px-1.5 py-0.5 bg-white border-2 border-gray-800 rounded-full text-[10px] font-semibold text-gray-900 mb-0 shadow-sm">
                 BEFORE
               </span>
               <img 
@@ -59,7 +59,7 @@ export function BeforeAfterSection() {
 
             {/* AFTER Section */}
             <div className="animate-slide-in-right">
-              <span className="inline-block px-1.5 py-0.5 bg-[#00A878] text-white rounded-full text-[10px] font-semibold mb-0">
+              <span className="inline-block px-1.5 py-0.5 bg-[#008c67] text-white rounded-full text-[10px] font-semibold mb-0 shadow-sm border-2 border-[#006b52]">
                 AFTER
               </span>
               <img 
