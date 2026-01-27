@@ -158,6 +158,7 @@ export default function App() {
       <Header />
       <main className="animate-fade-in">
         <BeforeAfterSection />
+        <PromptToolSection />
         <FeaturesSection />
         <DashboardPreviewSection />
         <ProductHuntSection />
