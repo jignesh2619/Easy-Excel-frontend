@@ -21,13 +21,13 @@ export function HeroSection() {
       
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center max-w-5xl mx-auto mb-8 animate-fade-in-up">
-          {/* Trust Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#00A878]/10 border border-[#00A878]/20 rounded-full mb-6 animate-fade-in">
-            <Sparkles className="w-4 h-4 text-[#00A878]" />
-            <span className="text-sm font-medium text-[#00A878]">No Credit Card Required • Free Trial</span>
+          {/* Trust Badge - Compact */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#00A878]/10 border border-[#00A878]/20 rounded-full mb-4 animate-fade-in text-xs">
+            <Sparkles className="w-3 h-3 text-[#00A878]" />
+            <span className="font-medium text-[#00A878]">No Credit Card • Free Trial</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-gray-900 via-[#00A878] to-gray-900 bg-clip-text text-transparent mb-6 leading-tight animate-fade-in-up">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight animate-fade-in-up">
             Transform Excel Chaos Into
             <br />
             <span className="text-[#00A878]">Professional Dashboards</span>
@@ -35,40 +35,35 @@ export function HeroSection() {
             In Seconds
           </h1>
           
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto mb-4 font-medium animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            Stop wasting hours on manual data cleaning. Let AI do the heavy lifting.
-          </p>
-          
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             Upload your Excel file, describe what you need, and get clean data + beautiful dashboards automatically. 
-            <span className="font-semibold text-[#00A878]"> No coding required.</span>
+            <span className="font-medium text-[#00A878]"> No coding required.</span>
           </p>
 
-          {/* Key Benefits */}
-          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 mb-8 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-200 shadow-sm">
-              <Clock className="w-4 h-4 text-[#00A878]" />
-              <span className="text-sm font-medium text-gray-700">Process in 30 seconds</span>
+          {/* Key Benefits - Compact */}
+          <div className="flex flex-wrap justify-center items-center gap-3 mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full border border-gray-200 text-xs">
+              <Clock className="w-3.5 h-3.5 text-[#00A878]" />
+              <span className="font-medium text-gray-700">30 seconds</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-200 shadow-sm">
-              <Shield className="w-4 h-4 text-[#00A878]" />
-              <span className="text-sm font-medium text-gray-700">100% Secure</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full border border-gray-200 text-xs">
+              <Shield className="w-3.5 h-3.5 text-[#00A878]" />
+              <span className="font-medium text-gray-700">Secure</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-200 shadow-sm">
-              <Sparkles className="w-4 h-4 text-[#00A878]" />
-              <span className="text-sm font-medium text-gray-700">AI-Powered</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full border border-gray-200 text-xs">
+              <Sparkles className="w-3.5 h-3.5 text-[#00A878]" />
+              <span className="font-medium text-gray-700">AI-Powered</span>
             </div>
           </div>
 
-          {/* Primary CTA */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          {/* Primary CTA - Smaller */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <Button
               onClick={scrollToPromptTool}
-              size="lg"
-              className="bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white rounded-full px-8 py-6 text-lg font-semibold shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-smooth hover-glow w-full sm:w-auto"
+              className="bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white rounded-lg px-6 py-2.5 text-sm font-medium shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-smooth w-full sm:w-auto"
             >
               Start Free Trial
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
             <Button
               onClick={() => {
@@ -78,8 +73,7 @@ export function HeroSection() {
                 }
               }}
               variant="outline"
-              size="lg"
-              className="border-2 border-gray-300 hover:border-[#00A878] text-gray-700 hover:text-[#00A878] rounded-full px-8 py-6 text-lg font-semibold hover:bg-[#00A878]/5 hover:scale-105 active:scale-95 transition-smooth w-full sm:w-auto"
+              className="border border-gray-300 hover:border-[#00A878] text-gray-700 hover:text-[#00A878] rounded-lg px-6 py-2.5 text-sm font-medium hover:bg-[#00A878]/5 hover:scale-105 active:scale-95 transition-smooth w-full sm:w-auto"
             >
               See How It Works
             </Button>

@@ -190,15 +190,15 @@ export function PromptToolSection() {
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-[#00A878]/10 to-transparent rounded-full blur-2xl"></div>
       
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header */}
-        <div className="text-center mb-8 animate-fade-in-up">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        {/* Section Header - Compact */}
+        <div className="text-center mb-6 animate-fade-in-up">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
             Try It <span className="text-[#00A878]">Free</span> Right Now
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm text-gray-600 max-w-xl mx-auto mb-3">
             No sign-up required. Upload your file and see the magic happen in seconds.
           </p>
-          <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
             <span>✓ No credit card</span>
             <span>•</span>
             <span>✓ Instant results</span>
@@ -304,10 +304,10 @@ export function PromptToolSection() {
                     </div>
                   </div>
                   
-                  {/* Action Buttons */}
-                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl p-6 shadow-lg">
-                    <h3 className="text-gray-800 font-bold text-lg mb-4">Actions</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Action Buttons - Compact 2x2 Grid */}
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <h3 className="text-gray-800 font-semibold text-sm mb-3">Actions</h3>
+                    <div className="grid grid-cols-2 gap-2">
                       {/* Button 1: Preview & Edit Excel */}
                       {result.processed_data && result.columns && (
                         <Button
@@ -319,13 +319,13 @@ export function PromptToolSection() {
                             }));
                             window.open('/?editor=true', '_blank');
                           }}
-                          className="bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
+                          className="bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white rounded-lg shadow-sm hover:shadow-md transition-smooth h-auto py-2.5 px-3 flex flex-col items-center justify-center gap-1"
                         >
-                          <div className="flex items-center gap-2">
-                            <Eye className="w-5 h-5" />
-                            <FileSpreadsheet className="w-5 h-5" />
+                          <div className="flex items-center gap-1">
+                            <Eye className="w-4 h-4" />
+                            <FileSpreadsheet className="w-4 h-4" />
                           </div>
-                          <span className="font-semibold">Preview & Edit Excel</span>
+                          <span className="text-xs font-medium">Preview & Edit</span>
                         </Button>
                       )}
 
@@ -333,13 +333,13 @@ export function PromptToolSection() {
                       {result.chart_url && (
                         <Button
                           onClick={handleOpenChartViewer}
-                          className="bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
+                          className="bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white rounded-lg shadow-sm hover:shadow-md transition-smooth h-auto py-2.5 px-3 flex flex-col items-center justify-center gap-1"
                         >
-                          <div className="flex items-center gap-2">
-                            <Eye className="w-5 h-5" />
-                            <BarChart3 className="w-5 h-5" />
+                          <div className="flex items-center gap-1">
+                            <Eye className="w-4 h-4" />
+                            <BarChart3 className="w-4 h-4" />
                           </div>
-                          <span className="font-semibold">Preview Dashboard</span>
+                          <span className="text-xs font-medium">Preview Dashboard</span>
                         </Button>
                       )}
 
@@ -348,13 +348,13 @@ export function PromptToolSection() {
                         <Button
                           onClick={handleDownloadExcel}
                           variant="outline"
-                          className="border-2 border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 hover:text-[#007a5d] rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
+                          className="border border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 rounded-lg shadow-sm hover:shadow-md transition-smooth h-auto py-2.5 px-3 flex flex-col items-center justify-center gap-1"
                         >
-                          <div className="flex items-center gap-2">
-                            <Download className="w-5 h-5" />
-                            <FileSpreadsheet className="w-5 h-5" />
+                          <div className="flex items-center gap-1">
+                            <Download className="w-4 h-4" />
+                            <FileSpreadsheet className="w-4 h-4" />
                           </div>
-                          <span className="font-semibold">Download Excel</span>
+                          <span className="text-xs font-medium">Download Excel</span>
                         </Button>
                       )}
 
@@ -363,13 +363,13 @@ export function PromptToolSection() {
                         <Button
                           onClick={handleDownloadChart}
                           variant="outline"
-                          className="border-2 border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 hover:text-[#007a5d] rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-16 flex flex-col items-center justify-center gap-2"
+                          className="border border-[#00A878] text-[#00A878] hover:bg-[#00A878]/10 rounded-lg shadow-sm hover:shadow-md transition-smooth h-auto py-2.5 px-3 flex flex-col items-center justify-center gap-1"
                         >
-                          <div className="flex items-center gap-2">
-                            <Download className="w-5 h-5" />
-                            <BarChart3 className="w-5 h-5" />
+                          <div className="flex items-center gap-1">
+                            <Download className="w-4 h-4" />
+                            <BarChart3 className="w-4 h-4" />
                           </div>
-                          <span className="font-semibold">Download Dashboard</span>
+                          <span className="text-xs font-medium">Download Dashboard</span>
                         </Button>
                       )}
                     </div>
