@@ -2,11 +2,12 @@ import React from "react";
 
 export function ProductHuntSection() {
   return (
-    <section className="py-8 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+    <section className="py-8 px-4 sm:px-6 lg:px-8 flex justify-center items-center animate-fade-in-up">
       <a 
         href="https://www.producthunt.com/products/lazyexcel/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-lazyexcel" 
         target="_blank" 
         rel="noopener noreferrer"
+        className="hover:scale-105 transition-smooth hover-lift"
       >
         <img 
           src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1132852&theme=light" 

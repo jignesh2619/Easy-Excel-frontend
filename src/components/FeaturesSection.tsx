@@ -45,7 +45,8 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-8 hover:shadow-xl hover:border-[#00A878]/50 transition-all group hover:scale-105 duration-300 relative overflow-hidden"
+              className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-8 hover:shadow-xl hover:border-[#00A878]/50 transition-smooth hover-lift relative overflow-hidden animate-fade-in-up"
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#00A878]/5 to-transparent rounded-full blur-xl"></div>
               <div className="relative z-10">

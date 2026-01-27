@@ -2472,6 +2472,64 @@ html {
   }
 }
 
+@keyframes arrow-slide {
+  0% {
+    transform: translateX(-10px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(10px);
+    opacity: 0.5;
+  }
+}
+
+@keyframes arrow-slide-vertical {
+  0% {
+    transform: translateY(-10px) rotate(90deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(0px) rotate(90deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(10px) rotate(90deg);
+    opacity: 0.5;
+  }
+}
+
+@keyframes arrow-particle-1 {
+  0% {
+    transform: translateX(-20px) translateY(0px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(20px) translateY(-10px);
+    opacity: 0;
+  }
+}
+
+@keyframes arrow-particle-2 {
+  0% {
+    transform: translateX(-20px) translateY(0px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(20px) translateY(10px);
+    opacity: 0;
+  }
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -2621,6 +2679,23 @@ html {
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+.animate-arrow-slide {
+  animation: arrow-slide 2s ease-in-out infinite;
+}
+
+.animate-arrow-slide-vertical {
+  animation: arrow-slide-vertical 2s ease-in-out infinite;
+}
+
+.animate-arrow-particle-1 {
+  animation: arrow-particle-1 2s ease-in-out infinite;
+}
+
+.animate-arrow-particle-2 {
+  animation: arrow-particle-2 2s ease-in-out infinite;
+  animation-delay: 0.5s;
 }
 
 .animate-pulse {

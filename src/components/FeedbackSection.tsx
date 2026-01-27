@@ -48,18 +48,18 @@ export function FeedbackSection() {
   return (
     <section className="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-[#00A878]/5 relative overflow-hidden mt-12 mb-12">
       {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#00A878]/10 to-transparent rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-[#00c98c]/10 to-transparent rounded-full blur-3xl"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#00A878]/10 to-transparent rounded-full blur-3xl animate-float"></div>
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-[#00c98c]/10 to-transparent rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
       
       <div className="max-w-4xl mx-auto relative z-10">
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 hover:shadow-xl transition-smooth animate-fade-in-up">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center gap-2 mb-3">
-              <div className="p-2 bg-gradient-to-br from-[#00A878] to-[#00c98c] rounded-lg">
+            <div className="inline-flex items-center justify-center gap-2 mb-3 animate-fade-in-up">
+              <div className="p-2 bg-gradient-to-br from-[#00A878] to-[#00c98c] rounded-lg hover:scale-110 transition-smooth">
                 <MessageSquare className="w-5 h-5 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
                 Share Your Feedback
               </h2>
             </div>
@@ -67,7 +67,7 @@ export function FeedbackSection() {
 
           {/* Success Message */}
           {isSubmitted && (
-            <div className="mb-6 p-4 bg-green-50 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300">
+            <div className="mb-6 p-4 bg-green-50 rounded-xl flex items-center gap-3 animate-bounce-in border border-green-200">
               <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
               <div>
                 <p className="font-semibold text-green-900">Thank you for your feedback!</p>
@@ -77,7 +77,7 @@ export function FeedbackSection() {
           )}
 
           {/* Feedback Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             <div>
               <label htmlFor="feedback" className="block text-sm font-semibold text-gray-700 mb-2">
                 Your Feedback
@@ -108,7 +108,7 @@ export function FeedbackSection() {
               <Button
                 type="submit"
                 disabled={!feedback.trim() || isSubmitting}
-                className="bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:via-[#00A878] hover:to-[#00b887] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-gradient-to-r from-[#00A878] via-[#00b887] to-[#00c98c] hover:from-[#008c67] hover:via-[#00A878] hover:to-[#00b887] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-smooth hover-lift disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
