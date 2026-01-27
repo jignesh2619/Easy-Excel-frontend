@@ -29,15 +29,15 @@ export function BeforeAfterSection() {
 
         {/* Compact Before/After Comparison - No Boxes */}
         <div className="relative">
-          <div className="grid md:grid-cols-2 gap-6 items-start">
+          <div className="grid md:grid-cols-2 gap-4 items-start">
             {/* BEFORE Section */}
             <div className="animate-slide-in-left">
-              <div className="mb-3">
-                <span className="inline-block px-3 py-1 bg-gray-100 rounded text-sm font-semibold text-gray-700">
+              <div className="mb-2">
+                <span className="inline-block px-2 py-0.5 bg-gray-100 rounded text-xs font-semibold text-gray-700">
                   BEFORE
                 </span>
               </div>
-              <div className="mb-4 overflow-hidden rounded">
+              <div className="mb-3 overflow-hidden rounded">
                 <img 
                   src="/before.png" 
                   alt="Before: Manual Excel dashboard creation"
@@ -47,12 +47,12 @@ export function BeforeAfterSection() {
                   }}
                 />
               </div>
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">Manual Dashboard Creation</h3>
+              <div className="space-y-1">
+                <h3 className="text-xs font-semibold text-gray-900 mb-1">Manual Dashboard Creation</h3>
                 {beforePoints.map((point, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-2 text-sm text-gray-600"
+                    className="flex items-start gap-1.5 text-xs text-gray-600"
                   >
                     <span className="text-red-500 mt-0.5">•</span>
                     <span>{point}</span>
@@ -64,18 +64,18 @@ export function BeforeAfterSection() {
             {/* Animated Arrow - Desktop */}
             <div className="hidden md:flex items-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
               <ArrowRight 
-                className="w-8 h-8 text-[#00A878] animate-arrow-slide"
+                className="w-6 h-6 text-[#00A878] animate-arrow-slide"
               />
             </div>
 
             {/* AFTER Section */}
             <div className="animate-slide-in-right">
-              <div className="mb-3">
-                <span className="inline-block px-3 py-1 bg-[#00A878] text-white rounded text-sm font-semibold">
+              <div className="mb-2">
+                <span className="inline-block px-2 py-0.5 bg-[#00A878] text-white rounded text-xs font-semibold">
                   AFTER
                 </span>
               </div>
-              <div className="mb-4 overflow-hidden rounded">
+              <div className="mb-3 overflow-hidden rounded">
                 <img 
                   src="/after.png" 
                   alt="After: AI-powered Excel dashboard"
@@ -85,12 +85,12 @@ export function BeforeAfterSection() {
                   }}
                 />
               </div>
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">AI-Powered Dashboard Building</h3>
+              <div className="space-y-1">
+                <h3 className="text-xs font-semibold text-gray-900 mb-1">AI-Powered Dashboard Building</h3>
                 {afterPoints.map((point, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-2 text-sm text-gray-600"
+                    className="flex items-start gap-1.5 text-xs text-gray-600"
                   >
                     <span className="text-[#00A878] mt-0.5">•</span>
                     <span>{point}</span>
@@ -101,8 +101,8 @@ export function BeforeAfterSection() {
           </div>
 
           {/* Mobile Arrow */}
-          <div className="md:hidden flex items-center justify-center my-4">
-            <ArrowRight className="w-6 h-6 text-[#00A878] rotate-90 animate-arrow-slide-vertical" />
+          <div className="md:hidden flex items-center justify-center my-2">
+            <ArrowRight className="w-5 h-5 text-[#00A878] rotate-90 animate-arrow-slide-vertical" />
           </div>
         </div>
       </div>
