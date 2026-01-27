@@ -19,10 +19,10 @@ export function BeforeAfterSection() {
   ];
 
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
+    <section className="py-6 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
       <div className="max-w-5xl mx-auto relative z-10">
-        <div className="text-center mb-8 animate-fade-in-up">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+        <div className="text-center mb-4 animate-fade-in-up">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
             Discover How to Build <span className="text-[#00A878]">Excel Dashboards</span> Like This In Minutes!
           </h2>
         </div>
