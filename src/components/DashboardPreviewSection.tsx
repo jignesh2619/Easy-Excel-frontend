@@ -28,21 +28,21 @@ export function DashboardPreviewSection() {
             <div className="p-8">
               {/* KPI Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-                <div className="text-center animate-fade-in-up group cursor-pointer hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.1s' }}>
+                <div className="bg-gradient-to-br from-[#00A878]/10 via-white to-[#00c98c]/5 rounded-xl p-6 border border-[#00A878]/20 text-center animate-fade-in-up group cursor-pointer hover:scale-105 hover:shadow-lg transition-all duration-300" style={{ animationDelay: '0.1s' }}>
                   <p className="text-gray-600 mb-2 text-sm group-hover:text-gray-700 transition-colors">Total Revenue</p>
                   <p className="text-gray-900 text-2xl font-semibold group-hover:text-[#00A878] transition-colors">$124,583</p>
                   <div className="flex items-center justify-center gap-1 mt-2">
                     <span className="text-[#00A878] text-sm">↑ 12.5%</span>
                   </div>
                 </div>
-                <div className="text-center animate-fade-in-up group cursor-pointer hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.2s' }}>
+                <div className="bg-gradient-to-br from-[#00A878]/10 via-white to-[#00c98c]/5 rounded-xl p-6 border border-[#00A878]/20 text-center animate-fade-in-up group cursor-pointer hover:scale-105 hover:shadow-lg transition-all duration-300" style={{ animationDelay: '0.2s' }}>
                   <p className="text-gray-600 mb-2 text-sm group-hover:text-gray-700 transition-colors">Active Users</p>
                   <p className="text-gray-900 text-2xl font-semibold group-hover:text-[#00A878] transition-colors">8,432</p>
                   <div className="flex items-center justify-center gap-1 mt-2">
                     <span className="text-[#00A878] text-sm">↑ 8.2%</span>
                   </div>
                 </div>
-                <div className="text-center animate-fade-in-up group cursor-pointer hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.3s' }}>
+                <div className="bg-gradient-to-br from-[#00A878]/10 via-white to-[#00c98c]/5 rounded-xl p-6 border border-[#00A878]/20 text-center animate-fade-in-up group cursor-pointer hover:scale-105 hover:shadow-lg transition-all duration-300" style={{ animationDelay: '0.3s' }}>
                   <p className="text-gray-600 mb-2 text-sm group-hover:text-gray-700 transition-colors">Conversion Rate</p>
                   <p className="text-gray-900 text-2xl font-semibold group-hover:text-[#00A878] transition-colors">24.8%</p>
                   <div className="flex items-center justify-center gap-1 mt-2">
@@ -54,7 +54,7 @@ export function DashboardPreviewSection() {
               {/* Charts Area */}
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Bar Chart Mockup */}
-                <div className="animate-fade-in-up group hover:scale-[1.02] transition-transform duration-300" style={{ animationDelay: '0.4s' }}>
+                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-200 animate-fade-in-up group hover:scale-[1.02] hover:shadow-lg transition-all duration-300" style={{ animationDelay: '0.4s' }}>
                   <p className="text-gray-700 mb-4 font-medium group-hover:text-[#00A878] transition-colors">Monthly Revenue</p>
                   <div className="flex items-end justify-between gap-2 h-48">
                     <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-110 transition-transform duration-300" style={{ height: "45%" }}></div>
@@ -75,7 +75,7 @@ export function DashboardPreviewSection() {
                 </div>
 
                 {/* Line Chart Mockup */}
-                <div className="animate-fade-in-up group hover:scale-[1.02] transition-transform duration-300" style={{ animationDelay: '0.5s' }}>
+                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-200 animate-fade-in-up group hover:scale-[1.02] hover:shadow-lg transition-all duration-300" style={{ animationDelay: '0.5s' }}>
                   <p className="text-gray-700 mb-4 font-medium group-hover:text-[#00A878] transition-colors">User Growth</p>
                   <div className="relative h-48">
                     <svg className="w-full h-full group-hover:scale-105 transition-transform duration-300" viewBox="0 0 400 200" preserveAspectRatio="none">

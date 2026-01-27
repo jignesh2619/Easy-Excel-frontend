@@ -45,11 +45,13 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="text-center animate-fade-in-up group cursor-pointer"
+              className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-lg hover:border-[#00A878]/50 transition-all duration-300 text-center animate-fade-in-up group cursor-pointer"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex justify-center mb-4">
-                <feature.icon className="w-8 h-8 text-[#00A878] group-hover:text-[#00c98c] group-hover:scale-110 transition-all duration-300" />
+                <div className="w-12 h-12 bg-gradient-to-br from-[#00A878]/10 to-[#00c98c]/10 rounded-lg flex items-center justify-center group-hover:from-[#00A878]/20 group-hover:to-[#00c98c]/20 transition-all duration-300">
+                  <feature.icon className="w-6 h-6 text-[#00A878] group-hover:text-[#00c98c] group-hover:scale-110 transition-all duration-300" />
+                </div>
               </div>
               <h3 className="text-gray-900 mb-2 font-semibold group-hover:text-[#00A878] transition-colors duration-300">{feature.title}</h3>
               <p className="text-gray-600 text-sm group-hover:text-gray-700 transition-colors duration-300">{feature.description}</p>
