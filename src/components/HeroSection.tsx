@@ -1,5 +1,5 @@
 import React from "react";
-import { Sparkles, Star } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { HeroHeadline, HeroSubheadline } from "./typography";
 
 export function HeroSection() {
@@ -97,16 +97,6 @@ export function HeroSection() {
             </button>
           </div>
 
-          {/* 5. Social Proof */}
-          <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <p className="text-sm text-gray-500 mb-2">Trusted by 10,000+ professionals</p>
-            <div className="flex items-center justify-center gap-1">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-              ))}
-              <span className="ml-2 text-sm font-semibold text-gray-700">4.8/5 from 500+ reviews</span>
-            </div>
-          </div>
         </div>
       </div>
     </section>
