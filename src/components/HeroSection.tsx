@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "./ui/button";
 import { ArrowRight, Sparkles, Clock, Shield } from "lucide-react";
+import { HeroHeadline, HeroSubheadline } from "./typography";
 
 export function HeroSection() {
   const scrollToPromptTool = () => {
@@ -27,18 +28,18 @@ export function HeroSection() {
             <span className="font-medium text-[#00A878]">No Credit Card • Free Trial</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight animate-fade-in-up">
+          <HeroHeadline className="text-gray-900 mb-4 animate-fade-in-up">
             Transform Excel Chaos Into
             <br />
             <span className="text-[#00A878]">Professional Dashboards</span>
             <br />
             In Seconds
-          </h1>
+          </HeroHeadline>
           
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <HeroSubheadline className="text-gray-600 max-w-2xl mx-auto mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             Upload your Excel file, describe what you need, and get clean data + beautiful dashboards automatically. 
             <span className="font-medium text-[#00A878]"> No coding required.</span>
-          </p>
+          </HeroSubheadline>
 
           {/* Key Benefits - Compact */}
           <div className="flex flex-wrap justify-center items-center gap-3 mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>

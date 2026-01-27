@@ -69,7 +69,7 @@
 
 @layer theme {
   :root, :host {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --color-red-400: oklch(.704 .191 22.216);
     --color-yellow-400: oklch(.852 .199 91.936);
@@ -107,6 +107,38 @@
     --text-7xl--line-height: 1;
     --font-weight-normal: 400;
     --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* Typography System - Web App / Dashboard */
+    --text-page-title: 1.375rem; /* 22px */
+    --text-page-title--line-height: 1.3;
+    --text-section-header: 1.125rem; /* 18px */
+    --text-section-header--line-height: 1.3;
+    --text-kpi-metric: 1.625rem; /* 26px */
+    --text-kpi-metric--line-height: 1.2;
+    --text-table-header: 0.8125rem; /* 13px */
+    --text-table-header--line-height: 1.5;
+    --text-table-cell: 0.875rem; /* 14px */
+    --text-table-cell--line-height: 1.6;
+    --text-sidebar-nav: 0.875rem; /* 14px */
+    --text-sidebar-nav--line-height: 1.5;
+    --text-input: 0.875rem; /* 14px */
+    --text-input--line-height: 1.5;
+    --text-button: 0.875rem; /* 14px */
+    --text-button--line-height: 1.5;
+    
+    /* Typography System - Landing Page / Marketing */
+    --text-hero-headline: 3rem; /* 48px */
+    --text-hero-headline--line-height: 1.2;
+    --text-hero-subheadline: 1.125rem; /* 18px */
+    --text-hero-subheadline--line-height: 1.5;
+    --text-section-heading: 1.75rem; /* 28px */
+    --text-section-heading--line-height: 1.3;
+    --text-feature: 1rem; /* 16px */
+    --text-feature--line-height: 1.6;
+    --text-cta-button: 1rem; /* 16px */
+    --text-cta-button--line-height: 1.5;
     --radius-2xl: 1rem;
     --blur-sm: 8px;
     --blur-xl: 24px;
@@ -2762,6 +2794,117 @@ html {
 
 .hover-glow:hover {
   box-shadow: 0 0 20px rgba(0, 168, 120, 0.4);
+}
+
+/* Typography System - Web App / Dashboard Utilities */
+.text-page-title {
+  font-size: var(--text-page-title);
+  line-height: var(--text-page-title--line-height);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-sans);
+}
+
+.text-section-header {
+  font-size: var(--text-section-header);
+  line-height: var(--text-section-header--line-height);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-sans);
+}
+
+.text-kpi-metric {
+  font-size: var(--text-kpi-metric);
+  line-height: var(--text-kpi-metric--line-height);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-sans);
+}
+
+.text-table-header {
+  font-size: var(--text-table-header);
+  line-height: var(--text-table-header--line-height);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-sans);
+}
+
+.text-table-cell {
+  font-size: var(--text-table-cell);
+  line-height: var(--text-table-cell--line-height);
+  font-weight: var(--font-weight-normal);
+  font-family: var(--font-sans);
+}
+
+.text-sidebar-nav {
+  font-size: var(--text-sidebar-nav);
+  line-height: var(--text-sidebar-nav--line-height);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-sans);
+}
+
+.text-input {
+  font-size: var(--text-input);
+  line-height: var(--text-input--line-height);
+  font-weight: var(--font-weight-normal);
+  font-family: var(--font-sans);
+}
+
+.text-button {
+  font-size: var(--text-button);
+  line-height: var(--text-button--line-height);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-sans);
+}
+
+/* Typography System - Landing Page / Marketing Utilities */
+.text-hero-headline {
+  font-size: var(--text-hero-headline);
+  line-height: var(--text-hero-headline--line-height);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-sans);
+}
+
+.text-hero-subheadline {
+  font-size: var(--text-hero-subheadline);
+  line-height: var(--text-hero-subheadline--line-height);
+  font-weight: var(--font-weight-normal);
+  font-family: var(--font-sans);
+}
+
+.text-section-heading {
+  font-size: var(--text-section-heading);
+  line-height: var(--text-section-heading--line-height);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-sans);
+}
+
+.text-feature {
+  font-size: var(--text-feature);
+  line-height: var(--text-feature--line-height);
+  font-weight: var(--font-weight-normal);
+  font-family: var(--font-sans);
+}
+
+.text-cta-button {
+  font-size: var(--text-cta-button);
+  line-height: var(--text-cta-button--line-height);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-sans);
+}
+
+/* Responsive Typography Adjustments */
+@media (min-width: 640px) {
+  :root {
+    --text-hero-headline: 3.25rem; /* 52px on tablet */
+    --text-section-heading: 1.875rem; /* 30px on tablet */
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --text-hero-headline: 3.5rem; /* 56px on desktop */
+    --text-section-heading: 2rem; /* 32px on desktop */
+    --text-kpi-metric: 2rem; /* 32px on desktop */
+    --text-page-title: 1.5rem; /* 24px on desktop */
+    --text-section-header: 1.25rem; /* 20px on desktop */
+  }
 }
 
 /* Mobile responsive animations */
