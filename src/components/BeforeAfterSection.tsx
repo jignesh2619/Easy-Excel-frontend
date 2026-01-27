@@ -32,12 +32,12 @@ export function BeforeAfterSection() {
           <div className="grid md:grid-cols-2 gap-3 items-center">
             {/* BEFORE Section */}
             <div className="animate-slide-in-left">
-              <div className="mb-1.5">
+              <div className="mb-1">
                 <span className="inline-block px-2.5 py-1 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-700">
                   BEFORE
                 </span>
               </div>
-              <div className="mb-2 overflow-hidden rounded-lg shadow-md">
+              <div className="mb-1.5 overflow-hidden rounded-lg shadow-md">
                 <img 
                   src="/before.png" 
                   alt="Before: Manual Excel dashboard creation"
@@ -101,12 +101,12 @@ export function BeforeAfterSection() {
 
             {/* AFTER Section */}
             <div className="animate-slide-in-right">
-              <div className="mb-1.5">
+              <div className="mb-1">
                 <span className="inline-block px-2.5 py-1 bg-[#00A878] text-white rounded text-xs font-semibold">
                   AFTER
                 </span>
               </div>
-              <div className="mb-2 overflow-hidden rounded-lg shadow-md">
+              <div className="mb-1.5 overflow-hidden rounded-lg shadow-md">
                 <img 
                   src="/after.png" 
                   alt="After: AI-powered Excel dashboard"
