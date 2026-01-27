@@ -1,5 +1,6 @@
 import { Header } from "./components/Header";
 import { HeroSection } from "./components/HeroSection";
+import { BeforeAfterSection } from "./components/BeforeAfterSection";
 import { TokenDashboard } from "./components/TokenDashboard";
 import { PromptToolSection } from "./components/PromptToolSection";
 import { FeaturesSection } from "./components/FeaturesSection";
@@ -157,6 +158,7 @@ export default function App() {
       <Header />
       <main className="animate-fade-in">
         <HeroSection />
+        <BeforeAfterSection />
         <PromptToolSection />
         <FeaturesSection />
         <DashboardPreviewSection />

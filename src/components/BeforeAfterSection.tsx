@@ -27,39 +27,37 @@ export function BeforeAfterSection() {
           </h2>
         </div>
 
-        {/* Compact Before/After Comparison */}
+        {/* Compact Before/After Comparison - No Boxes */}
         <div className="relative">
           <div className="grid md:grid-cols-2 gap-6 items-start">
             {/* BEFORE Section */}
             <div className="animate-slide-in-left">
-              <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                <div className="mb-3">
-                  <span className="inline-block px-3 py-1 bg-gray-100 border border-gray-300 rounded text-sm font-semibold text-gray-700">
-                    BEFORE
-                  </span>
-                </div>
-                <div className="mb-4 bg-gray-50 rounded p-2 border border-gray-200">
-                  <img 
-                    src="/before.png" 
-                    alt="Before: Manual Excel dashboard creation"
-                    className="w-full h-auto rounded"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-2">Manual Dashboard Creation</h3>
-                  {beforePoints.map((point, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-2 text-sm text-gray-600"
-                    >
-                      <span className="text-red-500 mt-0.5">•</span>
-                      <span>{point}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="mb-3">
+                <span className="inline-block px-3 py-1 bg-gray-100 rounded text-sm font-semibold text-gray-700">
+                  BEFORE
+                </span>
+              </div>
+              <div className="mb-4">
+                <img 
+                  src="/before.png" 
+                  alt="Before: Manual Excel dashboard creation"
+                  className="w-full h-auto rounded"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Manual Dashboard Creation</h3>
+                {beforePoints.map((point, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-2 text-sm text-gray-600"
+                  >
+                    <span className="text-red-500 mt-0.5">•</span>
+                    <span>{point}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -72,34 +70,32 @@ export function BeforeAfterSection() {
 
             {/* AFTER Section */}
             <div className="animate-slide-in-right">
-              <div className="bg-white rounded-lg p-4 border-2 border-[#00A878] shadow-sm">
-                <div className="mb-3">
-                  <span className="inline-block px-3 py-1 bg-[#00A878] text-white rounded text-sm font-semibold">
-                    AFTER
-                  </span>
-                </div>
-                <div className="mb-4 bg-gray-50 rounded p-2 border border-[#00A878]/20">
-                  <img 
-                    src="/after.png" 
-                    alt="After: AI-powered Excel dashboard"
-                    className="w-full h-auto rounded"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-2">AI-Powered Dashboard Building</h3>
-                  {afterPoints.map((point, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-2 text-sm text-gray-600"
-                    >
-                      <span className="text-[#00A878] mt-0.5">•</span>
-                      <span>{point}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="mb-3">
+                <span className="inline-block px-3 py-1 bg-[#00A878] text-white rounded text-sm font-semibold">
+                  AFTER
+                </span>
+              </div>
+              <div className="mb-4">
+                <img 
+                  src="/after.png" 
+                  alt="After: AI-powered Excel dashboard"
+                  className="w-full h-auto rounded"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">AI-Powered Dashboard Building</h3>
+                {afterPoints.map((point, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-2 text-sm text-gray-600"
+                  >
+                    <span className="text-[#00A878] mt-0.5">•</span>
+                    <span>{point}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
