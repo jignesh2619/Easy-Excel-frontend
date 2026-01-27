@@ -32,10 +32,12 @@ export function FeaturesSection() {
       <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-[#00c98c]/10 to-transparent rounded-full blur-3xl"></div>
       
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-gray-900 mb-4 bg-gradient-to-r from-gray-900 via-[#00A878] to-gray-900 bg-clip-text text-transparent">Powerful Features</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Everything you need to clean, transform, and visualize your data efficiently.
+        <div className="text-center mb-16 animate-fade-in-up">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-gray-900 via-[#00A878] to-gray-900 bg-clip-text text-transparent">
+            Powerful Features That Save You Time
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Everything you need to clean, transform, and visualize your data efficiently—all in one place.
           </p>
         </div>
 

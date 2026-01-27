@@ -193,10 +193,18 @@ export function PricingSection() {
       <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-gradient-to-br from-[#00A878]/5 to-transparent rounded-full blur-2xl"></div>
       
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-gray-900 mb-4 bg-gradient-to-r from-gray-900 via-[#00A878] to-gray-900 bg-clip-text text-transparent">Simple, Transparent Pricing</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+        <div className="text-center mb-16 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#00A878]/10 border border-[#00A878]/20 rounded-full mb-4">
+            <span className="text-sm font-medium text-[#00A878]">💰 No Credit Card Required • Cancel Anytime</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-gray-900 via-[#00A878] to-gray-900 bg-clip-text text-transparent">
+            Simple, Transparent Pricing
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-2">
             Choose the plan that fits your needs. Upgrade or downgrade at any time.
+          </p>
+          <p className="text-sm text-gray-500">
+            All plans include a free trial. Start with Free and upgrade when you need more.
           </p>
         </div>
 
@@ -215,8 +223,13 @@ export function PricingSection() {
               
               <div className="relative z-10">
                 {plan.highlighted && (
-                  <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white rounded-full px-4 py-1 inline-block mb-4 shadow-md text-sm font-medium">
-                    Most Popular
+                  <div className="bg-gradient-to-r from-[#00A878] to-[#00c98c] text-white rounded-full px-4 py-1 inline-block mb-4 shadow-md text-sm font-medium animate-pulse">
+                    ⭐ Most Popular
+                  </div>
+                )}
+                {plan.name === "Free" && (
+                  <div className="bg-blue-100 text-blue-700 rounded-full px-4 py-1 inline-block mb-4 shadow-sm text-sm font-medium border border-blue-200">
+                    🎁 Start Here
                   </div>
                 )}
                 <h3 className="text-gray-900 mb-1 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-2xl font-bold">{plan.name}</h3>
@@ -243,9 +256,11 @@ export function PricingSection() {
                 <Button
                   onClick={() => handleSubscribe(plan.name)}
                   disabled={loading === plan.name}
-                  className={`w-full rounded-full transition-all duration-300 hover:scale-105 ${
+                  className={`w-full rounded-full transition-smooth hover:scale-105 active:scale-95 ${
                     plan.highlighted
-                      ? "bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white shadow-lg hover:shadow-xl"
+                      ? "bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white shadow-lg hover:shadow-xl hover-glow"
+                      : plan.name === "Free"
+                      ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-lg"
                       : "bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100 text-gray-900 hover:shadow-md"
                   }`}
                 >
