@@ -190,13 +190,29 @@ export function PromptToolSection() {
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-[#00A878]/10 to-transparent rounded-full blur-2xl"></div>
       
       <div className="max-w-7xl mx-auto relative z-10">
+        {/* Section Header */}
+        <div className="text-center mb-8 animate-fade-in-up">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            Try It <span className="text-[#00A878]">Free</span> Right Now
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            No sign-up required. Upload your file and see the magic happen in seconds.
+          </p>
+          <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
+            <span>✓ No credit card</span>
+            <span>•</span>
+            <span>✓ Instant results</span>
+            <span>•</span>
+            <span>✓ 100% free trial</span>
+          </div>
+        </div>
 
         {/* Centered and Wider Prompt Area */}
         <div className="max-w-5xl mx-auto p-4">
           {/* Safari Browser Wrapper */}
-          <SafariBrowser className="mb-8 hover:shadow-3xl transition-all duration-300 hover:scale-[1.01]">
+          <SafariBrowser className="mb-8 hover:shadow-3xl transition-all duration-300 hover:scale-[1.01] animate-fade-in-up">
             {/* Main Prompt UI - Centered and Wider */}
-            <div className="bg-gradient-to-br from-white via-gray-50 to-white p-8 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-white via-gray-50 to-white p-6 sm:p-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#00A878]/10 to-transparent rounded-full blur-2xl"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-[#00c98c]/10 to-transparent rounded-full blur-2xl"></div>
               
@@ -215,11 +231,21 @@ export function PromptToolSection() {
                       onClick={() => fileInputRef.current?.click()}
                       onDrop={handleFileDrop}
                       onDragOver={handleDragOver}
-                      className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#00A878] hover:bg-[#00A878]/5 transition-all duration-300 bg-gradient-to-br from-gray-50 to-white cursor-pointer group hover:scale-[1.02] hover:shadow-lg"
+                      className="border-2 border-dashed border-gray-300 rounded-xl p-8 sm:p-12 text-center hover:border-[#00A878] hover:bg-[#00A878]/5 transition-all duration-300 bg-gradient-to-br from-gray-50 to-white cursor-pointer group hover:scale-[1.02] hover:shadow-xl relative overflow-hidden"
                     >
-                      <Upload className="w-10 h-10 text-gray-400 mx-auto mb-2 group-hover:text-[#00A878] group-hover:scale-110 transition-all duration-300" />
-                      <p className="text-gray-700 mb-1 text-sm group-hover:text-[#00A878] transition-colors duration-300">Drop your Excel file here</p>
-                      <p className="text-gray-500 text-xs group-hover:text-[#00A878]/80 transition-colors duration-300">or click to browse</p>
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#00A878]/0 via-[#00A878]/5 to-[#00A878]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="relative z-10">
+                        <Upload className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4 group-hover:text-[#00A878] group-hover:scale-110 transition-all duration-300" />
+                        <p className="text-gray-900 mb-2 text-base sm:text-lg font-semibold group-hover:text-[#00A878] transition-colors duration-300">
+                          Drop your Excel file here
+                        </p>
+                        <p className="text-gray-500 text-sm group-hover:text-[#00A878]/80 transition-colors duration-300">
+                          or click to browse • CSV, XLSX, XLS supported
+                        </p>
+                        <p className="text-xs text-gray-400 mt-3">
+                          Free trial • No credit card required
+                        </p>
+                      </div>
                     </div>
                   ) : (
                     <div className="bg-green-50 border border-green-200 rounded-xl p-4 hover:bg-green-100 hover:border-green-300 transition-all duration-300 hover:scale-[1.01] hover:shadow-md">
