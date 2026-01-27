@@ -191,7 +191,7 @@ export function PromptToolSection() {
       
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header - Compact */}
-        <div className="text-center mb-6 animate-fade-in-up">
+        <div className="text-center mb-6 animate-fade-in-up" style={{ paddingTop: '48px' }}>
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
             Try It <span className="text-[#00A878]">Free</span> Right Now
           </h2>
