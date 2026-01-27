@@ -160,7 +160,6 @@ export default function App() {
         <BeforeAfterSection />
         <PromptToolSection />
         <FeaturesSection />
-        <DashboardPreviewSection />
         <ProductHuntSection />
         <PricingSection />
         <TokenDashboard />
