@@ -256,10 +256,10 @@ export function PricingSection() {
                 <Button
                   onClick={() => handleSubscribe(plan.name)}
                   disabled={loading === plan.name}
-                  className={`w-full rounded-full transition-smooth hover:scale-105 active:scale-95 ${
+                  className={`w-full rounded-full transition-smooth hover:scale-105 active:scale-95 !bg-[#00A878] !text-white hover:!bg-[#008c67] shadow-md hover:shadow-lg ${
                     plan.highlighted
-                      ? "bg-gradient-to-r from-[#00A878] to-[#00c98c] hover:from-[#008c67] hover:to-[#00A878] text-white shadow-lg hover:shadow-xl hover-glow"
-                      : "bg-[#00A878] hover:bg-[#008c67] text-white shadow-md hover:shadow-lg"
+                      ? "!bg-gradient-to-r !from-[#00A878] !to-[#00c98c] hover:!from-[#008c67] hover:!to-[#00A878] shadow-lg hover:shadow-xl hover-glow"
+                      : ""
                   }`}
                 >
                   {loading === plan.name ? (
