@@ -28,34 +28,25 @@ export function DashboardPreviewSection() {
             <div className="p-8">
               {/* KPI Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-                <div className="bg-gradient-to-br from-[#00A878]/10 via-white to-[#00c98c]/5 rounded-xl p-6 border border-[#00A878]/20 hover:shadow-lg hover:scale-105 transition-smooth cursor-pointer relative overflow-hidden animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#00A878]/20 to-transparent rounded-full blur-xl"></div>
-                  <div className="relative z-10">
-                    <p className="text-gray-600 mb-2">Total Revenue</p>
-                    <p className="text-gray-900">$124,583</p>
-                    <div className="flex items-center gap-1 mt-2">
-                      <span className="text-[#00A878]">↑ 12.5%</span>
-                    </div>
+                <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                  <p className="text-gray-600 mb-2 text-sm">Total Revenue</p>
+                  <p className="text-gray-900 text-2xl font-semibold">$124,583</p>
+                  <div className="flex items-center justify-center gap-1 mt-2">
+                    <span className="text-[#00A878] text-sm">↑ 12.5%</span>
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-[#00A878]/10 via-white to-[#00c98c]/5 rounded-xl p-6 border border-[#00A878]/20 hover:shadow-lg hover:scale-105 transition-smooth cursor-pointer relative overflow-hidden animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#00A878]/20 to-transparent rounded-full blur-xl"></div>
-                  <div className="relative z-10">
-                    <p className="text-gray-600 mb-2">Active Users</p>
-                    <p className="text-gray-900">8,432</p>
-                    <div className="flex items-center gap-1 mt-2">
-                      <span className="text-[#00A878]">↑ 8.2%</span>
-                    </div>
+                <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                  <p className="text-gray-600 mb-2 text-sm">Active Users</p>
+                  <p className="text-gray-900 text-2xl font-semibold">8,432</p>
+                  <div className="flex items-center justify-center gap-1 mt-2">
+                    <span className="text-[#00A878] text-sm">↑ 8.2%</span>
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-[#00A878]/10 via-white to-[#00c98c]/5 rounded-xl p-6 border border-[#00A878]/20 hover:shadow-lg hover:scale-105 transition-smooth cursor-pointer relative overflow-hidden animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#00A878]/20 to-transparent rounded-full blur-xl"></div>
-                  <div className="relative z-10">
-                    <p className="text-gray-600 mb-2">Conversion Rate</p>
-                    <p className="text-gray-900">24.8%</p>
-                    <div className="flex items-center gap-1 mt-2">
-                      <span className="text-[#00A878]">↑ 3.1%</span>
-                    </div>
+                <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+                  <p className="text-gray-600 mb-2 text-sm">Conversion Rate</p>
+                  <p className="text-gray-900 text-2xl font-semibold">24.8%</p>
+                  <div className="flex items-center justify-center gap-1 mt-2">
+                    <span className="text-[#00A878] text-sm">↑ 3.1%</span>
                   </div>
                 </div>
               </div>
@@ -63,17 +54,17 @@ export function DashboardPreviewSection() {
               {/* Charts Area */}
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Bar Chart Mockup */}
-                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-smooth animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                  <p className="text-gray-700 mb-4 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Monthly Revenue</p>
+                <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                  <p className="text-gray-700 mb-4 font-medium">Monthly Revenue</p>
                   <div className="flex items-end justify-between gap-2 h-48">
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-105 transition-transform" style={{ height: "45%" }}></div>
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-105 transition-transform" style={{ height: "60%" }}></div>
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-105 transition-transform" style={{ height: "75%" }}></div>
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-105 transition-transform" style={{ height: "55%" }}></div>
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-105 transition-transform" style={{ height: "85%" }}></div>
-                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg hover:scale-105 transition-transform" style={{ height: "100%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "45%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "60%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "75%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "55%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "85%" }}></div>
+                    <div className="flex-1 bg-gradient-to-t from-[#00A878] to-[#00c98c] rounded-t-lg" style={{ height: "100%" }}></div>
                   </div>
-                  <div className="flex justify-between mt-2 text-gray-500">
+                  <div className="flex justify-between mt-2 text-gray-500 text-sm">
                     <span>Jun</span>
                     <span>Jul</span>
                     <span>Aug</span>
@@ -84,8 +75,8 @@ export function DashboardPreviewSection() {
                 </div>
 
                 {/* Line Chart Mockup */}
-                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-smooth animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-                  <p className="text-gray-700 mb-4 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">User Growth</p>
+                <div className="animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                  <p className="text-gray-700 mb-4 font-medium">User Growth</p>
                   <div className="relative h-48">
                     <svg className="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="none">
                       <polyline
@@ -107,7 +98,7 @@ export function DashboardPreviewSection() {
                       </defs>
                     </svg>
                   </div>
-                  <div className="flex justify-between mt-2 text-gray-500">
+                  <div className="flex justify-between mt-2 text-gray-500 text-sm">
                     <span>Jun</span>
                     <span>Jul</span>
                     <span>Aug</span>
