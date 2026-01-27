@@ -37,11 +37,11 @@ export function BeforeAfterSection() {
                   BEFORE
                 </span>
               </div>
-              <div className="mb-0.5 overflow-hidden rounded-lg shadow-md">
+              <div className="mb-0.5">
                 <img 
                   src="/before.png" 
                   alt="Before: Manual Excel dashboard creation"
-                  className="w-full h-auto rounded-lg hover:scale-105 transition-transform duration-300"
+                  className="w-full h-auto hover:scale-105 transition-transform duration-300"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
@@ -69,11 +69,11 @@ export function BeforeAfterSection() {
                   AFTER
                 </span>
               </div>
-              <div className="mb-0.5 overflow-hidden rounded-lg shadow-md">
+              <div className="mb-0.5">
                 <img 
                   src="/after.png" 
                   alt="After: AI-powered Excel dashboard"
-                  className="w-full h-auto rounded-lg hover:scale-105 transition-transform duration-300"
+                  className="w-full h-auto hover:scale-105 transition-transform duration-300"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
