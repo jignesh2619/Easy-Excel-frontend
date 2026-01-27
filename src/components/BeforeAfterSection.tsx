@@ -61,43 +61,6 @@ export function BeforeAfterSection() {
               </div>
             </div>
 
-            {/* Curved Separator - Desktop */}
-            <div className="hidden md:flex items-center justify-center absolute left-1/2 top-0 bottom-0 -translate-x-1/2 z-20 pointer-events-none">
-              <svg 
-                width="60" 
-                height="100%" 
-                viewBox="0 0 60 200" 
-                className="h-full"
-                preserveAspectRatio="none"
-              >
-                <path
-                  d="M 30 0 Q 50 50, 45 100 T 30 200"
-                  stroke="#00A878"
-                  strokeWidth="2"
-                  fill="none"
-                  strokeLinecap="round"
-                  className="animate-arrow-slide"
-                />
-                <path
-                  d="M 30 0 Q 10 50, 15 100 T 30 200"
-                  stroke="#00A878"
-                  strokeWidth="2"
-                  fill="none"
-                  strokeLinecap="round"
-                  className="animate-arrow-slide"
-                  style={{ animationDelay: '0.2s' }}
-                />
-                {/* Arrow head at middle */}
-                <path
-                  d="M 40 95 L 50 100 L 40 105"
-                  stroke="#00A878"
-                  strokeWidth="2"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
 
             {/* AFTER Section */}
             <div className="animate-slide-in-right">
