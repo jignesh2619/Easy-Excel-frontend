@@ -23,18 +23,18 @@ export function BeforeAfterSection() {
       >
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left Side: Tagline and Supporting Text */}
-          <div className="animate-fade-in-up">
+          <div className="mobile-animate-fade-in-up">
             <h2 
-              className="text-gray-900 mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold leading-tight"
+              className="text-gray-900 mb-4 text-4xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold leading-tight mobile-animate-bounce-in"
               style={{
                 margin: 0,
                 marginBottom: '16px'
               }}
             >
-              Clean<br />
-              sheets and<br />
-              build dashboards<br />
-              <span className="text-[#00A878]">in seconds</span>
+              <span className="inline-block mobile-animate-slide-in-left" style={{ animationDelay: '0.1s' }}>Clean</span><br />
+              <span className="inline-block mobile-animate-slide-in-left" style={{ animationDelay: '0.2s' }}>sheets and</span><br />
+              <span className="inline-block mobile-animate-slide-in-left" style={{ animationDelay: '0.3s' }}>build dashboards</span><br />
+              <span className="inline-block text-[#00A878] mobile-animate-scale-in" style={{ animationDelay: '0.4s' }}>in seconds</span>
             </h2>
 
             {/* CTA Buttons */}
@@ -46,14 +46,15 @@ export function BeforeAfterSection() {
                     element.scrollIntoView({ behavior: "smooth", block: "start" });
                   }
                 }}
-                className="inline-flex items-center justify-center gap-2 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-fit"
+                className="inline-flex items-center justify-center gap-2 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-fit mobile-animate-bounce-in"
                 style={{ 
-                  fontSize: '14px',
+                  fontSize: '16px',
                   backgroundColor: '#00A878',
                   borderRadius: '12px',
                   border: 'none',
                   padding: '16px 20px',
-                  maxWidth: '220px'
+                  maxWidth: '220px',
+                  animationDelay: '0.5s'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#008c67';
@@ -73,15 +74,16 @@ export function BeforeAfterSection() {
                     element.scrollIntoView({ behavior: "smooth" });
                   }
                 }}
-                className="inline-flex items-center justify-center font-semibold transition-all duration-200 w-full sm:w-fit"
+                className="inline-flex items-center justify-center font-semibold transition-all duration-200 w-full sm:w-fit mobile-animate-bounce-in"
                 style={{ 
-                  fontSize: '14px',
+                  fontSize: '16px',
                   backgroundColor: 'transparent',
                   border: '2px solid #00A878',
                   borderRadius: '12px',
                   color: '#00A878',
                   padding: '16px 20px',
-                  maxWidth: '220px'
+                  maxWidth: '220px',
+                  animationDelay: '0.6s'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#00A878';
@@ -97,21 +99,21 @@ export function BeforeAfterSection() {
             </div>
 
             {/* CTA Text */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#00A878]/10 border border-[#00A878]/20 rounded-full">
-              <span className="text-[#00A878] font-medium" style={{ fontSize: '14px' }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#00A878]/10 border border-[#00A878]/20 rounded-full mobile-animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
+              <span className="text-[#00A878] font-medium" style={{ fontSize: '15px' }}>
                 ✓ Free trial available • No credit card required
               </span>
             </div>
           </div>
 
           {/* Right Side: Before → Arrow → After Images */}
-          <div className="animate-slide-in-right mt-6 md:mt-0">
+          <div className="mobile-animate-slide-in-right mt-6 md:mt-0">
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-4">
               {/* BEFORE Image */}
-              <div className="flex-1 w-full md:w-auto">
+              <div className="flex-1 w-full md:w-auto mobile-animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                 <div className="mb-2">
                   <span 
-                    className="inline-block rounded-full text-xs font-medium uppercase tracking-wide"
+                    className="inline-block rounded-full text-xs font-medium uppercase tracking-wide mobile-animate-bounce-in"
                     style={{
                       backgroundColor: '#FFFFFF',
                       border: '1.5px solid #1F2937',
@@ -120,7 +122,8 @@ export function BeforeAfterSection() {
                       fontSize: '13px',
                       fontWeight: 500,
                       letterSpacing: '0.04em',
-                      borderRadius: '999px'
+                      borderRadius: '999px',
+                      animationDelay: '0.3s'
                     }}
                   >
                     BEFORE
@@ -151,15 +154,15 @@ export function BeforeAfterSection() {
               </div>
 
               {/* Arrow */}
-              <div className="flex flex-row md:flex-col items-center justify-center rotate-90 md:rotate-0">
-                <ArrowRight className="w-6 h-6 md:w-8 md:h-8 text-[#00A878] animate-arrow-slide drop-shadow-lg" />
+              <div className="flex flex-row md:flex-col items-center justify-center rotate-90 md:rotate-0 mobile-animate-bounce-in" style={{ animationDelay: '0.4s' }}>
+                <ArrowRight className="w-6 h-6 md:w-8 md:h-8 text-[#00A878] animate-arrow-slide-vertical md:animate-arrow-slide drop-shadow-lg" />
               </div>
 
               {/* AFTER Image */}
-              <div className="flex-1 w-full md:w-auto">
+              <div className="flex-1 w-full md:w-auto mobile-animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
                 <div className="mb-2">
                   <span 
-                    className="inline-block rounded-full text-xs font-semibold uppercase tracking-wide"
+                    className="inline-block rounded-full text-xs font-semibold uppercase tracking-wide mobile-animate-bounce-in"
                     style={{
                       backgroundColor: '#10B981',
                       color: '#FFFFFF',
@@ -167,7 +170,8 @@ export function BeforeAfterSection() {
                       fontSize: '13px',
                       fontWeight: 600,
                       letterSpacing: '0.04em',
-                      borderRadius: '999px'
+                      borderRadius: '999px',
+                      animationDelay: '0.6s'
                     }}
                   >
                     AFTER
@@ -201,10 +205,12 @@ export function BeforeAfterSection() {
             <div className="mt-4 flex flex-col md:flex-row gap-4" style={{ width: '100%' }}>
               {/* First Box - Manual Dashboard Creation */}
               <div 
-                className="animate-gentle-pulse animate-breathe transition-all duration-300 cursor-pointer p-4 md:p-6"
+                className="animate-gentle-pulse animate-breathe transition-all duration-300 cursor-pointer p-4 md:p-6 mobile-animate-slide-in-left"
                 style={{ 
                   flex: '1', 
                   minWidth: 0,
+                  animationDelay: '0.7s'
+                }}
                   background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%)',
                   borderRadius: '16px',
                   border: '1px solid rgba(239, 68, 68, 0.2)',
@@ -343,10 +349,12 @@ export function BeforeAfterSection() {
 
               {/* Second Box - AI-Powered Dashboard Building */}
               <div 
-                className="animate-gentle-pulse animate-breathe animate-subtle-glow transition-all duration-300 cursor-pointer p-4 md:p-6"
+                className="animate-gentle-pulse animate-breathe animate-subtle-glow transition-all duration-300 cursor-pointer p-4 md:p-6 mobile-animate-slide-in-right"
                 style={{ 
                   flex: '1', 
                   minWidth: 0,
+                  animationDelay: '0.8s'
+                }}
                   background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(0, 168, 120, 0.05) 100%)',
                   borderRadius: '16px',
                   border: '1px solid rgba(16, 185, 129, 0.3)',
