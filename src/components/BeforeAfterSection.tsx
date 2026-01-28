@@ -1,7 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowRight, Sparkles, Zap, CheckCircle2, Clock, AlertCircle, X, CheckCircle, Rocket } from "lucide-react";
 
 export function BeforeAfterSection() {
+  const [fontSize, setFontSize] = useState('56px');
+
+  useEffect(() => {
+    const updateFontSize = () => {
+      if (window.innerWidth >= 1024) {
+        setFontSize('56px');
+      } else if (window.innerWidth >= 768) {
+        setFontSize('48px');
+      } else if (window.innerWidth >= 640) {
+        setFontSize('42px');
+      } else {
+        setFontSize('36px');
+      }
+    };
+
+    updateFontSize();
+    window.addEventListener('resize', updateFontSize);
+    return () => window.removeEventListener('resize', updateFontSize);
+  }, []);
   return (
     <section 
       className="px-4 sm:px-6 lg:px-8 relative overflow-hidden"
@@ -25,11 +44,13 @@ export function BeforeAfterSection() {
           {/* Left Side: Tagline and Supporting Text */}
           <div className="animate-fade-in-up">
             <h2 
-              className="text-gray-900 mb-4 text-4xl sm:text-5xl md:text-6xl lg:text-[56px] font-bold leading-tight animate-bounce-in"
+              className="text-gray-900 mb-4 animate-bounce-in"
               style={{
+                fontSize: fontSize,
+                fontWeight: 700,
+                lineHeight: 1.2,
                 margin: 0,
-                marginBottom: '16px',
-                fontWeight: 700
+                marginBottom: '16px'
               }}
             >
               <span className="inline-block animate-slide-in-left" style={{ animationDelay: '0.1s' }}>Clean</span><br />
