@@ -6,32 +6,27 @@ export function BeforeAfterSection() {
     <section 
       className="px-4 sm:px-6 lg:px-8 relative overflow-hidden"
       style={{ 
-        paddingTop: '48px', 
-        paddingBottom: '48px',
+        paddingTop: '32px', 
+        paddingBottom: '32px',
         backgroundColor: '#f8faf9'
       }}
     >
       {/* Rounded Rectangle Container with Gradient */}
       <div 
-        className="mx-auto relative z-10"
+        className="mx-auto relative z-10 px-4 py-6 sm:px-6 sm:py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 rounded-[20px] sm:rounded-[24px] md:rounded-[32px]"
         style={{ 
           maxWidth: '1200px',
-          padding: '48px 64px',
           background: 'linear-gradient(135deg, rgba(0, 168, 120, 0.15) 0%, rgba(0, 201, 140, 0.12) 50%, rgba(0, 168, 120, 0.08) 100%)',
           border: '1px solid rgba(0, 168, 120, 0.2)',
-          boxShadow: '0 4px 20px rgba(0, 168, 120, 0.1)',
-          borderRadius: '32px'
+          boxShadow: '0 4px 20px rgba(0, 168, 120, 0.1)'
         }}
       >
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left Side: Tagline and Supporting Text */}
           <div className="animate-fade-in-up">
             <h2 
-              className="text-gray-900 mb-4"
+              className="text-gray-900 mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold leading-tight"
               style={{
-                fontSize: '56px',
-                fontWeight: 700,
-                lineHeight: 1.2,
                 margin: 0,
                 marginBottom: '16px'
               }}
@@ -43,7 +38,7 @@ export function BeforeAfterSection() {
             </h2>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col gap-4 mb-4">
+            <div className="flex flex-col gap-3 sm:gap-4 mb-4">
               <button
                 onClick={() => {
                   const element = document.getElementById("prompt-tool");
@@ -51,14 +46,13 @@ export function BeforeAfterSection() {
                     element.scrollIntoView({ behavior: "smooth", block: "start" });
                   }
                 }}
-                className="inline-flex items-center justify-center gap-2 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-fit"
                 style={{ 
-                  fontSize: '16px',
+                  fontSize: '14px',
                   backgroundColor: '#00A878',
                   borderRadius: '12px',
                   border: 'none',
-                  padding: '20px 24px',
-                  width: 'fit-content',
+                  padding: '16px 20px',
                   maxWidth: '220px'
                 }}
                 onMouseEnter={(e) => {
@@ -79,15 +73,14 @@ export function BeforeAfterSection() {
                     element.scrollIntoView({ behavior: "smooth" });
                   }
                 }}
-                className="inline-flex items-center justify-center font-semibold transition-all duration-200"
+                className="inline-flex items-center justify-center font-semibold transition-all duration-200 w-full sm:w-fit"
                 style={{ 
-                  fontSize: '16px',
+                  fontSize: '14px',
                   backgroundColor: 'transparent',
                   border: '2px solid #00A878',
                   borderRadius: '12px',
                   color: '#00A878',
-                  padding: '20px 24px',
-                  width: 'fit-content',
+                  padding: '16px 20px',
                   maxWidth: '220px'
                 }}
                 onMouseEnter={(e) => {
@@ -112,10 +105,10 @@ export function BeforeAfterSection() {
           </div>
 
           {/* Right Side: Before → Arrow → After Images */}
-          <div className="animate-slide-in-right">
-            <div className="flex items-center gap-4">
+          <div className="animate-slide-in-right mt-6 md:mt-0">
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-4">
               {/* BEFORE Image */}
-              <div className="flex-1">
+              <div className="flex-1 w-full md:w-auto">
                 <div className="mb-2">
                   <span 
                     className="inline-block rounded-full text-xs font-medium uppercase tracking-wide"
@@ -137,18 +130,17 @@ export function BeforeAfterSection() {
                   <img 
                     src="/before.png" 
                     alt="Before: Manual Excel dashboard creation"
-                    className="hover:scale-110 transition-transform duration-300 rounded-lg shadow-md"
+                    className="hover:scale-110 transition-transform duration-300 rounded-lg shadow-md scale-100 md:scale-110 lg:scale-[1.2]"
                     style={{ 
                       margin: 0,
                       padding: 0,
                       display: 'block',
                       width: '100%',
                       height: 'auto',
-                      maxHeight: '380px',
+                      maxHeight: '200px',
                       objectFit: 'contain',
                       verticalAlign: 'top',
                       lineHeight: 0,
-                      transform: 'scale(1.2)',
                       transformOrigin: 'center center'
                     }}
                     onError={(e) => {
@@ -159,12 +151,12 @@ export function BeforeAfterSection() {
               </div>
 
               {/* Arrow */}
-              <div className="flex flex-col items-center justify-center">
-                <ArrowRight className="w-8 h-8 text-[#00A878] animate-arrow-slide drop-shadow-lg" />
+              <div className="flex flex-row md:flex-col items-center justify-center rotate-90 md:rotate-0">
+                <ArrowRight className="w-6 h-6 md:w-8 md:h-8 text-[#00A878] animate-arrow-slide drop-shadow-lg" />
               </div>
 
               {/* AFTER Image */}
-              <div className="flex-1">
+              <div className="flex-1 w-full md:w-auto">
                 <div className="mb-2">
                   <span 
                     className="inline-block rounded-full text-xs font-semibold uppercase tracking-wide"
@@ -185,18 +177,16 @@ export function BeforeAfterSection() {
                   <img 
                     src="/after.png" 
                     alt="After: AI-powered Excel dashboard"
-                    className="hover:scale-110 transition-transform duration-300 rounded-lg shadow-md"
+                    className="hover:scale-110 transition-transform duration-300 rounded-lg shadow-md scale-100 md:scale-110 lg:scale-[1.2] max-h-[200px] sm:max-h-[250px] md:max-h-[300px] lg:max-h-[380px]"
                     style={{ 
                       margin: 0,
                       padding: 0,
                       display: 'block',
                       width: '100%',
                       height: 'auto',
-                      maxHeight: '380px',
                       objectFit: 'contain',
                       verticalAlign: 'top',
                       lineHeight: 0,
-                      transform: 'scale(1.2)',
                       transformOrigin: 'center center'
                     }}
                     onError={(e) => {
@@ -208,12 +198,11 @@ export function BeforeAfterSection() {
             </div>
 
             {/* Comparison Text Below Images - Horizontal Layout */}
-            <div className="mt-4 flex flex-row gap-4" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+            <div className="mt-4 flex flex-col md:flex-row gap-4" style={{ width: '100%' }}>
               {/* First Box - Manual Dashboard Creation */}
               <div 
-                className="animate-gentle-pulse animate-breathe transition-all duration-300 cursor-pointer"
+                className="animate-gentle-pulse animate-breathe transition-all duration-300 cursor-pointer p-4 md:p-6"
                 style={{ 
-                  padding: '24px', 
                   flex: '1', 
                   minWidth: 0,
                   background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%)',
@@ -261,10 +250,8 @@ export function BeforeAfterSection() {
                     <X className="w-5 h-5 text-red-500 transition-transform duration-300" />
                   </div>
                   <h3 
-                    className="text-gray-900"
+                    className="text-gray-900 text-lg sm:text-xl md:text-[22px] font-bold"
                     style={{
-                      fontSize: '22px',
-                      fontWeight: 700,
                       margin: 0,
                       letterSpacing: '-0.02em'
                     }}
@@ -274,9 +261,8 @@ export function BeforeAfterSection() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div 
-                    className="transition-all duration-300 group"
+                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
                     style={{ 
-                      fontSize: '17px', 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
@@ -301,9 +287,8 @@ export function BeforeAfterSection() {
                     <span className="group-hover:text-red-600 transition-colors duration-300">8+ hours spent per report</span>
                   </div>
                   <div 
-                    className="transition-all duration-300 group"
+                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
                     style={{ 
-                      fontSize: '17px', 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
@@ -328,9 +313,8 @@ export function BeforeAfterSection() {
                     <span className="group-hover:text-red-600 transition-colors duration-300">Messy, unstructured Excel data</span>
                   </div>
                   <div 
-                    className="transition-all duration-300 group"
+                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
                     style={{ 
-                      fontSize: '17px', 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
@@ -359,9 +343,8 @@ export function BeforeAfterSection() {
 
               {/* Second Box - AI-Powered Dashboard Building */}
               <div 
-                className="animate-gentle-pulse animate-breathe animate-subtle-glow transition-all duration-300 cursor-pointer"
+                className="animate-gentle-pulse animate-breathe animate-subtle-glow transition-all duration-300 cursor-pointer p-4 md:p-6"
                 style={{ 
-                  padding: '24px', 
                   flex: '1', 
                   minWidth: 0,
                   background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(0, 168, 120, 0.05) 100%)',
@@ -411,10 +394,8 @@ export function BeforeAfterSection() {
                     <CheckCircle2 className="w-5 h-5 text-[#10B981] transition-transform duration-300" />
                   </div>
                   <h3 
-                    className="text-gray-900"
+                    className="text-gray-900 text-lg sm:text-xl md:text-[22px] font-bold"
                     style={{
-                      fontSize: '22px',
-                      fontWeight: 700,
                       margin: 0,
                       letterSpacing: '-0.02em'
                     }}
@@ -424,9 +405,8 @@ export function BeforeAfterSection() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div 
-                    className="transition-all duration-300 group"
+                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
                     style={{ 
-                      fontSize: '17px', 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
@@ -451,9 +431,8 @@ export function BeforeAfterSection() {
                     <span className="group-hover:text-[#10B981] transition-colors duration-300">Dashboards ready in minutes</span>
                   </div>
                   <div 
-                    className="transition-all duration-300 group"
+                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
                     style={{ 
-                      fontSize: '17px', 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
@@ -478,9 +457,8 @@ export function BeforeAfterSection() {
                     <span className="group-hover:text-[#10B981] transition-colors duration-300">Clean, professional-grade visuals</span>
                   </div>
                   <div 
-                    className="transition-all duration-300 group"
+                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
                     style={{ 
-                      fontSize: '17px', 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
