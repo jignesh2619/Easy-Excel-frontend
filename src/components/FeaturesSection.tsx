@@ -1,27 +1,27 @@
 import React from "react";
-import { Sparkles, BarChart3, MessageSquare, Download } from "lucide-react";
+import { Upload, MessageSquare, Clock, Download } from "lucide-react";
 
 export function FeaturesSection() {
   const features = [
     {
-      icon: Sparkles,
-      title: "Automated Sheet Cleaning",
-      description: "Removes duplicates, fixes errors, and standardizes formatting automatically."
-    },
-    {
-      icon: BarChart3,
-      title: "Instant Dashboard Builder",
-      description: "Auto-generate charts and insights from your data in seconds."
+      icon: Upload,
+      title: "Upload Your Excel File",
+      description: "Simply drag and drop or select your Excel file to get started."
     },
     {
       icon: MessageSquare,
-      title: "AI Prompt Engine",
-      description: "Clean or transform any column using natural language commands."
+      title: "Type in Plain English",
+      description: "Tell us what you want in simple words—no technical jargon needed."
+    },
+    {
+      icon: Clock,
+      title: "Wait for a Few Seconds",
+      description: "Our AI processes your request and transforms your data in moments."
     },
     {
       icon: Download,
-      title: "One-Click Download",
-      description: "Export clean or processed sheets instantly in your preferred format."
+      title: "Export",
+      description: "Download your cleaned and processed Excel file instantly."
     }
   ];
 
@@ -34,10 +34,10 @@ export function FeaturesSection() {
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16 animate-fade-in-up">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-gray-900 via-[#00A878] to-gray-900 bg-clip-text text-transparent">
-            Powerful Features That Save You Time
+            How It Works
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Everything you need to clean, transform, and visualize your data efficiently—all in one place.
+            Transform your Excel files in just four simple steps—no expertise required.
           </p>
         </div>
 

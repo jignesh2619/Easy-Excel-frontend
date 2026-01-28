@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, Sparkles, Zap, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, CheckCircle2, Clock, AlertCircle, X, CheckCircle, Rocket } from "lucide-react";
 
 export function BeforeAfterSection() {
   return (
@@ -41,21 +41,9 @@ export function BeforeAfterSection() {
               build dashboards<br />
               <span className="text-[#00A878]">in seconds</span>
             </h2>
-            
-            <p 
-              className="text-gray-600 mb-6"
-              style={{
-                fontSize: '18px',
-                lineHeight: 1.6,
-                marginBottom: '32px'
-              }}
-            >
-              Transform your messy Excel files into professional dashboards instantly. 
-              No coding required, no complex setup—just upload and get results.
-            </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-4">
+            <div className="flex flex-col gap-4 mb-4">
               <button
                 onClick={() => {
                   const element = document.getElementById("prompt-tool");
@@ -63,12 +51,15 @@ export function BeforeAfterSection() {
                     element.scrollIntoView({ behavior: "smooth", block: "start" });
                   }
                 }}
-                className="inline-flex items-center justify-center gap-2 text-white font-semibold px-6 py-3 shadow-md hover:shadow-lg transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
                 style={{ 
                   fontSize: '16px',
                   backgroundColor: '#00A878',
                   borderRadius: '12px',
-                  border: 'none'
+                  border: 'none',
+                  padding: '20px 24px',
+                  width: 'fit-content',
+                  maxWidth: '220px'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#008c67';
@@ -88,13 +79,16 @@ export function BeforeAfterSection() {
                     element.scrollIntoView({ behavior: "smooth" });
                   }
                 }}
-                className="inline-flex items-center justify-center font-semibold px-6 py-3 transition-all duration-200"
+                className="inline-flex items-center justify-center font-semibold transition-all duration-200"
                 style={{ 
                   fontSize: '16px',
                   backgroundColor: 'transparent',
                   border: '2px solid #00A878',
                   borderRadius: '12px',
-                  color: '#00A878'
+                  color: '#00A878',
+                  padding: '20px 24px',
+                  width: 'fit-content',
+                  maxWidth: '220px'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#00A878';
@@ -139,21 +133,23 @@ export function BeforeAfterSection() {
                     BEFORE
                   </span>
                 </div>
-                <div style={{ margin: 0, padding: 0, lineHeight: 0 }}>
+                <div style={{ margin: 0, padding: 0, lineHeight: 0, overflow: 'hidden' }}>
                   <img 
                     src="/before.png" 
                     alt="Before: Manual Excel dashboard creation"
-                    className="hover:scale-105 transition-transform duration-300 rounded-lg shadow-md"
+                    className="hover:scale-110 transition-transform duration-300 rounded-lg shadow-md"
                     style={{ 
                       margin: 0,
                       padding: 0,
                       display: 'block',
                       width: '100%',
                       height: 'auto',
-                      maxHeight: '280px',
+                      maxHeight: '380px',
                       objectFit: 'contain',
                       verticalAlign: 'top',
-                      lineHeight: 0
+                      lineHeight: 0,
+                      transform: 'scale(1.2)',
+                      transformOrigin: 'center center'
                     }}
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
@@ -185,21 +181,23 @@ export function BeforeAfterSection() {
                     AFTER
                   </span>
                 </div>
-                <div style={{ margin: 0, padding: 0, lineHeight: 0 }}>
+                <div style={{ margin: 0, padding: 0, lineHeight: 0, overflow: 'hidden' }}>
                   <img 
                     src="/after.png" 
                     alt="After: AI-powered Excel dashboard"
-                    className="hover:scale-105 transition-transform duration-300 rounded-lg shadow-md"
+                    className="hover:scale-110 transition-transform duration-300 rounded-lg shadow-md"
                     style={{ 
                       margin: 0,
                       padding: 0,
                       display: 'block',
                       width: '100%',
                       height: 'auto',
-                      maxHeight: '280px',
+                      maxHeight: '380px',
                       objectFit: 'contain',
                       verticalAlign: 'top',
-                      lineHeight: 0
+                      lineHeight: 0,
+                      transform: 'scale(1.2)',
+                      transformOrigin: 'center center'
                     }}
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
@@ -212,59 +210,299 @@ export function BeforeAfterSection() {
             {/* Comparison Text Below Images - Horizontal Layout */}
             <div className="mt-4 flex flex-row gap-4" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
               {/* First Box - Manual Dashboard Creation */}
-              <div style={{ padding: '16px', flex: '1', minWidth: 0 }}>
-                <h3 
-                  className="text-gray-900 mb-3"
-                  style={{
-                    fontSize: '18px',
-                    fontWeight: 600,
-                    marginBottom: '14px',
-                    marginTop: 0
-                  }}
-                >
-                  Manual Dashboard Creation
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <div style={{ fontSize: '16px', color: '#374151', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                    <span className="text-red-500" style={{ flexShrink: 0, marginTop: '2px' }}>•</span>
-                    <span>8+ hours spent per report</span>
+              <div 
+                className="animate-gentle-pulse animate-breathe transition-all duration-300 cursor-pointer"
+                style={{ 
+                  padding: '24px', 
+                  flex: '1', 
+                  minWidth: 0,
+                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%)',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                  transform: 'scale(1)',
+                  boxShadow: '0 8px 24px rgba(239, 68, 68, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(239, 68, 68, 0.1)',
+                  filter: 'drop-shadow(0 4px 12px rgba(239, 68, 68, 0.15))'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.03) translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 16px 40px rgba(239, 68, 68, 0.25), 0 8px 20px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(239, 68, 68, 0.2)';
+                  e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+                  e.currentTarget.style.filter = 'drop-shadow(0 8px 20px rgba(239, 68, 68, 0.25))';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(239, 68, 68, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(239, 68, 68, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+                  e.currentTarget.style.filter = 'drop-shadow(0 4px 12px rgba(239, 68, 68, 0.15))';
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                  <div 
+                    className="transition-all duration-300"
+                    style={{ 
+                      width: '40px', 
+                      height: '40px', 
+                      borderRadius: '50%', 
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transform: 'scale(1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.15) rotate(5deg)';
+                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                    }}
+                  >
+                    <X className="w-5 h-5 text-red-500 transition-transform duration-300" />
                   </div>
-                  <div style={{ fontSize: '16px', color: '#374151', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                    <span className="text-red-500" style={{ flexShrink: 0, marginTop: '2px' }}>•</span>
-                    <span>Messy, unstructured Excel data</span>
+                  <h3 
+                    className="text-gray-900"
+                    style={{
+                      fontSize: '22px',
+                      fontWeight: 700,
+                      margin: 0,
+                      letterSpacing: '-0.02em'
+                    }}
+                  >
+                    Manual Dashboard Creation
+                  </h3>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div 
+                    className="transition-all duration-300 group"
+                    style={{ 
+                      fontSize: '17px', 
+                      color: '#1F2937', 
+                      display: 'flex', 
+                      alignItems: 'flex-start', 
+                      gap: '14px',
+                      fontWeight: 500
+                    }}
+                    onMouseEnter={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1.2)';
+                        icon.style.transition = 'transform 0.3s ease';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1)';
+                      }
+                    }}
+                  >
+                    <Clock className="w-5 h-5 text-red-500" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <span className="group-hover:text-red-600 transition-colors duration-300">8+ hours spent per report</span>
                   </div>
-                  <div style={{ fontSize: '16px', color: '#374151', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                    <span className="text-red-500" style={{ flexShrink: 0, marginTop: '2px' }}>•</span>
-                    <span>Constant fear of errors or mistakes</span>
+                  <div 
+                    className="transition-all duration-300 group"
+                    style={{ 
+                      fontSize: '17px', 
+                      color: '#1F2937', 
+                      display: 'flex', 
+                      alignItems: 'flex-start', 
+                      gap: '14px',
+                      fontWeight: 500
+                    }}
+                    onMouseEnter={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1.2)';
+                        icon.style.transition = 'transform 0.3s ease';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1)';
+                      }
+                    }}
+                  >
+                    <AlertCircle className="w-5 h-5 text-red-500" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <span className="group-hover:text-red-600 transition-colors duration-300">Messy, unstructured Excel data</span>
+                  </div>
+                  <div 
+                    className="transition-all duration-300 group"
+                    style={{ 
+                      fontSize: '17px', 
+                      color: '#1F2937', 
+                      display: 'flex', 
+                      alignItems: 'flex-start', 
+                      gap: '14px',
+                      fontWeight: 500
+                    }}
+                    onMouseEnter={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1.2)';
+                        icon.style.transition = 'transform 0.3s ease';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1)';
+                      }
+                    }}
+                  >
+                    <X className="w-5 h-5 text-red-500" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <span className="group-hover:text-red-600 transition-colors duration-300">Constant fear of errors or mistakes</span>
                   </div>
                 </div>
               </div>
 
               {/* Second Box - AI-Powered Dashboard Building */}
-              <div style={{ padding: '16px', flex: '1', minWidth: 0 }}>
-                <h3 
-                  className="text-gray-900 mb-3"
-                  style={{
-                    fontSize: '18px',
-                    fontWeight: 600,
-                    marginBottom: '14px',
-                    marginTop: 0
-                  }}
-                >
-                  AI-Powered Dashboard Building
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <div style={{ fontSize: '16px', color: '#374151', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                    <span className="text-[#10B981]" style={{ flexShrink: 0, marginTop: '2px' }}>•</span>
-                    <span>Dashboards ready in minutes</span>
+              <div 
+                className="animate-gentle-pulse animate-breathe animate-subtle-glow transition-all duration-300 cursor-pointer"
+                style={{ 
+                  padding: '24px', 
+                  flex: '1', 
+                  minWidth: 0,
+                  background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(0, 168, 120, 0.05) 100%)',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  boxShadow: '0 8px 24px rgba(16, 185, 129, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(16, 185, 129, 0.15)',
+                  transform: 'scale(1)',
+                  filter: 'drop-shadow(0 4px 16px rgba(16, 185, 129, 0.2))'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.03) translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 20px 48px rgba(16, 185, 129, 0.3), 0 8px 20px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(16, 185, 129, 0.25)';
+                  e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(0, 168, 120, 0.1) 100%)';
+                  e.currentTarget.style.filter = 'drop-shadow(0 8px 24px rgba(16, 185, 129, 0.35))';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(16, 185, 129, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(16, 185, 129, 0.15)';
+                  e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(0, 168, 120, 0.05) 100%)';
+                  e.currentTarget.style.filter = 'drop-shadow(0 4px 16px rgba(16, 185, 129, 0.2))';
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                  <div 
+                    className="transition-all duration-300"
+                    style={{ 
+                      width: '40px', 
+                      height: '40px', 
+                      borderRadius: '50%', 
+                      background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(0, 168, 120, 0.15) 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transform: 'scale(1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.15) rotate(-5deg)';
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(0, 168, 120, 0.25) 100%)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(0, 168, 120, 0.15) 100%)';
+                    }}
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-[#10B981] transition-transform duration-300" />
                   </div>
-                  <div style={{ fontSize: '16px', color: '#374151', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                    <span className="text-[#10B981]" style={{ flexShrink: 0, marginTop: '2px' }}>•</span>
-                    <span>Clean, professional-grade visuals</span>
+                  <h3 
+                    className="text-gray-900"
+                    style={{
+                      fontSize: '22px',
+                      fontWeight: 700,
+                      margin: 0,
+                      letterSpacing: '-0.02em'
+                    }}
+                  >
+                    AI-Powered Dashboard Building
+                  </h3>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div 
+                    className="transition-all duration-300 group"
+                    style={{ 
+                      fontSize: '17px', 
+                      color: '#1F2937', 
+                      display: 'flex', 
+                      alignItems: 'flex-start', 
+                      gap: '14px',
+                      fontWeight: 500
+                    }}
+                    onMouseEnter={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1.2) rotate(5deg)';
+                        icon.style.transition = 'transform 0.3s ease';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1)';
+                      }
+                    }}
+                  >
+                    <Rocket className="w-5 h-5 text-[#10B981]" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <span className="group-hover:text-[#10B981] transition-colors duration-300">Dashboards ready in minutes</span>
                   </div>
-                  <div style={{ fontSize: '16px', color: '#374151', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                    <span className="text-[#10B981]" style={{ flexShrink: 0, marginTop: '2px' }}>•</span>
-                    <span>Zero manual work or Excel expertise needed</span>
+                  <div 
+                    className="transition-all duration-300 group"
+                    style={{ 
+                      fontSize: '17px', 
+                      color: '#1F2937', 
+                      display: 'flex', 
+                      alignItems: 'flex-start', 
+                      gap: '14px',
+                      fontWeight: 500
+                    }}
+                    onMouseEnter={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1.2)';
+                        icon.style.transition = 'transform 0.3s ease';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1)';
+                      }
+                    }}
+                  >
+                    <CheckCircle className="w-5 h-5 text-[#10B981]" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <span className="group-hover:text-[#10B981] transition-colors duration-300">Clean, professional-grade visuals</span>
+                  </div>
+                  <div 
+                    className="transition-all duration-300 group"
+                    style={{ 
+                      fontSize: '17px', 
+                      color: '#1F2937', 
+                      display: 'flex', 
+                      alignItems: 'flex-start', 
+                      gap: '14px',
+                      fontWeight: 500
+                    }}
+                    onMouseEnter={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1.2) rotate(-5deg)';
+                        icon.style.transition = 'transform 0.3s ease';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        icon.style.transform = 'scale(1)';
+                      }
+                    }}
+                  >
+                    <Zap className="w-5 h-5 text-[#10B981]" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <span className="group-hover:text-[#10B981] transition-colors duration-300">Zero manual work or Excel expertise needed</span>
                   </div>
                 </div>
               </div>
