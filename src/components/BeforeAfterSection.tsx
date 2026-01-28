@@ -209,8 +209,7 @@ export function BeforeAfterSection() {
                 style={{ 
                   flex: '1', 
                   minWidth: 0,
-                  animationDelay: '0.7s'
-                }}
+                  animationDelay: '0.7s',
                   background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%)',
                   borderRadius: '16px',
                   border: '1px solid rgba(239, 68, 68, 0.2)',
@@ -353,8 +352,7 @@ export function BeforeAfterSection() {
                 style={{ 
                   flex: '1', 
                   minWidth: 0,
-                  animationDelay: '0.8s'
-                }}
+                  animationDelay: '0.8s',
                   background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(0, 168, 120, 0.05) 100%)',
                   borderRadius: '16px',
                   border: '1px solid rgba(16, 185, 129, 0.3)',
