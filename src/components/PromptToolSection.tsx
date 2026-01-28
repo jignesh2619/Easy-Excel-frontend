@@ -7,6 +7,7 @@ import { SafariBrowser } from "./SafariBrowser";
 import { useAuth } from "../contexts/AuthContext";
 import { AuthModal } from "./AuthModal";
 import { useProcessingMessages } from "../hooks/useProcessingMessages";
+import { trackViewContent, trackMetaEvent } from "../utils/metaPixel";
 
 export function PromptToolSection() {
   const [prompt, setPrompt] = useState("");
@@ -48,6 +49,18 @@ export function PromptToolSection() {
     setError(null);
     setResult(null);
     setSelectedFile(file);
+    
+    // Track file upload event
+    trackViewContent({
+      content_name: 'Excel File Upload',
+      content_type: 'file',
+      content_ids: [file.name]
+    });
+    trackMetaEvent('FileUpload', {
+      file_name: file.name,
+      file_size: file.size,
+      file_type: file.type
+    });
     
     try {
       const response = await processFile(file, processingPrompt);

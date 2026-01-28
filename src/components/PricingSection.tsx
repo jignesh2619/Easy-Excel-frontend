@@ -5,6 +5,7 @@ import { createPayPalSubscription } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import { AuthModal } from "./AuthModal";
 import { WelcomePopup } from "./WelcomePopup";
+import { trackInitiateCheckout, trackSubscribe, trackStartTrial } from "../utils/metaPixel";
 
 export function PricingSection() {
   const [loading, setLoading] = useState<string | null>(null);
@@ -74,6 +75,13 @@ export function PricingSection() {
     setError(null);
 
     try {
+      // Track initiate checkout event
+      trackInitiateCheckout({
+        content_name: planName,
+        value: planName === 'Pro' ? 29 : planName === 'Enterprise' ? 99 : 0,
+        currency: 'USD'
+      });
+
       // Use authenticated user's email and ID
       const userEmail = user.email || currentBackendUser.email;
       const userId = currentBackendUser.user_id;
@@ -86,6 +94,16 @@ export function PricingSection() {
       const result = await createPayPalSubscription(planName, userEmail, userId, session.access_token);
 
       if (result.approval_url) {
+        // Track subscription event before redirect
+        if (planName === 'Free') {
+          trackStartTrial({ content_name: planName });
+        } else {
+          trackSubscribe({
+            content_name: planName,
+            value: planName === 'Pro' ? 29 : 99,
+            currency: 'USD'
+          });
+        }
         // Redirect to PayPal for payment approval
         window.location.href = result.approval_url;
       } else {

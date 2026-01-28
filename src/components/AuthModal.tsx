@@ -18,6 +18,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Alert, AlertDescription } from './ui/alert';
 import { Loader2, Mail, Chrome, Sparkles, Shield, Zap } from 'lucide-react';
+import { trackSignUp, trackLead } from '../utils/metaPixel';
 
 interface AuthModalProps {
   open: boolean;
@@ -66,6 +67,11 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
         setError(authError.message);
         setLoading(false);
       } else {
+        // Track sign up event
+        if (!isLogin) {
+          trackSignUp({ method: 'email' });
+          trackLead({ content_name: 'User Registration' });
+        }
         // Wait a bit for backend user to sync before closing modal
         await new Promise(resolve => setTimeout(resolve, 1000));
         onSuccess?.();
@@ -86,6 +92,10 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
     setError(null);
     setLoading(true);
     try {
+      // Track lead event for Google sign up attempt
+      if (!isLogin) {
+        trackLead({ content_name: 'Google Sign Up Attempt' });
+      }
       await signInWithGoogle();
       // Note: Google OAuth redirects, so we don't close modal here
       // Don't set loading to false here since we're redirecting
