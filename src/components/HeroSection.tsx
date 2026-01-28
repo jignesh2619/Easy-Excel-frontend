@@ -63,18 +63,18 @@ export function HeroSection() {
           </div>
 
           {/* 2. Main Headline */}
-          <HeroHeadline className="text-gray-900 mb-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <HeroHeadline className="text-gray-900 mb-4 animate-fade-in-up font-extrabold" style={{ animationDelay: '0.1s', fontWeight: 900 }}>
             Transform Excel Chaos Into
             <br />
-            <span className="text-[#00A878]">Professional Dashboards</span>
+            <span className="text-[#00A878] animate-scale-in" style={{ animationDelay: '0.15s' }}>Professional Dashboards</span>
             <br />
-            In Seconds
+            <span className="animate-slide-in-right" style={{ animationDelay: '0.2s' }}>In Seconds</span>
           </HeroHeadline>
           
           {/* 3. Subheadline */}
-          <HeroSubheadline className="text-gray-600 mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <HeroSubheadline className="text-gray-600 mb-6 animate-fade-in-up font-semibold" style={{ animationDelay: '0.3s', fontWeight: 600 }}>
             Upload your Excel file, describe what you need, and get clean data + beautiful dashboards automatically. 
-            <span className="font-medium text-[#00A878]"> No coding required.</span>
+            <span className="font-bold text-[#00A878] animate-pulse"> No coding required.</span>
           </HeroSubheadline>
 
           {/* 4. CTA Button Group - Inline-flex, not full-width */}

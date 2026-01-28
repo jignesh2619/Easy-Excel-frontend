@@ -33,10 +33,10 @@ export function FeaturesSection() {
       
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16 animate-fade-in-up">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-gray-900 via-[#00A878] to-gray-900 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-4 bg-gradient-to-r from-gray-900 via-[#00A878] to-gray-900 bg-clip-text text-transparent animate-bounce-in" style={{ fontWeight: 900, animationDelay: '0.1s' }}>
             How It Works
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl font-semibold text-gray-600 max-w-2xl mx-auto animate-fade-in-up" style={{ fontWeight: 600, animationDelay: '0.2s' }}>
             Transform your Excel files in just four simple steps—no expertise required.
           </p>
         </div>
@@ -53,8 +53,8 @@ export function FeaturesSection() {
                   <feature.icon className="w-6 h-6 text-[#00A878] group-hover:text-[#00c98c] group-hover:scale-110 transition-all duration-300" />
                 </div>
               </div>
-              <h3 className="text-gray-900 mb-2 font-semibold group-hover:text-[#00A878] transition-colors duration-300">{feature.title}</h3>
-              <p className="text-gray-600 text-sm group-hover:text-gray-700 transition-colors duration-300">{feature.description}</p>
+              <h3 className="text-gray-900 mb-2 text-lg md:text-xl font-bold group-hover:text-[#00A878] transition-colors duration-300" style={{ fontWeight: 700 }}>{feature.title}</h3>
+              <p className="text-gray-600 text-base md:text-lg font-medium group-hover:text-gray-700 transition-colors duration-300" style={{ fontWeight: 500 }}>{feature.description}</p>
             </div>
           ))}
         </div>

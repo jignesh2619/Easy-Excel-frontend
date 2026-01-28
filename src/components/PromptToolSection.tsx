@@ -205,13 +205,13 @@ export function PromptToolSection() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header - Compact */}
         <div className="text-center mb-6 animate-fade-in-up" style={{ paddingTop: '48px' }}>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-            Try It <span className="text-[#00A878]">Free</span> Right Now
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-2 animate-bounce-in" style={{ fontWeight: 900, animationDelay: '0.1s' }}>
+            Try It <span className="text-[#00A878] animate-scale-in" style={{ animationDelay: '0.2s' }}>Free</span> Right Now
           </h2>
-          <p className="text-sm text-gray-600 max-w-xl mx-auto mb-3">
+          <p className="text-base md:text-lg font-semibold text-gray-600 max-w-xl mx-auto mb-3 animate-fade-in-up" style={{ fontWeight: 600, animationDelay: '0.3s' }}>
             No sign-up required. Upload your file and see the magic happen in seconds.
           </p>
-          <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+          <div className="flex items-center justify-center gap-2 text-sm md:text-base font-semibold text-gray-600 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <span>✓ No credit card</span>
             <span>•</span>
             <span>✓ Instant results</span>

@@ -23,18 +23,19 @@ export function BeforeAfterSection() {
       >
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left Side: Tagline and Supporting Text */}
-          <div className="mobile-animate-fade-in-up">
+          <div className="animate-fade-in-up">
             <h2 
-              className="text-gray-900 mb-4 text-4xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold leading-tight mobile-animate-bounce-in"
+              className="text-gray-900 mb-4 text-5xl sm:text-6xl md:text-7xl lg:text-[72px] font-extrabold leading-tight animate-bounce-in"
               style={{
                 margin: 0,
-                marginBottom: '16px'
+                marginBottom: '16px',
+                fontWeight: 900
               }}
             >
-              <span className="inline-block mobile-animate-slide-in-left" style={{ animationDelay: '0.1s' }}>Clean</span><br />
-              <span className="inline-block mobile-animate-slide-in-left" style={{ animationDelay: '0.2s' }}>sheets and</span><br />
-              <span className="inline-block mobile-animate-slide-in-left" style={{ animationDelay: '0.3s' }}>build dashboards</span><br />
-              <span className="inline-block text-[#00A878] mobile-animate-scale-in" style={{ animationDelay: '0.4s' }}>in seconds</span>
+              <span className="inline-block animate-slide-in-left" style={{ animationDelay: '0.1s' }}>Clean</span><br />
+              <span className="inline-block animate-slide-in-left" style={{ animationDelay: '0.2s' }}>sheets and</span><br />
+              <span className="inline-block animate-slide-in-left" style={{ animationDelay: '0.3s' }}>build dashboards</span><br />
+              <span className="inline-block text-[#00A878] animate-scale-in" style={{ animationDelay: '0.4s' }}>in seconds</span>
             </h2>
 
             {/* CTA Buttons */}
@@ -46,14 +47,15 @@ export function BeforeAfterSection() {
                     element.scrollIntoView({ behavior: "smooth", block: "start" });
                   }
                 }}
-                className="inline-flex items-center justify-center gap-2 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-fit mobile-animate-bounce-in"
+                className="inline-flex items-center justify-center gap-2 text-white font-bold shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-fit animate-bounce-in"
                 style={{ 
-                  fontSize: '16px',
+                  fontSize: '18px',
+                  fontWeight: 700,
                   backgroundColor: '#00A878',
                   borderRadius: '12px',
                   border: 'none',
-                  padding: '16px 20px',
-                  maxWidth: '220px',
+                  padding: '18px 24px',
+                  maxWidth: '240px',
                   animationDelay: '0.5s'
                 }}
                 onMouseEnter={(e) => {
@@ -74,15 +76,16 @@ export function BeforeAfterSection() {
                     element.scrollIntoView({ behavior: "smooth" });
                   }
                 }}
-                className="inline-flex items-center justify-center font-semibold transition-all duration-200 w-full sm:w-fit mobile-animate-bounce-in"
+                className="inline-flex items-center justify-center font-bold transition-all duration-200 w-full sm:w-fit animate-bounce-in"
                 style={{ 
-                  fontSize: '16px',
+                  fontSize: '18px',
+                  fontWeight: 700,
                   backgroundColor: 'transparent',
                   border: '2px solid #00A878',
                   borderRadius: '12px',
                   color: '#00A878',
-                  padding: '16px 20px',
-                  maxWidth: '220px',
+                  padding: '18px 24px',
+                  maxWidth: '240px',
                   animationDelay: '0.6s'
                 }}
                 onMouseEnter={(e) => {
@@ -99,21 +102,21 @@ export function BeforeAfterSection() {
             </div>
 
             {/* CTA Text */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#00A878]/10 border border-[#00A878]/20 rounded-full mobile-animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
-              <span className="text-[#00A878] font-medium" style={{ fontSize: '15px' }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#00A878]/10 border border-[#00A878]/20 rounded-full animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
+              <span className="text-[#00A878] font-semibold" style={{ fontSize: '16px', fontWeight: 600 }}>
                 ✓ Free trial available • No credit card required
               </span>
             </div>
           </div>
 
           {/* Right Side: Before → Arrow → After Images */}
-          <div className="mobile-animate-slide-in-right mt-6 md:mt-0">
+          <div className="animate-slide-in-right mt-6 md:mt-0">
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-4">
               {/* BEFORE Image */}
-              <div className="flex-1 w-full md:w-auto mobile-animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <div className="flex-1 w-full md:w-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                 <div className="mb-2">
                   <span 
-                    className="inline-block rounded-full text-xs font-medium uppercase tracking-wide mobile-animate-bounce-in"
+                    className="inline-block rounded-full text-xs font-bold uppercase tracking-wide animate-bounce-in"
                     style={{
                       backgroundColor: '#FFFFFF',
                       border: '1.5px solid #1F2937',
@@ -154,15 +157,15 @@ export function BeforeAfterSection() {
               </div>
 
               {/* Arrow */}
-              <div className="flex flex-row md:flex-col items-center justify-center rotate-90 md:rotate-0 mobile-animate-bounce-in" style={{ animationDelay: '0.4s' }}>
+              <div className="flex flex-row md:flex-col items-center justify-center rotate-90 md:rotate-0 animate-bounce-in" style={{ animationDelay: '0.4s' }}>
                 <ArrowRight className="w-6 h-6 md:w-8 md:h-8 text-[#00A878] animate-arrow-slide-vertical md:animate-arrow-slide drop-shadow-lg" />
               </div>
 
               {/* AFTER Image */}
-              <div className="flex-1 w-full md:w-auto mobile-animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+              <div className="flex-1 w-full md:w-auto animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
                 <div className="mb-2">
                   <span 
-                    className="inline-block rounded-full text-xs font-semibold uppercase tracking-wide mobile-animate-bounce-in"
+                    className="inline-block rounded-full text-xs font-bold uppercase tracking-wide animate-bounce-in"
                     style={{
                       backgroundColor: '#10B981',
                       color: '#FFFFFF',
@@ -205,7 +208,7 @@ export function BeforeAfterSection() {
             <div className="mt-4 flex flex-col md:flex-row gap-4" style={{ width: '100%' }}>
               {/* First Box - Manual Dashboard Creation */}
               <div 
-                className="animate-gentle-pulse animate-breathe transition-all duration-300 cursor-pointer p-4 md:p-6 mobile-animate-slide-in-left"
+                className="animate-gentle-pulse animate-breathe transition-all duration-300 cursor-pointer p-4 md:p-6 animate-slide-in-left"
                 style={{ 
                   flex: '1', 
                   minWidth: 0,
@@ -255,10 +258,11 @@ export function BeforeAfterSection() {
                     <X className="w-5 h-5 text-red-500 transition-transform duration-300" />
                   </div>
                   <h3 
-                    className="text-gray-900 text-lg sm:text-xl md:text-[22px] font-bold"
+                    className="text-gray-900 text-xl sm:text-2xl md:text-[26px] font-extrabold"
                     style={{
                       margin: 0,
-                      letterSpacing: '-0.02em'
+                      letterSpacing: '-0.02em',
+                      fontWeight: 900
                     }}
                   >
                     Manual Dashboard Creation
@@ -266,13 +270,13 @@ export function BeforeAfterSection() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div 
-                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
+                    className="transition-all duration-300 group text-base sm:text-lg md:text-[19px]"
                     style={{ 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
                       gap: '14px',
-                      fontWeight: 500
+                      fontWeight: 600
                     }}
                     onMouseEnter={(e) => {
                       const icon = e.currentTarget.querySelector('svg');
@@ -292,13 +296,13 @@ export function BeforeAfterSection() {
                     <span className="group-hover:text-red-600 transition-colors duration-300">8+ hours spent per report</span>
                   </div>
                   <div 
-                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
+                    className="transition-all duration-300 group text-base sm:text-lg md:text-[19px]"
                     style={{ 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
                       gap: '14px',
-                      fontWeight: 500
+                      fontWeight: 600
                     }}
                     onMouseEnter={(e) => {
                       const icon = e.currentTarget.querySelector('svg');
@@ -318,13 +322,13 @@ export function BeforeAfterSection() {
                     <span className="group-hover:text-red-600 transition-colors duration-300">Messy, unstructured Excel data</span>
                   </div>
                   <div 
-                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
+                    className="transition-all duration-300 group text-base sm:text-lg md:text-[19px]"
                     style={{ 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
                       gap: '14px',
-                      fontWeight: 500
+                      fontWeight: 600
                     }}
                     onMouseEnter={(e) => {
                       const icon = e.currentTarget.querySelector('svg');
@@ -348,7 +352,7 @@ export function BeforeAfterSection() {
 
               {/* Second Box - AI-Powered Dashboard Building */}
               <div 
-                className="animate-gentle-pulse animate-breathe animate-subtle-glow transition-all duration-300 cursor-pointer p-4 md:p-6 mobile-animate-slide-in-right"
+                className="animate-gentle-pulse animate-breathe animate-subtle-glow transition-all duration-300 cursor-pointer p-4 md:p-6 animate-slide-in-right"
                 style={{ 
                   flex: '1', 
                   minWidth: 0,
@@ -400,10 +404,11 @@ export function BeforeAfterSection() {
                     <CheckCircle2 className="w-5 h-5 text-[#10B981] transition-transform duration-300" />
                   </div>
                   <h3 
-                    className="text-gray-900 text-lg sm:text-xl md:text-[22px] font-bold"
+                    className="text-gray-900 text-xl sm:text-2xl md:text-[26px] font-extrabold"
                     style={{
                       margin: 0,
-                      letterSpacing: '-0.02em'
+                      letterSpacing: '-0.02em',
+                      fontWeight: 900
                     }}
                   >
                     AI-Powered Dashboard Building
@@ -411,13 +416,13 @@ export function BeforeAfterSection() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div 
-                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
+                    className="transition-all duration-300 group text-base sm:text-lg md:text-[19px]"
                     style={{ 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
                       gap: '14px',
-                      fontWeight: 500
+                      fontWeight: 600
                     }}
                     onMouseEnter={(e) => {
                       const icon = e.currentTarget.querySelector('svg');
@@ -437,13 +442,13 @@ export function BeforeAfterSection() {
                     <span className="group-hover:text-[#10B981] transition-colors duration-300">Dashboards ready in minutes</span>
                   </div>
                   <div 
-                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
+                    className="transition-all duration-300 group text-base sm:text-lg md:text-[19px]"
                     style={{ 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
                       gap: '14px',
-                      fontWeight: 500
+                      fontWeight: 600
                     }}
                     onMouseEnter={(e) => {
                       const icon = e.currentTarget.querySelector('svg');
@@ -463,13 +468,13 @@ export function BeforeAfterSection() {
                     <span className="group-hover:text-[#10B981] transition-colors duration-300">Clean, professional-grade visuals</span>
                   </div>
                   <div 
-                    className="transition-all duration-300 group text-sm sm:text-base md:text-[17px]"
+                    className="transition-all duration-300 group text-base sm:text-lg md:text-[19px]"
                     style={{ 
                       color: '#1F2937', 
                       display: 'flex', 
                       alignItems: 'flex-start', 
                       gap: '14px',
-                      fontWeight: 500
+                      fontWeight: 600
                     }}
                     onMouseEnter={(e) => {
                       const icon = e.currentTarget.querySelector('svg');
